@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ParticipantRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -81,9 +83,17 @@ class Participant implements UserInterface
     private $organiseSorties;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Sortie", mappedBy="participants")
+     * @ORM\OneToMany(targetEntity=SortieParticipant::class, mappedBy="participant", orphanRemoval=true)
      */
-    private $sorties;
+    private $sortieParticipants;
+
+    public function __construct()
+    {
+        $this->sortieParticipants = new ArrayCollection();
+    }
+
+
+
 
     public function getId(): ?int
     {
@@ -232,20 +242,40 @@ class Participant implements UserInterface
     }
 
     /**
-     * @return mixed
+     * @return Collection|SortieParticipant[]
      */
-    public function getSortie()
+    public function getSortieParticipants(): Collection
     {
-        return $this->sortie;
+        return $this->sortieParticipants;
     }
 
-    /**
-     * @param mixed $sortie
-     */
-    public function setSortie($sortie): void
+    public function addSortieParticipant(SortieParticipant $sortieParticipant): self
     {
-        $this->sortie = $sortie;
+        if (!$this->sortieParticipants->contains($sortieParticipant)) {
+            $this->sortieParticipants[] = $sortieParticipant;
+            $sortieParticipant->setParticipant($this);
+        }
+
+        return $this;
     }
+
+    public function removeSortieParticipant(SortieParticipant $sortieParticipant): self
+    {
+        if ($this->sortieParticipants->contains($sortieParticipant)) {
+            $this->sortieParticipants->removeElement($sortieParticipant);
+            // set the owning side to null (unless already changed)
+            if ($sortieParticipant->getParticipant() === $this) {
+                $sortieParticipant->setParticipant(null);
+            }
+        }
+
+        return $this;
+    }
+
+
+
+
+
 
 
 }
