@@ -12,6 +12,7 @@ class AccueilController extends AbstractController
      */
     public function index()
     {
+        //TODO a faire
         return $this->render('accueil/index.html.twig', [
             'controller_name' => 'AccueilController',
         ]);
