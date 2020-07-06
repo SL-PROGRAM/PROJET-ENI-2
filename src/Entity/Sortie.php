@@ -76,6 +76,15 @@ class Sortie
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Participant", inversedBy="sorties")
+     * @ORM\JoinTable(
+     *     name="sortie_participant",
+     *     joinColumns={
+     *          @ORM\JoinColumn(name="participant_id", referencedColumnName="id")
+     *     },
+     *     inverseJoinColumns={
+     *          @ORM\JoinColumn(name="sortie_id", referencedColumnName="id")
+     *     }
+     * )
      */
     private $participants;
 
