@@ -29,7 +29,7 @@ class AppFixtures extends Fixture
         $participant->setTelephone($faker->optional($weight = 0.7)->e164PhoneNumber);
         $participant->setEmail('admin@admin.admin');
         $participant->setPassword($this->passwordEncoder->encodePassword($participant, '123456'));
-        $participant->setRoles(['ROLE_ADMIN']);
+        $participant->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
         $manager->persist($participant);
 
 
