@@ -18,6 +18,12 @@ class Campus
     private $id;
 
     /**
+     * @Assert\NotBlank(message = "Cette valeur ne peut pas être vide")
+     * @Assert\Regex(
+     *     pattern="/\d/",
+     *     match=false,
+     *     message="Ne peut contenir un nombre"
+     * )
      * @ORM\Column(type="string", length=255)
      */
     private $nom;

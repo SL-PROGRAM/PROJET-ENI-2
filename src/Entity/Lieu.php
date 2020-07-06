@@ -18,21 +18,30 @@ class Lieu
     private $id;
 
     /**
+     * @Assert\NotBlank(message = "Cette valeur ne peut pas être vide")
+     * @Assert\Regex(
+     *     pattern="/\d/",
+     *     match=false,
+     *     message="Ne peut contenir un nombre"
+     * )
      * @ORM\Column(type="string", length=255)
      */
     private $nom;
 
     /**
+     * @Assert\NotBlank(message = "Cette valeur ne peut pas être vide")
      * @ORM\Column(type="string", length=255)
      */
     private $rue;
 
     /**
+     * @Assert\Type(type="float", message="Valeur invalide")
      * @ORM\Column(type="float")
      */
     private $latitude;
 
     /**
+     * @Assert\Type(type="float", message="Valeur invalide")
      * @ORM\Column(type="float")
      */
     private $longitude;
@@ -43,7 +52,10 @@ class Lieu
      */
     private $ville;
 
-
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Sortie", mappedBy="lieu")
+     */
+    private $sorties;
 
     public function getId(): ?int
     {
@@ -108,6 +120,22 @@ class Lieu
         $this->ville = $ville;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSorties()
+    {
+        return $this->sorties;
+    }
+
+    /**
+     * @param mixed $sorties
+     */
+    public function setSorties($sorties): void
+    {
+        $this->sorties = $sorties;
     }
 
     
