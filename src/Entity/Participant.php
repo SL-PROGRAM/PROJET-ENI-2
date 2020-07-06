@@ -19,6 +19,9 @@ class Participant implements UserInterface
     private $id;
 
     /**
+     * @Assert\Email(
+     *     message = "The email '{{ value }}' is not a valid email."
+     * )
      * @ORM\Column(type="string", length=180, unique=true)
      */
     private $email;
@@ -29,22 +32,40 @@ class Participant implements UserInterface
     private $roles = [];
 
     /**
+     * @Assert\NotBlank
      * @var string The hashed password
      * @ORM\Column(type="string")
      */
     private $password;
 
     /**
+     * @Assert\NotBlank(message = "Cette valeur ne peut pas être vide")
+     * @Assert\Regex(
+     *     pattern="/\d/",
+     *     match=false,
+     *     message="Your name cannot contain a number"
+     * )
      * @ORM\Column(type="string", length=100)
      */
     private $nom;
 
     /**
+     * @Assert\NotBlank(message = "Cette valeur ne peut pas être vide")
+     * @Assert\Regex(
+     *     pattern="/\d/",
+     *     match=false,
+     *     message="Your surname cannot contain a number"
+     * )
      * @ORM\Column(type="string", length=50)
      */
     private $prenom;
 
     /**
+     * @Assert\Regex(
+     *     pattern="/^(0|\+33)[1-9]([-. ]?[0-9]{2}){4}$/",
+     *     match=true,
+     *     message="Le format du numéro de téléphone est incorrect"
+     * )
      * @ORM\Column(type="string", length=15, nullable=true)
      */
     private $telephone;

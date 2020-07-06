@@ -18,26 +18,38 @@ class Sortie
     private $id;
 
     /**
+     * @Assert\NotBlank(message = "Cette valeur ne peut pas être vide")
+     * @Assert\Regex(
+     *     pattern="/\d/",
+     *     match=false,
+     *     message="Ne peut contenir un nombre"
+     * )
      * @ORM\Column(type="string", length=255)
      */
     private $nom;
 
     /**
+     * @Assert\Type(type="\DateTime", message="Date invalide")
+     * @Assert\GreaterThan("+24 hours")
      * @ORM\Column(type="datetime")
      */
     private $dateHeureDebut;
 
     /**
+     * @Assert\Type(type="integer", message="Valeur invalide")
      * @ORM\Column(type="bigint")
      */
     private $duree;
 
     /**
+     * @Assert\Type(type="\DateTime", message="Date invalide")
+     * @Assert\GreaterThan("+2 hours")
      * @ORM\Column(type="datetime")
      */
     private $dateLimiteInscription;
 
     /**
+     * @Assert\Type(type="integer", message="Valeur invalide")
      * @ORM\Column(type="integer", nullable=true)
      */
     private $nbInscriptionMax;
