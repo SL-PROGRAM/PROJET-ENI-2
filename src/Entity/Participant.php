@@ -49,6 +49,21 @@ class Participant implements UserInterface
      */
     private $telephone;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Campus", inversedBy="participants")
+     */
+    private $campus;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Sortie", mappedBy="organisateur")
+     */
+    private $organiseSorties;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Sortie", mappedBy="participants")
+     */
+    private $sorties;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -162,4 +177,54 @@ class Participant implements UserInterface
 
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getCampus()
+    {
+        return $this->campus;
+    }
+
+    /**
+     * @param mixed $campus
+     */
+    public function setCampus($campus): void
+    {
+        $this->campus = $campus;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOrganiseSorties()
+    {
+        return $this->organiseSorties;
+    }
+
+    /**
+     * @param mixed $organiseSorties
+     */
+    public function setOrganiseSorties($organiseSorties): void
+    {
+        $this->organiseSorties = $organiseSorties;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSortie()
+    {
+        return $this->sortie;
+    }
+
+    /**
+     * @param mixed $sortie
+     */
+    public function setSortie($sortie): void
+    {
+        $this->sortie = $sortie;
+    }
+
+
 }
