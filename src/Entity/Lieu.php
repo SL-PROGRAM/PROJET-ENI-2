@@ -43,7 +43,10 @@ class Lieu
      */
     private $ville;
 
-
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Sortie", mappedBy="lieu")
+     */
+    private $sorties;
 
     public function getId(): ?int
     {
@@ -108,6 +111,22 @@ class Lieu
         $this->ville = $ville;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSorties()
+    {
+        return $this->sorties;
+    }
+
+    /**
+     * @param mixed $sorties
+     */
+    public function setSorties($sorties): void
+    {
+        $this->sorties = $sorties;
     }
 
     

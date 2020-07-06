@@ -67,6 +67,11 @@ class Sortie
      */
     private $participants;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Lieu", inversedBy="sorties")
+     */
+    private $lieu;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -206,6 +211,22 @@ class Sortie
     public function setParticipants($participants): void
     {
         $this->participants = $participants;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLieu()
+    {
+        return $this->lieu;
+    }
+
+    /**
+     * @param mixed $lieu
+     */
+    public function setLieu($lieu): void
+    {
+        $this->lieu = $lieu;
     }
 
 
