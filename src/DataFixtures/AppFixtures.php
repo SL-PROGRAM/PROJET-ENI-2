@@ -102,6 +102,7 @@ class AppFixtures extends Fixture
         $participant->setPassword($this->passwordEncoder->encodePassword($participant, '123456'));
         $participant->setRoles(['ROLE_ADMIN']);
 
+
         $manager->persist($participant);
 
         //creation utilisateur pour connection et dev
