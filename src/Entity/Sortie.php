@@ -62,31 +62,33 @@ class Sortie
     private $infosSortie;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Campus", inversedBy="sorties")
+     * @ORM\OneToMany(targetEntity=SortieParticipant::class, mappedBy="sortie", orphanRemoval=true)
      */
-    private $campus;
+    private $sortieParticipants;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Etat", inversedBy="sorties")
+     * @ORM\ManyToOne(targetEntity=Etat::class, inversedBy="sorties")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $etat;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Participant", inversedBy="organiseSorties")
-     */
-    private $organisateur;
-
-
-
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Lieu", inversedBy="sorties")
+     * @ORM\ManyToOne(targetEntity=Lieu::class, inversedBy="sorties")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $lieu;
 
     /**
-     * @ORM\OneToMany(targetEntity=SortieParticipant::class, mappedBy="sortie", orphanRemoval=true)
+     * @ORM\ManyToOne(targetEntity=Participant::class, inversedBy="creerSorties")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $sortieParticipants;
+    private $organisateur;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Campus::class, inversedBy="sorties")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $campus;
 
     public function __construct()
     {
@@ -172,69 +174,6 @@ class Sortie
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getCampus()
-    {
-        return $this->campus;
-    }
-
-    /**
-     * @param mixed $campus
-     */
-    public function setCampus($campus): void
-    {
-        $this->campus = $campus;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getEtat()
-    {
-        return $this->etat;
-    }
-
-    /**
-     * @param mixed $etat
-     */
-    public function setEtat($etat): void
-    {
-        $this->etat = $etat;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getOrganisateur()
-    {
-        return $this->organisateur;
-    }
-
-    /**
-     * @param mixed $organisateur
-     */
-    public function setOrganisateur($organisateur): void
-    {
-        $this->organisateur = $organisateur;
-    }
-    
-    /**
-     * @return mixed
-     */
-    public function getLieu()
-    {
-        return $this->lieu;
-    }
-
-    /**
-     * @param mixed $lieu
-     */
-    public function setLieu($lieu): void
-    {
-        $this->lieu = $lieu;
-    }
 
     /**
      * @return Collection|SortieParticipant[]
@@ -263,6 +202,54 @@ class Sortie
                 $sortieParticipant->setSortie(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getEtat(): ?Etat
+    {
+        return $this->etat;
+    }
+
+    public function setEtat(?Etat $etat): self
+    {
+        $this->etat = $etat;
+
+        return $this;
+    }
+
+    public function getLieu(): ?Lieu
+    {
+        return $this->lieu;
+    }
+
+    public function setLieu(?Lieu $lieu): self
+    {
+        $this->lieu = $lieu;
+
+        return $this;
+    }
+
+    public function getOrganisateur(): ?Participant
+    {
+        return $this->organisateur;
+    }
+
+    public function setOrganisateur(?Participant $organisateur): self
+    {
+        $this->organisateur = $organisateur;
+
+        return $this;
+    }
+
+    public function getCampus(): ?Campus
+    {
+        return $this->campus;
+    }
+
+    public function setCampus(?Campus $campus): self
+    {
+        $this->campus = $campus;
 
         return $this;
     }

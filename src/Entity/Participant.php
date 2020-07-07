@@ -72,28 +72,28 @@ class Participant implements UserInterface
      */
     private $telephone;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Campus", inversedBy="participants")
-     */
-    private $campus;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Sortie", mappedBy="organisateur")
-     */
-    private $organiseSorties;
 
     /**
      * @ORM\OneToMany(targetEntity=SortieParticipant::class, mappedBy="participant", orphanRemoval=true)
      */
     private $sortieParticipants;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Campus::class, inversedBy="Participants")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $campus;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Sortie::class, mappedBy="organisateur")
+     */
+    private $creerSorties;
+
     public function __construct()
     {
         $this->sortieParticipants = new ArrayCollection();
+        $this->creerSorties = new ArrayCollection();
     }
-
-
-
 
     public function getId(): ?int
     {
@@ -209,37 +209,6 @@ class Participant implements UserInterface
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getCampus()
-    {
-        return $this->campus;
-    }
-
-    /**
-     * @param mixed $campus
-     */
-    public function setCampus($campus): void
-    {
-        $this->campus = $campus;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getOrganiseSorties()
-    {
-        return $this->organiseSorties;
-    }
-
-    /**
-     * @param mixed $organiseSorties
-     */
-    public function setOrganiseSorties($organiseSorties): void
-    {
-        $this->organiseSorties = $organiseSorties;
-    }
 
     /**
      * @return Collection|SortieParticipant[]
@@ -266,6 +235,49 @@ class Participant implements UserInterface
             // set the owning side to null (unless already changed)
             if ($sortieParticipant->getParticipant() === $this) {
                 $sortieParticipant->setParticipant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCampus(): ?Campus
+    {
+        return $this->campus;
+    }
+
+    public function setCampus(?Campus $campus): self
+    {
+        $this->campus = $campus;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Sortie[]
+     */
+    public function getCreerSorties(): Collection
+    {
+        return $this->creerSorties;
+    }
+
+    public function addCreerSorty(Sortie $creerSorty): self
+    {
+        if (!$this->creerSorties->contains($creerSorty)) {
+            $this->creerSorties[] = $creerSorty;
+            $creerSorty->setOrganisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCreerSorty(Sortie $creerSorty): self
+    {
+        if ($this->creerSorties->contains($creerSorty)) {
+            $this->creerSorties->removeElement($creerSorty);
+            // set the owning side to null (unless already changed)
+            if ($creerSorty->getOrganisateur() === $this) {
+                $creerSorty->setOrganisateur(null);
             }
         }
 
