@@ -7,9 +7,8 @@ use App\Entity\Lieu;
 use App\Entity\Participant;
 use App\Entity\Etat;
 use App\Entity\Sortie;
+use App\Entity\SortieParticipant;
 use App\Entity\Ville;
-use App\Repository\EtatRepository;
-use App\Repository\VilleRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -30,17 +29,16 @@ class AppFixtures extends Fixture
 
         //appel à la bibliotheque faker
         $faker = Factory::create('fr_FR');
-
-
-        $participants = $this->loadFixtureParticipant($manager, $faker);
-        $etats = $this->loadFixtureEtat($manager);
-        $campuses = $this->loadFixtureCapmpus($faker, $manager, $participants);
         $villes = $this->loadFixtureVilles($faker, $manager);
+        $campuses = $this->loadFixtureCapmpus($faker, $manager);
+        $etats = $this->loadFixtureEtat($manager);
         $lieux = $this->loadFixtureLieux($faker, $villes, $manager);
+        $participants = $this->loadFixtureParticipant($manager, $faker, $campuses);
+        $sorties = $this->loadFixtudeSortie($faker, $etats, $participants, $campuses, $lieux, $manager);
 
-        $sortie = new Sortie();
-        $sortie->setNom($faker->name);
-//        $sortie->setDateHeureDebut($faker->)
+
+        $sortieParticipants = $this->loadFixtureSortieParticipant($participants, $sorties, $manager);
+
 
     }
 
@@ -90,7 +88,7 @@ class AppFixtures extends Fixture
      * @param ObjectManager $manager
      * @param \Faker\Generator $faker
      */
-    public function loadFixtureParticipant(ObjectManager $manager, \Faker\Generator $faker): array
+    public function loadFixtureParticipant(ObjectManager $manager, \Faker\Generator $faker, array $campuses): array
     {
 
         //Creation d'un admin pour dev
@@ -101,9 +99,11 @@ class AppFixtures extends Fixture
         $participant->setEmail('admin@admin.admin');
         $participant->setPassword($this->passwordEncoder->encodePassword($participant, '123456'));
         $participant->setRoles(['ROLE_ADMIN']);
+        $ranomCampus = random_int(0, count($campuses)-1);
+        $participant->setCampus($campuses[$ranomCampus]);
 
         $manager->persist($participant);
-
+        $participants = [];
         //creation utilisateur pour connection et dev
         $participant = new Participant();
         $participant->setNom('user');
@@ -112,11 +112,14 @@ class AppFixtures extends Fixture
         $participant->setEmail('user@user.user');
         $participant->setPassword($this->passwordEncoder->encodePassword($participant, '123456'));
         $participant->setRoles(['ROLE_USER']);
+        $participants[0] = $participant;
+        $ranomCampus = random_int(0, count($campuses)-1);
+        $participant->setCampus($campuses[$ranomCampus]);
 
         $manager->persist($participant);
-        $participants = [];
+
         //creation user
-        for ($i = 0; $i < 20; $i++) {
+        for ($i = 1; $i < 20; $i++) {
             $participant = new Participant();
             $participant->setNom($faker->name);
             $participant->setPrenom($faker->name);
@@ -124,8 +127,9 @@ class AppFixtures extends Fixture
             $participant->setEmail($faker->email);
             $participant->setRoles(['ROLE_USER']);
             $participant->setPassword($this->passwordEncoder->encodePassword($participant, '123456'));
+            $ranomCampus = random_int(0, count($campuses)-1);
+            $participant->setCampus($campuses[$ranomCampus]);
 
-            $participants[$i] = $participant;
             $manager->persist($participant);
         }
 
@@ -139,7 +143,7 @@ class AppFixtures extends Fixture
      * @param ObjectManager $manager
      * @return array
      */
-    public function loadFixtureCapmpus(\Faker\Generator $faker, ObjectManager $manager, array $participants): array
+    public function loadFixtureCapmpus(\Faker\Generator $faker, ObjectManager $manager): array
     {
         $campuses = [];
         for ($i = 0; $i < 10; $i++) {
@@ -147,11 +151,6 @@ class AppFixtures extends Fixture
             $campus->setNom($faker->name);
             $manager->persist($campus);
             $campuses[$i] = $campus;
-            $randParticipants = (array)array_rand($participants, rand(1, count($participants)));
-            foreach ($randParticipants as $key => $value) {
-                $campus[$i]->addShop($participants[$key]);
-            }
-
 
             $manager->flush();
         }
@@ -193,17 +192,86 @@ class AppFixtures extends Fixture
             $lieu->setLatitude($faker->latitude);
             $lieu->setLongitude($faker->longitude);
 
-            // on récupère un nombre aléatoire de ville dans un tableau
-            $randomVille = (array)array_rand($villes, rand(1, count($villes)));
-            // puis on les ajoute au Customer
-            foreach ($randomVille as $key => $value) {
-                $lieu[$i]->addShop($villes[$key]);
-            }
+            $randomVille = random_int(0, count($villes)-1);
+            $lieu->setVille($villes[$randomVille]);
             $lieux[$i] = $lieu;
             $manager->persist($lieu);
         }
         $manager->flush();
 
         return $lieux;
+    }
+
+    /**
+     * @param \Faker\Generator $faker
+     * @param array $etats
+     * @param array $participants
+     * @param array $campuses
+     * @param array $lieux
+     * @param ObjectManager $manager
+     * @throws \Exception
+     */
+    public function loadFixtudeSortie(\Faker\Generator $faker, array $etats, array $participants, array $campuses, array $lieux, ObjectManager $manager): array
+    {
+        $sorties = [];
+        for ($i = 0; $i < 20; $i++) {
+            $sortie = new Sortie();
+            $sortie->setNom($faker->name);
+            $sortie->setDateHeureDebut($faker->dateTimeBetween($startDate = '+5 days', $interval = '+ 10 days', $timezone = 'Europe/Paris'));
+            $sortie->setDateLimiteInscription($faker->dateTimeBetween($startDate = 'now', $interval = '+ 3 days', $timezone = 'Europe/Paris'));
+            $sortie->setNbInscriptionMax($faker->numberBetween(4, 8));
+            $sortie->setDuree(24 * 60 * 60);
+            $sortie->setInfosSortie($faker->paragraph);
+
+            //choisir un etat au hasard
+            $ramdomEtat = random_int(0, count($etats)-1);
+            //lier l'etat a la sortie
+            $sortie->setEtat($etats[$ramdomEtat]);
+
+
+            $ramdomParticipant = random_int(0, count($participants)-1);
+            $sortie->setOrganisateur($participants[$ramdomParticipant]);
+
+
+
+            $randomCampus = random_int(0, count($campuses)-1);
+            $sortie->setCampus($campuses[$randomCampus]);
+
+            $randomLieu = random_int(0, count($lieux)-1);
+            $sortie->setLieu($lieux[$randomLieu]);
+
+            $sorties[$i] = $sortie;
+            $manager->persist($sortie);
+        }
+
+        $manager->flush();
+
+        return $sorties;
+    }
+
+    /**
+     * @param array $participants
+     * @param array $sorties
+     * @param ObjectManager $manager
+     * @throws \Exception
+     */
+    public function loadFixtureSortieParticipant(array $participants, array $sorties, ObjectManager $manager): array
+    {
+        $sortiParcicipants = [];
+        for ($i = 0; $i < 10; $i++){
+            $sortiParcicipant = new SortieParticipant();
+
+
+            $ranomParticipant = random_int(0, count($participants) - 1);
+            $sortiParcicipant->setParticipant($participants[$ranomParticipant]);
+
+
+            $randomSortie = random_int(0, count($sorties) - 1);
+            $sortiParcicipant->setSortie($sorties[$randomSortie]);
+            $sortiParcicipants[$i] = $sortiParcicipant;
+            $manager->persist($sortiParcicipant);
+        }
+            $manager->flush();
+            return $sortiParcicipants;
     }
 }

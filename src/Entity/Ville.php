@@ -31,8 +31,8 @@ class Ville
     private $nomVille;
 
     /**
-     * @Assert\Type(type="integer", message="Valeur invalide")
-     * @ORM\Column(type="integer")
+     * @Assert\Type(type="string", message="Valeur invalide")
+     * @ORM\Column(type="string")
      */
     private $codePostal;
 
@@ -64,12 +64,12 @@ class Ville
         return $this;
     }
 
-    public function getCodePostal(): ?int
+    public function getCodePostal(): ?string
     {
         return $this->codePostal;
     }
 
-    public function setCodePostal(int $codePostal): self
+    public function setCodePostal(string $codePostal): self
     {
         $this->codePostal = $codePostal;
 
