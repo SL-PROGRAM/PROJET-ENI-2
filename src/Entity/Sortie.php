@@ -126,12 +126,12 @@ class Sortie
         return $this;
     }
 
-    public function getDuree(): ?string
+    public function getDuree(): ?int
     {
         return $this->duree;
     }
 
-    public function setDuree(string $duree): self
+    public function setDuree(int $duree): self
     {
         $this->duree = $duree;
 
