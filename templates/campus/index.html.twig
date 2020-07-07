@@ -3,35 +3,44 @@
 {% block title %}Campus index{% endblock %}
 
 {% block body %}
-    <h1>Campus index</h1>
-
-    <table class="table">
+    <h2 style="text-align: center">Gérer les campus</h2>
+    <strong>Filtrer les sites</strong>
+    <div class="row">
+        <div class="col-6">
+            <div class="row">
+                <div class="col">Le nom contient : </div>
+                <div class="col"><input type="text" size="30"></div>
+                <div class="col"><input class="btn btn-primary" type="submit"></div>
+            </div>
+        </div>
+        <div class="col-6"></div>
+    </div>
+    <br>
+<div class="table-wrapper-scroll-y my-custom-scrollbar">
+    <table class="table table-striped table-responsive-md btn-table">
         <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nom</th>
-                <th>actions</th>
-            </tr>
+        <tr>
+            <th scope="col">Campus</th>
+            <th scope="col">Actions</th>
+        </tr>
         </thead>
         <tbody>
-        {% for campus in campuses %}
-            <tr>
-                <td>{{ campus.id }}</td>
-                <td>{{ campus.nom }}</td>
-                <td>
-                    <a href="{{ path('campus_show', {'id': campus.id}) }}">show</a>
-                    <a href="{{ path('campus_edit', {'id': campus.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">no records found</td>
-            </tr>
+        {% for c in campuses %}
+        <tr>
+            <td>{{ c.nom }}</td>
+            <td>
+                <input class="btn btn-primary" type="submit" value="Modifier">
+                <input class="btn btn-primary" type="submit" value="Supprimer">
+            </td>
+        </tr>
         {% endfor %}
+        <tr>
+            <td><input type="text"> </td>
+            <td><input class="btn btn-primary" type="submit" value="Ajouter"></td>
+        </tr>
         </tbody>
     </table>
-
-    <a href="{{ path('campus_new') }}">Create new</a>
+</div>
 {% endblock %}
 {% block javascript %}
 //AJAX
