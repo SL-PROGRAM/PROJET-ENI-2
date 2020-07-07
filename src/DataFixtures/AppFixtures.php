@@ -25,8 +25,6 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-
-
         //appel à la bibliotheque faker
         $faker = Factory::create('fr_FR');
         $villes = $this->loadFixtureVilles($faker, $manager);
@@ -35,11 +33,7 @@ class AppFixtures extends Fixture
         $lieux = $this->loadFixtureLieux($faker, $villes, $manager);
         $participants = $this->loadFixtureParticipant($manager, $faker, $campuses);
         $sorties = $this->loadFixtudeSortie($faker, $etats, $participants, $campuses, $lieux, $manager);
-
-
         $sortieParticipants = $this->loadFixtureSortieParticipant($participants, $sorties, $manager);
-
-
     }
 
     /**
@@ -125,10 +119,10 @@ class AppFixtures extends Fixture
         //creation user
         for ($i = 1; $i < 20; $i++) {
             $participant = new Participant();
-            $participant->setNom($faker->name);
-            $participant->setPrenom($faker->name);
+            $participant->setNom($faker->firstName);
+            $participant->setPrenom($faker->lastName);
             $participant->setTelephone($faker->optional($weight = 0.7)->e164PhoneNumber);
-            $participant->setEmail($faker->email);
+            $participant->setEmail($participant->getNom().".".$participant->getPrenom()."@eni-campus.fr");
             $participant->setRoles(['ROLE_USER']);
             $participant->setPassword($this->passwordEncoder->encodePassword($participant, '123456'));
             $ranomCampus = random_int(0, count($campuses)-1);
