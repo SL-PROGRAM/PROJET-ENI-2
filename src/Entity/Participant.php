@@ -49,8 +49,6 @@ class Participant implements UserInterface
      */
     private $telephone;
 
-<<<<<<< HEAD
-=======
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Campus", inversedBy="participants")
      */
@@ -66,7 +64,6 @@ class Participant implements UserInterface
      */
     private $sorties;
 
->>>>>>> e99aeb8... Campus
     public function getId(): ?int
     {
         return $this->id;
@@ -180,8 +177,6 @@ class Participant implements UserInterface
 
         return $this;
     }
-<<<<<<< HEAD
-=======
 
     /**
      * @return mixed
@@ -231,6 +226,4 @@ class Participant implements UserInterface
         $this->sortie = $sortie;
     }
 
-
->>>>>>> e99aeb8... Campus
 }
