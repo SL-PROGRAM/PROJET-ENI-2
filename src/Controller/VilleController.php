@@ -16,25 +16,15 @@ use Symfony\Component\Routing\Annotation\Route;
 class VilleController extends AbstractController
 {
     /**
-     * @Route("/", name="ville_index", methods={"GET"})
+     * @Route("/", name="ville_index", methods={"GET","POST"})
      */
-    public function index(VilleRepository $villeRepository): Response
-    {
-        return $this->render('ville/index.html.twig', [
-            'villes' => $villeRepository->findAll(),
-        ]);
-    }
-
-    /**
-     * @Route("/new", name="ville_new", methods={"GET","POST"})
-     */
-    public function new(Request $request): Response
+    public function index(VilleRepository $villeRepository, Request $request): Response
     {
         $ville = new Ville();
-        $form = $this->createForm(VilleType::class, $ville);
-        $form->handleRequest($request);
+        $addForm = $this->createForm(VilleType::class, $ville);
+        $addForm->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($addForm->isSubmitted() && $addForm->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($ville);
             $entityManager->flush();
@@ -42,19 +32,9 @@ class VilleController extends AbstractController
             return $this->redirectToRoute('ville_index');
         }
 
-        return $this->render('ville/new.html.twig', [
-            'ville' => $ville,
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * @Route("/{id}", name="ville_show", methods={"GET"})
-     */
-    public function show(Ville $ville): Response
-    {
-        return $this->render('ville/show.html.twig', [
-            'ville' => $ville,
+        return $this->render('ville/index.html.twig', [
+            'villes' => $villeRepository->findAll(),
+            'addForm' => $addForm->createView(),
         ]);
     }
 
@@ -63,18 +43,18 @@ class VilleController extends AbstractController
      */
     public function edit(Request $request, Ville $ville): Response
     {
-        $form = $this->createForm(VilleType::class, $ville);
-        $form->handleRequest($request);
+        $editForm = $this->createForm(VilleType::class, $ville);
+        $editForm->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('ville_index');
         }
 
-        return $this->render('ville/edit.html.twig', [
+        return $this->render('ville/index.html.twig', [
             'ville' => $ville,
-            'form' => $form->createView(),
+            'form' => $editForm->createView(),
         ]);
     }
 

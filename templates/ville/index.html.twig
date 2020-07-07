@@ -3,35 +3,44 @@
 {% block title %}Ville index{% endblock %}
 
 {% block body %}
-    <h1>Ville index</h1>
+    <h1 class="text-center">Gérer les villes</h1>
 
-    <table class="table">
+    <table class="table table-striped table-responsive-md btn-table">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>NomVille</th>
-                <th>CodePostal</th>
-                <th>actions</th>
+                <th scope="col">NomVille</th>
+                <th scope="col">CodePostal</th>
+                <th scope="col">Actions</th>
             </tr>
         </thead>
         <tbody>
         {% for ville in villes %}
+            {% if editForm is defined and ville.id == app.request.get('id') %}
+            {% else %}
             <tr>
-                <td>{{ ville.id }}</td>
                 <td>{{ ville.nomVille }}</td>
                 <td>{{ ville.codePostal }}</td>
                 <td>
-                    <a href="{{ path('ville_show', {'id': ville.id}) }}">show</a>
-                    <a href="{{ path('ville_edit', {'id': ville.id}) }}">edit</a>
+                    <a href="{{ path('ville_edit', {'id': ville.id}) }}" class="btn btn-primary">Modifier</a>
+                    <a href="{{ path('ville_delete', {'id': ville.id}) }}" class="btn btn-primary">Supprimer</a>
                 </td>
             </tr>
+                {% endif %}
         {% else %}
             <tr>
                 <td colspan="4">no records found</td>
             </tr>
         {% endfor %}
+        {% if addForm is defined %}
+        <tr>
+            {{ form_start(addForm) }}
+            <td>{{ form_widget(addForm.nomVille, { 'attr': {'class': 'form-control'} }) }}</td>
+            <td>{{ form_widget(addForm.codePostal, { 'attr': {'class': 'form-control'}}) }}</td>
+            <td><input type ="submit" class="btn btn-primary"/></td>
+            {{ form_end(addForm)}}
+        </tr>
+        {% endif %}
         </tbody>
     </table>
-
-    <a href="{{ path('ville_new') }}">Create new</a>
 {% endblock %}
+
