@@ -34,14 +34,14 @@ class CampusController extends AbstractController
 
             return $this->render('campus/index.html.twig', [
             'campuses' => $campusRepository->findAll(),
-                'form' => $form->createView()
+                'addForm' => $form->createView()
         ]);
     }
 
     /**
      * @Route("/{id}/edit", name="campus_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Campus $campus): Response
+    public function edit(CampusRepository $campusRepository, Request $request, Campus $campus): Response
     {
         $form = $this->createForm(CampusType::class, $campus);
         $form->handleRequest($request);
@@ -52,9 +52,10 @@ class CampusController extends AbstractController
             return $this->redirectToRoute('campus_index');
         }
 
-        return $this->render('campus/edit.html.twig', [
+        return $this->render('campus/index.html.twig', [
+            'campuses' => $campusRepository->findAll(),
             'campus' => $campus,
-            'form' => $form->createView(),
+            'editForm' => $form->createView(),
         ]);
     }
 

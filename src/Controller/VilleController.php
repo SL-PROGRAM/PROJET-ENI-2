@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/admin/ville")
+ * @Route("/ville")
  */
 class VilleController extends AbstractController
 {
@@ -41,7 +41,7 @@ class VilleController extends AbstractController
     /**
      * @Route("/{id}/edit", name="ville_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Ville $ville): Response
+    public function edit(VilleRepository $villeRepository, Request $request, Ville $ville): Response
     {
         $editForm = $this->createForm(VilleType::class, $ville);
         $editForm->handleRequest($request);
@@ -53,8 +53,9 @@ class VilleController extends AbstractController
         }
 
         return $this->render('ville/index.html.twig', [
+            'villes' => $villeRepository->findAll(),
             'ville' => $ville,
-            'form' => $editForm->createView(),
+            'editForm' => $editForm->createView(),
         ]);
     }
 
