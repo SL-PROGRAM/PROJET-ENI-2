@@ -20,10 +20,6 @@ class CampusController extends AbstractController
      */
     public function index(CampusRepository $campusRepository, Request $request): Response
     {
-        //Copier la fonction new ici
-        //Passer le form en parametre
-        //Récupérer le form en twig
-
         $campus = new Campus();
         $form = $this->createForm(CampusType::class, $campus);
         $form->handleRequest($request);
@@ -38,47 +34,14 @@ class CampusController extends AbstractController
 
             return $this->render('campus/index.html.twig', [
             'campuses' => $campusRepository->findAll(),
-                'form' => $form->createView()
-        ]);
-    }
-
-    /**
-     * @Route("/new", name="campus_new", methods={"GET","POST"})
-     */
-    public function new(Request $request): Response
-    {
-        $campus = new Campus();
-        $form = $this->createForm(CampusType::class, $campus);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($campus);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('campus_index');
-        }
-
-        return $this->render('campus/new.html.twig', [
-            'campus' => $campus,
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * @Route("/{id}", name="campus_show", methods={"GET"})
-     */
-    public function show(Campus $campus): Response
-    {
-        return $this->render('campus/show.html.twig', [
-            'campus' => $campus,
+                'addForm' => $form->createView()
         ]);
     }
 
     /**
      * @Route("/{id}/edit", name="campus_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Campus $campus): Response
+    public function edit(CampusRepository $campusRepository, Request $request, Campus $campus): Response
     {
         $form = $this->createForm(CampusType::class, $campus);
         $form->handleRequest($request);
@@ -89,9 +52,10 @@ class CampusController extends AbstractController
             return $this->redirectToRoute('campus_index');
         }
 
-        return $this->render('campus/edit.html.twig', [
+        return $this->render('campus/index.html.twig', [
+            'campuses' => $campusRepository->findAll(),
             'campus' => $campus,
-            'form' => $form->createView(),
+            'editForm' => $form->createView(),
         ]);
     }
 

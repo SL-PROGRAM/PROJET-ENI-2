@@ -25,8 +25,6 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-
-
         //appel à la bibliotheque faker
         $faker = Factory::create('fr_FR');
         $villes = $this->loadFixtureVilles($faker, $manager);
@@ -35,15 +33,12 @@ class AppFixtures extends Fixture
         $lieux = $this->loadFixtureLieux($faker, $villes, $manager);
         $participants = $this->loadFixtureParticipant($manager, $faker, $campuses);
         $sorties = $this->loadFixtudeSortie($faker, $etats, $participants, $campuses, $lieux, $manager);
-
-
         $sortieParticipants = $this->loadFixtureSortieParticipant($participants, $sorties, $manager);
-
-
     }
 
     /**
      * @param ObjectManager $manager
+     * @return array
      */
     public function loadFixtureEtat(ObjectManager $manager): array
     {
@@ -87,6 +82,9 @@ class AppFixtures extends Fixture
     /**
      * @param ObjectManager $manager
      * @param \Faker\Generator $faker
+     * @param array $campuses
+     * @return array
+     * @throws \Exception
      */
     public function loadFixtureParticipant(ObjectManager $manager, \Faker\Generator $faker, array $campuses): array
     {
@@ -122,14 +120,15 @@ class AppFixtures extends Fixture
         //creation user
         for ($i = 1; $i < 20; $i++) {
             $participant = new Participant();
-            $participant->setNom($faker->name);
-            $participant->setPrenom($faker->name);
+            $participant->setNom($faker->firstName);
+            $participant->setPrenom($faker->lastName);
             $participant->setTelephone($faker->optional($weight = 0.7)->e164PhoneNumber);
-            $participant->setEmail($faker->email);
+            $participant->setEmail($participant->getNom().".".$participant->getPrenom()."@eni-campus.fr");
             $participant->setRoles(['ROLE_USER']);
             $participant->setPassword($this->passwordEncoder->encodePassword($participant, '123456'));
             $ranomCampus = random_int(0, count($campuses)-1);
             $participant->setCampus($campuses[$ranomCampus]);
+            $participants[$i] = $participant;
 
             $manager->persist($participant);
         }
@@ -149,7 +148,7 @@ class AppFixtures extends Fixture
         $campuses = [];
         for ($i = 0; $i < 10; $i++) {
             $campus = new Campus();
-            $campus->setNom($faker->name);
+            $campus->setNom("campus ".$faker->name);
             $manager->persist($campus);
             $campuses[$i] = $campus;
 
@@ -170,7 +169,7 @@ class AppFixtures extends Fixture
         for ($i = 0; $i < 10; $i++) {
             $ville = new Ville();
             $ville->setNomVille($faker->city);
-            $ville->setCodePostal($faker->countryCode);
+            $ville->setCodePostal($faker->postcode);
             $villes[$i] = $ville;
             $manager->persist($ville);
         }
@@ -182,6 +181,8 @@ class AppFixtures extends Fixture
      * @param \Faker\Generator $faker
      * @param array $villes
      * @param ObjectManager $manager
+     * @return array
+     * @throws \Exception
      */
     public function loadFixtureLieux(\Faker\Generator $faker, array $villes, ObjectManager $manager): array
     {
@@ -210,6 +211,7 @@ class AppFixtures extends Fixture
      * @param array $campuses
      * @param array $lieux
      * @param ObjectManager $manager
+     * @return array
      * @throws \Exception
      */
     public function loadFixtudeSortie(\Faker\Generator $faker, array $etats, array $participants, array $campuses, array $lieux, ObjectManager $manager): array
@@ -222,7 +224,7 @@ class AppFixtures extends Fixture
             $sortie->setDateLimiteInscription($faker->dateTimeBetween($startDate = 'now', $interval = '+ 3 days', $timezone = 'Europe/Paris'));
             $sortie->setNbInscriptionMax($faker->numberBetween(4, 8));
             $sortie->setDuree(24 * 60 * 60);
-            $sortie->setInfosSortie($faker->paragraph);
+            $sortie->setInfosSortie($faker->text($maxNbChars = 200));
 
             //choisir un etat au hasard
             $ramdomEtat = random_int(0, count($etats)-1);
@@ -230,10 +232,13 @@ class AppFixtures extends Fixture
             $sortie->setEtat($etats[$ramdomEtat]);
 
 
-            $ramdomParticipant = random_int(0, count($participants)-1);
-            $sortie->setOrganisateur($participants[$ramdomParticipant]);
-
-
+            if($i < 2){
+                $sortie->setOrganisateur($participants[0]);
+            }
+            else{
+                $ramdomParticipant = random_int(0, count($participants)-1);
+                $sortie->setOrganisateur($participants[$ramdomParticipant]);
+            }
 
             $randomCampus = random_int(0, count($campuses)-1);
             $sortie->setCampus($campuses[$randomCampus]);
@@ -254,6 +259,7 @@ class AppFixtures extends Fixture
      * @param array $participants
      * @param array $sorties
      * @param ObjectManager $manager
+     * @return array
      * @throws \Exception
      */
     public function loadFixtureSortieParticipant(array $participants, array $sorties, ObjectManager $manager): array
@@ -263,9 +269,12 @@ class AppFixtures extends Fixture
             $sortiParcicipant = new SortieParticipant();
 
 
-            $ranomParticipant = random_int(0, count($participants) - 1);
-            $sortiParcicipant->setParticipant($participants[$ranomParticipant]);
-
+            if ($i < 5){
+                $sortiParcicipant->setParticipant($participants[0]);
+            }else{
+                $ranomParticipant = random_int(0, count($participants) - 1);
+                $sortiParcicipant->setParticipant($participants[$ranomParticipant]);
+            }
 
             $randomSortie = random_int(0, count($sorties) - 1);
             $sortiParcicipant->setSortie($sorties[$randomSortie]);
