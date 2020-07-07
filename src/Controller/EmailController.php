@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,6 +24,7 @@ class EmailController extends AbstractController
 
     /**
      * @Route("/sendPasswordEmail", name="sendPasswordEmail", methods={"POST"})
+     * @throws TransportExceptionInterface
      */
     public function sendPasswordEmail(MailerInterface $mailer, Request $request)
     {
@@ -35,7 +37,7 @@ class EmailController extends AbstractController
             ->html('<p>du HTML si on veut</p>');
         $mailer->send($email);
 
-        echo 'email sent';
-        die();
+        $this->addFlash('success', 'Un mail contenant un lien de réinitialisation de mot de passe a été envoyé sur cette adresse mail : '.$adresse.'.');
+        return $this->redirectToRoute('accueil');
     }
 }
