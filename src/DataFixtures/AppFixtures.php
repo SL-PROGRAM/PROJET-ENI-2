@@ -174,7 +174,7 @@ class AppFixtures extends Fixture
         for ($i = 0; $i < 10; $i++) {
             $ville = new Ville();
             $ville->setNomVille($faker->city);
-            $ville->setCodePostal($faker->countryCode);
+            $ville->setCodePostal($faker->postcode);
             $villes[$i] = $ville;
             $manager->persist($ville);
         }
@@ -245,9 +245,6 @@ class AppFixtures extends Fixture
                 $sortie->setOrganisateur($participants[$ramdomParticipant]);
             }
 
-
-
-
             $randomCampus = random_int(0, count($campuses)-1);
             $sortie->setCampus($campuses[$randomCampus]);
 
@@ -283,9 +280,6 @@ class AppFixtures extends Fixture
                 $ranomParticipant = random_int(0, count($participants) - 1);
                 $sortiParcicipant->setParticipant($participants[$ranomParticipant]);
             }
-
-
-
 
             $randomSortie = random_int(0, count($sorties) - 1);
             $sortiParcicipant->setSortie($sorties[$randomSortie]);
