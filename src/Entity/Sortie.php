@@ -3,8 +3,10 @@
 namespace App\Entity;
 
 use App\Repository\SortieRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass=SortieRepository::class)
  */
@@ -74,15 +76,24 @@ class Sortie
      */
     private $organisateur;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Participant", inversedBy="sorties")
-     */
-    private $participants;
+
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Lieu", inversedBy="sorties")
      */
     private $lieu;
+
+    /**
+     * @ORM\OneToMany(targetEntity=SortieParticipant::class, mappedBy="sortie", orphanRemoval=true)
+     */
+    private $sortieParticipants;
+
+    public function __construct()
+    {
+        $this->sortieParticipants = new ArrayCollection();
+    }
+
+
 
     public function getId(): ?int
     {
@@ -208,23 +219,7 @@ class Sortie
     {
         $this->organisateur = $organisateur;
     }
-
-    /**
-     * @return mixed
-     */
-    public function getParticipants()
-    {
-        return $this->participants;
-    }
-
-    /**
-     * @param mixed $participants
-     */
-    public function setParticipants($participants): void
-    {
-        $this->participants = $participants;
-    }
-
+    
     /**
      * @return mixed
      */
@@ -240,6 +235,39 @@ class Sortie
     {
         $this->lieu = $lieu;
     }
+
+    /**
+     * @return Collection|SortieParticipant[]
+     */
+    public function getSortieParticipants(): Collection
+    {
+        return $this->sortieParticipants;
+    }
+
+    public function addSortieParticipant(SortieParticipant $sortieParticipant): self
+    {
+        if (!$this->sortieParticipants->contains($sortieParticipant)) {
+            $this->sortieParticipants[] = $sortieParticipant;
+            $sortieParticipant->setSortie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSortieParticipant(SortieParticipant $sortieParticipant): self
+    {
+        if ($this->sortieParticipants->contains($sortieParticipant)) {
+            $this->sortieParticipants->removeElement($sortieParticipant);
+            // set the owning side to null (unless already changed)
+            if ($sortieParticipant->getSortie() === $this) {
+                $sortieParticipant->setSortie(null);
+            }
+        }
+
+        return $this;
+    }
+
+
 
 
 }
