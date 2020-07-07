@@ -153,7 +153,7 @@ class AppFixtures extends Fixture
         $campuses = [];
         for ($i = 0; $i < 10; $i++) {
             $campus = new Campus();
-            $campus->setNom($faker->name);
+            $campus->setNom("campus ".$faker->name);
             $manager->persist($campus);
             $campuses[$i] = $campus;
 
