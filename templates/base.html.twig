@@ -22,11 +22,11 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#">Mon profil</a>
                 </li>
-                {% endif %}
-                {% if is_granted('ROLE_ADMIN') %}
                 <li class="nav-item">
                     <a class="nav-link" href="#">Villes</a>
                 </li>
+                {% endif %}
+                {% if is_granted('ROLE_ADMIN') %}
                 <li class="nav-item">
                     <a class="nav-link" href="#">Campus</a>
                 </li>

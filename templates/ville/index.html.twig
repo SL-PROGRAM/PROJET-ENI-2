@@ -29,10 +29,14 @@
             <tr>
                 <td>{{ v.nomVille }}</td>
                 <td>{{ v.codePostal }}</td>
+
                 <td class="form-inline">
+                    {% if is_granted('ROLE_ADMIN') %}
                     <a href="{{ path('ville_edit', {'id': v.id}) }}" class="btn btn-primary">Modifier</a> &nbsp;
                     {%  include 'ville/_delete_form.html.twig' %}
+                    {% endif %}
                 </td>
+
             </tr>
             {% endif %}
         {% else %}
