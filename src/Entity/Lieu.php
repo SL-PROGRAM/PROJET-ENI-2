@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\LieuRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 /**
@@ -53,9 +55,16 @@ class Lieu
     private $ville;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Sortie", mappedBy="lieu")
+     * @ORM\OneToMany(targetEntity=Sortie::class, mappedBy="lieu")
      */
     private $sorties;
+
+    public function __construct()
+    {
+        $this->sorties = new ArrayCollection();
+    }
+
+
 
     public function getId(): ?int
     {
@@ -123,19 +132,34 @@ class Lieu
     }
 
     /**
-     * @return mixed
+     * @return Collection|Sortie[]
      */
-    public function getSorties()
+    public function getSorties(): Collection
     {
         return $this->sorties;
     }
 
-    /**
-     * @param mixed $sorties
-     */
-    public function setSorties($sorties): void
+    public function addSorty(Sortie $sorty): self
     {
-        $this->sorties = $sorties;
+        if (!$this->sorties->contains($sorty)) {
+            $this->sorties[] = $sorty;
+            $sorty->setLieu($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSorty(Sortie $sorty): self
+    {
+        if ($this->sorties->contains($sorty)) {
+            $this->sorties->removeElement($sorty);
+            // set the owning side to null (unless already changed)
+            if ($sorty->getLieu() === $this) {
+                $sorty->setLieu(null);
+            }
+        }
+
+        return $this;
     }
 
     
