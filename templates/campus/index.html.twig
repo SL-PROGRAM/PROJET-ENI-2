@@ -35,8 +35,10 @@
         </tr>
         {% endfor %}
         <tr>
-            <td><input type="text"> </td>
-            <td><input class="btn btn-primary" type="submit" value="Ajouter"></td>
+            {{ form_start(form) }}
+            <td>{{ form_widget(form.nom) }}</td>
+            <td><input type="submit" class="btn btn-primary"></td>
+            {{ form_end(form) }}
         </tr>
         </tbody>
     </table>
