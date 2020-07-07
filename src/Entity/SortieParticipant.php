@@ -24,13 +24,13 @@ class SortieParticipant
 
     /**
      * @ORM\ManyToOne(targetEntity=Sortie::class, inversedBy="sortieParticipants")
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $sortie;
 
     /**
      * @ORM\ManyToOne(targetEntity=Participant::class, inversedBy="sortieParticipants")
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $participant;
 
