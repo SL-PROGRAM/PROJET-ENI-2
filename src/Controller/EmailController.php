@@ -3,6 +3,9 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 
 class EmailController extends AbstractController
@@ -19,10 +22,19 @@ class EmailController extends AbstractController
     }
 
     /**
-     * @Route("/sendPasswordEmail", name="sendPasswordEmail")
+     * @Route("/sendPasswordEmail", name="sendPasswordEmail", methods={"POST"})
      */
-    public function sendPasswordEmail()
+    public function sendPasswordEmail(MailerInterface $mailer, Request $request)
     {
+        $adresse = $request->request->get('_email');
+        $email = (new Email())
+            ->from('contact.sortir.eni@gmail.com')
+            ->to($adresse)
+            ->subject('Votre réinitialisation de mot de passe')
+            ->text('Texte de réinitialisation de mot de passe')
+            ->html('<p>du HTML si on veut</p>');
+        $mailer->send($email);
+
         echo 'email sent';
         die();
     }
