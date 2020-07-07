@@ -80,7 +80,7 @@ class Participant implements UserInterface
 
     /**
      * @ORM\ManyToOne(targetEntity=Campus::class, inversedBy="Participants")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $campus;
 
