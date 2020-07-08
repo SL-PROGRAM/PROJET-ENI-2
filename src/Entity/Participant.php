@@ -89,6 +89,16 @@ class Participant implements UserInterface
      */
     private $creerSorties;
 
+    /**
+     * @ORM\Column(type="string", length=50)
+     */
+    private $pseudo;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $token;
+
     public function __construct()
     {
         $this->sortieParticipants = new ArrayCollection();
@@ -287,6 +297,30 @@ class Participant implements UserInterface
     public function __toString()
     {
         return $this->getNom(). " ".$this->getPrenom();
+    }
+
+    public function getPseudo(): ?string
+    {
+        return $this->pseudo;
+    }
+
+    public function setPseudo(string $pseudo): self
+    {
+        $this->pseudo = $pseudo;
+
+        return $this;
+    }
+
+    public function getToken(): ?string
+    {
+        return $this->token;
+    }
+
+    public function setToken(string $token): self
+    {
+        $this->token = $token;
+
+        return $this;
     }
 
 
