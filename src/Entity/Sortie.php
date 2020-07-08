@@ -38,8 +38,8 @@ class Sortie
     private $dateHeureDebut;
 
     /**
-     * @Assert\Type(type="integer", message="Valeur invalide")
-     * @ORM\Column(type="bigint")
+     * @Assert\Type(type="integer", message="Valeur durée invalide")
+     * @ORM\Column(type="integer")
      */
     private $duree;
 
@@ -51,7 +51,7 @@ class Sortie
     private $dateLimiteInscription;
 
     /**
-     * @Assert\Type(type="integer", message="Valeur invalide")
+     * @Assert\Type(type="integer", message="Valeur inscription invalide")
      * @ORM\Column(type="integer", nullable=true)
      */
     private $nbInscriptionMax;

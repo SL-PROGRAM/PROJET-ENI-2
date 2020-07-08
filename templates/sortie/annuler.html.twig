@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Annuler une sortie
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    <style type="text/css">
+        input[type=text],input[type=number],select, label{
+            display: none;
+        }
+        a{
+            float: right;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+<h1 class="text-center">Annuler une sortie</h1>
+
+    {% if app.user == sortie.organisateur or is_granted('ROLE_ADMIN')%}
+        {% include 'sortie/_form.annuler.html.twig' %}
+    {% else %}
+        <div class="alert alert-danger">
+            Vous ne pouvez pas annuler cette sortie car vous n'êtes pas l'organisateur
+        </div>
+    {% endif %}
+    <a href="{{ path('sortie_show',{'id':sortie.id}) }}" class="btn btn-primary">Retour</a>
+{% endblock %}
