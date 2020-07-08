@@ -1,0 +1,16 @@
+<h3>Liste des participants inscrits</h3>
+
+<table>
+    <tr>
+        <th>Pseudo</th>
+        <th>Nom</th>
+    </tr>
+    <tr>
+        {% for participant in sortie.sortieParticipants %}
+            <td>{{ participant.participant.pseudo }} </td>
+            <td>{{ participant.participant.nom }} </td>
+        {%  endfor %}
+    </tr>
+
+
+</table>

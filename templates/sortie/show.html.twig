@@ -1,44 +1,105 @@
+{% extends 'base.html.twig' %}
+
 {% block title %}Sortie{% endblock %}
 
 {% block body %}
+    <style >
+        th {
+            width: 25%;
+        }
+        td{
+            width: 25%;
+        }
+    </style>
+
     <h1>Sortie</h1>
 
-    <table class="table">
-        <tbody>
+    <div >
+        <table class="table">
             <tr>
-                <th>Id</th>
-                <td>{{ sortie.id }}</td>
-            </tr>
-            <tr>
-                <th>Nom</th>
+                <th class="">Nom de la sortie :</th>
                 <td>{{ sortie.nom }}</td>
+                <th>Campus :</th>
+                <td>{{ sortie.campus.nom }}</td>
             </tr>
             <tr>
-                <th>DateHeureDebut</th>
+                <th>Date et heure de la sortie :</th>
                 <td>{{ sortie.dateHeureDebut ? sortie.dateHeureDebut|date('Y-m-d H:i:s') : '' }}</td>
+                <th>Lieu :</th>
+                <td>{{ sortie.lieu.nom }}</td>
             </tr>
             <tr>
-                <th>Duree</th>
-                <td>{{ sortie.duree }}</td>
-            </tr>
-            <tr>
-                <th>DateLimiteInscription</th>
+                <th>Date limite d'inscription :</th>
                 <td>{{ sortie.dateLimiteInscription ? sortie.dateLimiteInscription|date('Y-m-d H:i:s') : '' }}</td>
+                <th>Rue :</th>
+                <td>{{ sortie.lieu.rue }}</td>
             </tr>
             <tr>
-                <th>NbInscriptionMax</th>
+                <th>Nombre de place :</th>
                 <td>{{ sortie.nbInscriptionMax }}</td>
+                <th>Code postal :</th>
+                <td>{{ sortie.lieu.ville.codePostal }}</td>
             </tr>
             <tr>
-                <th>InfosSortie</th>
-                <td>{{ sortie.infosSortie }}</td>
+                <th>Durée :</th>
+                <td>
+                    {% if dureeJour == 1%}
+                        {{ dureeJour }} jour et
+                    {% elseif dureeJour > 1 %}
+                        {{ dureeJour }} jours et
+                    {% endif %}
+                    {% if dureeJour <= 1%}
+                        {{ dureeHour }} heure
+                    {% elseif dureeHour > 1 %}
+                        {{ dureeHour }} heures
+                    {% endif %}
+                </td>
+                <th>Longitude :</th>
+                <td>{{ sortie.lieu.longitude }}</td>
             </tr>
-        </tbody>
+            <tr>
+                <th>Description et infos :</th>
+                <td>{{ sortie.infosSortie }}</td>
+                <th>Latitude :</th>
+                <td>{{ sortie.lieu.latitude }}</td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <tr>
+
+        </tr>
+        <tr>
+
+        </tr>
+        <tr>
+
+        </tr>
+        <tr>
+
+        </tr>
+        <tr>
+
+        </tr>
+        <tr>
+
+        </tr>
+    </div>
+
+
+
     </table>
 
-    <a href="{{ path('sortie_index') }}">back to list</a>
+    {{ include('sortie/liste_participant.html.twig') }}
 
-    <a href="{{ path('sortie_edit', {'id': sortie.id}) }}">edit</a>
 
-    {{ include('sortie/_delete_form.html.twig') }}
+    {% if app.user == sortie.organisateur %}
+
+        <a href="{{ path('sortie_edit', {'id': sortie.id}) }}">Modifier</a>
+        <a href="{{ path('sortie_delete', {'id': sortie.id}) }}">Annuler</a>
+    {% endif %}
+    <a href="{{ path('accueil') }}">retour à l'accueil</a>
+
+
+
 {% endblock %}
