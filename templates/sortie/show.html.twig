@@ -12,9 +12,13 @@
         }
     </style>
 
-    <h1>Sortie</h1>
+    <div>
+        <h1 class="text-center">Sortie</h1>
+        <div class="text-center">{{ sortie.etat.libelle }}</div>
 
-    <div >
+    </div>
+
+    <div class="container">
         <table class="table">
             <tr>
                 <th class="">Nom de la sortie :</th>
@@ -65,32 +69,10 @@
             </tr>
         </table>
     </div>
-    <div>
-        <tr>
 
-        </tr>
-        <tr>
-
-        </tr>
-        <tr>
-
-        </tr>
-        <tr>
-
-        </tr>
-        <tr>
-
-        </tr>
-        <tr>
-
-        </tr>
+    <div class="m-5">
+        {{ include('sortie/liste_participant.html.twig') }}
     </div>
-
-
-
-    </table>
-
-    {{ include('sortie/liste_participant.html.twig') }}
 
 
     {% if app.user == sortie.organisateur %}

@@ -109,4 +109,24 @@ class SortieController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+    /**
+     * @Route("/inscrire/{idSortie}/{idUser}", name="sortie_inscrire", methods={"GET"})
+     */
+    public function inscrire(Request $request, Sortie $sortie, $idSortie, $idUser): Response
+    {
+
+
+        return $this->redirectToRoute('sortie_index');
+    }
+
+    /**
+     * @Route("/desinscrire/{idSortie}/{idUser}", name="sortie_desinscrire", methods={"GET"})
+     */
+    public function desinscrire(Request $request, Sortie $sortie, $idSortie, $idUser): Response
+    {
+
+
+        return $this->redirectToRoute('sortie_index');
+    }
 }
