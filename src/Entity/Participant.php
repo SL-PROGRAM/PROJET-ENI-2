@@ -3,9 +3,11 @@
 namespace App\Entity;
 
 use App\Repository\ParticipantRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
-
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass=ParticipantRepository::class)
  */
@@ -19,6 +21,9 @@ class Participant implements UserInterface
     private $id;
 
     /**
+     * @Assert\Email(
+     *     message = "The email '{{ value }}' is not a valid email."
+     * )
      * @ORM\Column(type="string", length=180, unique=true)
      */
     private $email;
@@ -29,40 +34,76 @@ class Participant implements UserInterface
     private $roles = [];
 
     /**
+     * @Assert\NotBlank
      * @var string The hashed password
      * @ORM\Column(type="string")
      */
     private $password;
 
     /**
+     * @Assert\NotBlank(message = "Cette valeur ne peut pas être vide")
+     * @Assert\Regex(
+     *     pattern="/\d/",
+     *     match=false,
+     *     message="Your name cannot contain a number"
+     * )
      * @ORM\Column(type="string", length=100)
      */
     private $nom;
 
     /**
+     * @Assert\NotBlank(message = "Cette valeur ne peut pas être vide")
+     * @Assert\Regex(
+     *     pattern="/\d/",
+     *     match=false,
+     *     message="Your surname cannot contain a number"
+     * )
      * @ORM\Column(type="string", length=50)
      */
     private $prenom;
 
     /**
+     * @Assert\Regex(
+     *     pattern="/^(0|\+33)[1-9]([-. ]?[0-9]{2}){4}$/",
+     *     match=true,
+     *     message="Le format du numéro de téléphone est incorrect"
+     * )
      * @ORM\Column(type="string", length=15, nullable=true)
      */
     private $telephone;
 
+
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Campus", inversedBy="participants")
+     * @ORM\OneToMany(targetEntity=SortieParticipant::class, mappedBy="participant", orphanRemoval=true)
+     */
+    private $sortieParticipants;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Campus::class, inversedBy="Participants")
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $campus;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Sortie", mappedBy="organisateur")
+     * @ORM\OneToMany(targetEntity=Sortie::class, mappedBy="organisateur")
      */
-    private $organiseSorties;
+    private $creerSorties;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Sortie", mappedBy="participants")
+     * @ORM\Column(type="string", length=50)
      */
-    private $sorties;
+    private $pseudo;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $token;
+
+    public function __construct()
+    {
+        $this->sortieParticipants = new ArrayCollection();
+        $this->creerSorties = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -178,52 +219,109 @@ class Participant implements UserInterface
         return $this;
     }
 
+
     /**
-     * @return mixed
+     * @return Collection|SortieParticipant[]
      */
-    public function getCampus()
+    public function getSortieParticipants(): Collection
+    {
+        return $this->sortieParticipants;
+    }
+
+    public function addSortieParticipant(SortieParticipant $sortieParticipant): self
+    {
+        if (!$this->sortieParticipants->contains($sortieParticipant)) {
+            $this->sortieParticipants[] = $sortieParticipant;
+            $sortieParticipant->setParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSortieParticipant(SortieParticipant $sortieParticipant): self
+    {
+        if ($this->sortieParticipants->contains($sortieParticipant)) {
+            $this->sortieParticipants->removeElement($sortieParticipant);
+            // set the owning side to null (unless already changed)
+            if ($sortieParticipant->getParticipant() === $this) {
+                $sortieParticipant->setParticipant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCampus(): ?Campus
     {
         return $this->campus;
     }
 
-    /**
-     * @param mixed $campus
-     */
-    public function setCampus($campus): void
+    public function setCampus(?Campus $campus): self
     {
         $this->campus = $campus;
+
+        return $this;
     }
 
     /**
-     * @return mixed
+     * @return Collection|Sortie[]
      */
-    public function getOrganiseSorties()
+    public function getCreerSorties(): Collection
     {
-        return $this->organiseSorties;
+        return $this->creerSorties;
     }
 
-    /**
-     * @param mixed $organiseSorties
-     */
-    public function setOrganiseSorties($organiseSorties): void
+    public function addCreerSorty(Sortie $creerSorty): self
     {
-        $this->organiseSorties = $organiseSorties;
+        if (!$this->creerSorties->contains($creerSorty)) {
+            $this->creerSorties[] = $creerSorty;
+            $creerSorty->setOrganisateur($this);
+        }
+
+        return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getSortie()
+    public function removeCreerSorty(Sortie $creerSorty): self
     {
-        return $this->sortie;
+        if ($this->creerSorties->contains($creerSorty)) {
+            $this->creerSorties->removeElement($creerSorty);
+            // set the owning side to null (unless already changed)
+            if ($creerSorty->getOrganisateur() === $this) {
+                $creerSorty->setOrganisateur(null);
+            }
+        }
+
+        return $this;
     }
 
-    /**
-     * @param mixed $sortie
-     */
-    public function setSortie($sortie): void
+    public function __toString()
     {
-        $this->sortie = $sortie;
+        return $this->getNom(). " ".$this->getPrenom();
     }
+
+    public function getPseudo(): ?string
+    {
+        return $this->pseudo;
+    }
+
+    public function setPseudo(string $pseudo): self
+    {
+        $this->pseudo = $pseudo;
+
+        return $this;
+    }
+
+    public function getToken(): ?string
+    {
+        return $this->token;
+    }
+
+    public function setToken(string $token): self
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
 
 }

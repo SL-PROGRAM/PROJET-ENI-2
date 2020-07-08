@@ -11,10 +11,9 @@
 <div class="example-wrapper">
     <h1>Hello {{ controller_name }}! ✅</h1>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/home/sl/PhpstormProjects/sortir/src/Controller/AccueilController.php'|file_link(0) }}">src/Controller/AccueilController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/home/sl/PhpstormProjects/sortir/templates/accueil/mdpOublie.html.twig'|file_link(0) }}">templates/accueil/index.html.twig</a></code></li>
-    </ul>
+
+
+    {{ render(path('sortie_index', {})) }}
+
 </div>
 {% endblock %}

@@ -2,9 +2,9 @@
 {% block body %}
     <div class="row" style="text-align: center">
         <div class="col">
-            <form action="{{ path('resetPwd') }}" method="post">
+            <form action="{{ path('resetPwd',{'token':token}) }}" method="post">
             <h1 class="h3 mb-3 font-weight-normal">Renseignez votre nouveau mot de passe</h1>
-                <label><input type="password" name="_pwd" id="inputEmail" class="form-control" required autofocus></label>
+                <label><input type="password" name="_pwd" id="inputPassword" class="form-control" required autofocus></label>
                 <input class="btn btn-primary" type="submit" value="Envoyer">
             </form>
         </div>

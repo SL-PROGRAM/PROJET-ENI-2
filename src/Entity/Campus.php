@@ -3,8 +3,10 @@
 namespace App\Entity;
 
 use App\Repository\CampusRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass=CampusRepository::class)
  */
@@ -18,19 +20,34 @@ class Campus
     private $id;
 
     /**
+     * @Assert\NotBlank(message = "Cette valeur ne peut pas être vide")
+     * @Assert\Regex(
+     *     pattern="/\d/",
+     *     match=false,
+     *     message="Ne peut contenir un nombre"
+     * )
      * @ORM\Column(type="string", length=255)
      */
     private $nom;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Sortie", mappedBy="campus")
+     * @ORM\OneToMany(targetEntity=Participant::class, mappedBy="campus")
+     */
+    private $Participants;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Sortie::class, mappedBy="campus")
      */
     private $sorties;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Participant", mappedBy="campus")
-     */
-    private $participants;
+
+    public function __construct()
+    {
+        $this->Participants = new ArrayCollection();
+        $this->sorties = new ArrayCollection();
+    }
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -56,36 +73,70 @@ class Campus
     }
 
     /**
-     * @return mixed
+     * @return Collection|Participant[]
      */
-    public function getSorties()
+    public function getParticipants(): Collection
+    {
+        return $this->Participants;
+    }
+
+    public function addParticipant(Participant $participant): self
+    {
+        if (!$this->Participants->contains($participant)) {
+            $this->Participants[] = $participant;
+            $participant->setCampus($this);
+        }
+
+        return $this;
+    }
+
+    public function removeParticipant(Participant $participant): self
+    {
+        if ($this->Participants->contains($participant)) {
+            $this->Participants->removeElement($participant);
+            // set the owning side to null (unless already changed)
+            if ($participant->getCampus() === $this) {
+                $participant->setCampus(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Sortie[]
+     */
+    public function getSorties(): Collection
     {
         return $this->sorties;
     }
 
-    /**
-     * @param mixed $sorties
-     */
-    public function setSorties($sorties): void
+    public function addSorty(Sortie $sorty): self
     {
-        $this->sorties = $sorties;
+        if (!$this->sorties->contains($sorty)) {
+            $this->sorties[] = $sorty;
+            $sorty->setCampus($this);
+        }
+
+        return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getParticipants()
+    public function removeSorty(Sortie $sorty): self
     {
-        return $this->participants;
+        if ($this->sorties->contains($sorty)) {
+            $this->sorties->removeElement($sorty);
+            // set the owning side to null (unless already changed)
+            if ($sorty->getCampus() === $this) {
+                $sorty->setCampus(null);
+            }
+        }
+
+        return $this;
     }
 
-    /**
-     * @param mixed $participants
-     */
-    public function setParticipants($participants): void
+    public function __toString()
     {
-        $this->participants = $participants;
+       return $this->getNom();
     }
-
 
 }
