@@ -3,8 +3,10 @@
 namespace App\Entity;
 
 use App\Repository\SortieRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass=SortieRepository::class)
  */
@@ -18,26 +20,38 @@ class Sortie
     private $id;
 
     /**
+     * @Assert\NotBlank(message = "Cette valeur ne peut pas être vide")
+     * @Assert\Regex(
+     *     pattern="/\d/",
+     *     match=false,
+     *     message="Ne peut contenir un nombre"
+     * )
      * @ORM\Column(type="string", length=255)
      */
     private $nom;
 
     /**
+     * @Assert\Type(type="\DateTime", message="Date invalide")
+     * @Assert\GreaterThan("+24 hours")
      * @ORM\Column(type="datetime")
      */
     private $dateHeureDebut;
 
     /**
+     * @Assert\Type(type="integer", message="Valeur invalide")
      * @ORM\Column(type="bigint")
      */
     private $duree;
 
     /**
+     * @Assert\Type(type="\DateTime", message="Date invalide")
+     * @Assert\GreaterThan("+2 hours")
      * @ORM\Column(type="datetime")
      */
     private $dateLimiteInscription;
 
     /**
+     * @Assert\Type(type="integer", message="Valeur invalide")
      * @ORM\Column(type="integer", nullable=true)
      */
     private $nbInscriptionMax;
@@ -48,24 +62,40 @@ class Sortie
     private $infosSortie;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Campus", inversedBy="sorties")
+     * @ORM\OneToMany(targetEntity=SortieParticipant::class, mappedBy="sortie", orphanRemoval=true)
      */
-    private $campus;
+    private $sortieParticipants;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Etat", inversedBy="sorties")
+     * @ORM\ManyToOne(targetEntity=Etat::class, inversedBy="sorties")
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $etat;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Participant", inversedBy="organiseSorties")
+     * @ORM\ManyToOne(targetEntity=Lieu::class, inversedBy="sorties")
+     * @ORM\JoinColumn(onDelete="CASCADE")
+     */
+    private $lieu;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Participant::class, inversedBy="creerSorties")
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $organisateur;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Participant", inversedBy="sorties")
+     * @ORM\ManyToOne(targetEntity=Campus::class, inversedBy="sorties")
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
-    private $participants;
+    private $campus;
+
+    public function __construct()
+    {
+        $this->sortieParticipants = new ArrayCollection();
+    }
+
+
 
     public function getId(): ?int
     {
@@ -96,12 +126,12 @@ class Sortie
         return $this;
     }
 
-    public function getDuree(): ?string
+    public function getDuree(): ?int
     {
         return $this->duree;
     }
 
-    public function setDuree(string $duree): self
+    public function setDuree(int $duree): self
     {
         $this->duree = $duree;
 
@@ -144,69 +174,88 @@ class Sortie
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getCampus()
-    {
-        return $this->campus;
-    }
 
     /**
-     * @param mixed $campus
+     * @return Collection|SortieParticipant[]
      */
-    public function setCampus($campus): void
+    public function getSortieParticipants(): Collection
     {
-        $this->campus = $campus;
+        return $this->sortieParticipants;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getEtat()
+    public function addSortieParticipant(SortieParticipant $sortieParticipant): self
+    {
+        if (!$this->sortieParticipants->contains($sortieParticipant)) {
+            $this->sortieParticipants[] = $sortieParticipant;
+            $sortieParticipant->setSortie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSortieParticipant(SortieParticipant $sortieParticipant): self
+    {
+        if ($this->sortieParticipants->contains($sortieParticipant)) {
+            $this->sortieParticipants->removeElement($sortieParticipant);
+            // set the owning side to null (unless already changed)
+            if ($sortieParticipant->getSortie() === $this) {
+                $sortieParticipant->setSortie(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getEtat(): ?Etat
     {
         return $this->etat;
     }
 
-    /**
-     * @param mixed $etat
-     */
-    public function setEtat($etat): void
+    public function setEtat(?Etat $etat): self
     {
         $this->etat = $etat;
+
+        return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getOrganisateur()
+    public function getLieu(): ?Lieu
+    {
+        return $this->lieu;
+    }
+
+    public function setLieu(?Lieu $lieu): self
+    {
+        $this->lieu = $lieu;
+
+        return $this;
+    }
+
+    public function getOrganisateur(): ?Participant
     {
         return $this->organisateur;
     }
 
-    /**
-     * @param mixed $organisateur
-     */
-    public function setOrganisateur($organisateur): void
+    public function setOrganisateur(?Participant $organisateur): self
     {
         $this->organisateur = $organisateur;
+
+        return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getParticipants()
+    public function getCampus(): ?Campus
     {
-        return $this->participants;
+        return $this->campus;
     }
 
-    /**
-     * @param mixed $participants
-     */
-    public function setParticipants($participants): void
+    public function setCampus(?Campus $campus): self
     {
-        $this->participants = $participants;
+        $this->campus = $campus;
+
+        return $this;
     }
 
-
+    public function __toString()
+    {
+        return $this->getNom();
+    }
 }

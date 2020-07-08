@@ -6,7 +6,7 @@ use App\Repository\VilleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass=VilleRepository::class)
  */
@@ -20,12 +20,19 @@ class Ville
     private $id;
 
     /**
+     * @Assert\NotBlank(message = "Cette valeur ne peut pas être vide")
+     * @Assert\Regex(
+     *     pattern="/\d/",
+     *     match=false,
+     *     message="Ne peut contenir un nombre"
+     * )
      * @ORM\Column(type="string", length=255)
      */
     private $nomVille;
 
     /**
-     * @ORM\Column(type="integer")
+     * @Assert\Type(type="string", message="Valeur invalide")
+     * @ORM\Column(type="string")
      */
     private $codePostal;
 
@@ -57,12 +64,12 @@ class Ville
         return $this;
     }
 
-    public function getCodePostal(): ?int
+    public function getCodePostal(): ?string
     {
         return $this->codePostal;
     }
 
-    public function setCodePostal(int $codePostal): self
+    public function setCodePostal(string $codePostal): self
     {
         $this->codePostal = $codePostal;
 
@@ -98,6 +105,11 @@ class Ville
         }
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->getNomVille();
     }
 
 }
