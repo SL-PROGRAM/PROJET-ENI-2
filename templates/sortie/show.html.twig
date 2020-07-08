@@ -95,8 +95,8 @@
 
     {% if app.user == sortie.organisateur %}
 
-        <a href="{{ path('sortie_edit', {'id': sortie.id}) }}">Modifier</a>
-        <a href="{{ path('sortie_delete', {'id': sortie.id}) }}">Annuler</a>
+        <a href="{{ path('sortie_edit', {'id': sortie.id}) }}" class="btn btn-primary">Modifier</a>
+        <a href="{{ path('sortie_delete', {'id': sortie.id}) }}" class="btn btn-primary">Annuler la sortie</a>
     {% endif %}
     <a href="{{ path('accueil') }}">retour à l'accueil</a>
 
