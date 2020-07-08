@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Sortie;
 use App\Form\SortieType;
+use App\Repository\EtatRepository;
 use App\Repository\SortieRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -89,17 +90,24 @@ class SortieController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="sortie_delete", methods={"DELETE"})
+     * @Route("/{id}/delete", name="sortie_delete", methods={"GET", "POST"})
      */
-    public function delete(Request $request, Sortie $sortie): Response
+    public function delete(Request $request, Sortie $sortie, EtatRepository $er): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$sortie->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($sortie);
-            $entityManager->flush();
+        $form = $this->createForm(SortieType::class, $sortie);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $sortie->setInfosSortie('ANNULATION :'.$sortie->getInfosSortie());
+            $sortie->setEtat($er->findOneBy(['libelle'=>'Annulée']));
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute('sortie_index');
         }
 
-        return $this->redirectToRoute('sortie_index');
+        return $this->render('sortie/annuler.html.twig', [
+            'sortie' => $sortie,
+            'form' => $form->createView(),
+        ]);
     }
 
     /**

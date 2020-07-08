@@ -57,5 +57,6 @@
     </table>
 {% endblock %}
 {% block javascripts %}
+    {{parent()}}
     <script src="{{asset('asset/js/search.js')}}"></script>
 {% endblock %}
