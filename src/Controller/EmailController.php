@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Participant;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
@@ -45,23 +46,41 @@ class EmailController extends AbstractController
             ->from('contact@sortir.com')
             ->to($adresse)
             ->subject('Votre nouveau mot de passe')
-            ->htmlTemplate('password/mail.html.twig');
+            ->htmlTemplate('password/mail.html.twig')
+            ->context([
+                'token'=>$user->getToken()
+            ]);
         $mailer->send($email);
         $this->addFlash('success', 'Un mail contenant un lien de réinitialisation de mot de passe a été envoyé sur cette adresse mail : '.$adresse.'.');
         return $this->redirectToRoute('accueil');
     }
 
     /**
-     * @Route("/resetPwd", name="resetPwd")
+     * @Route("/resetPwd/{token}", name="resetPwd")
      * @param Request $request
      * @return mixed
      */
-    public function resetPassword(Request $request)
+    public function resetPassword(Request $request, string $token, UserPasswordEncoderInterface $passwordEncoder, EntityManagerInterface $entityManager)
     {
-        $mdp = $request->request->get('_pwd');
-        if($mdp != null){
+        $userRepo = $this->getDoctrine()->getRepository(Participant::class);
+        $user = $userRepo->findOneBy(['token' => $token]);
 
+        $password = $request->request->get('_pwd');
+        if($password != null)
+        {
+            $encodedPassword = $passwordEncoder->encodePassword($user, $password);
+
+            $user->setToken(substr(str_replace('/', '',$encodedPassword),50));
+            $user->setPassword($encodedPassword);
+            $entityManager->persist($user);
+            $entityManager->flush();
+            $this->addFlash('success', 'Votre mot de passe a bien été changé.');
+            return $this->redirectToRoute('app_login');
         }
-        return $this->render('password/resetPwd.html.twig');
+
+
+        return $this->render('password/resetPwd.html.twig',[
+            'token' =>$token
+        ]);
     }
 }

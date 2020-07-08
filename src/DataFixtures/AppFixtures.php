@@ -91,25 +91,30 @@ class AppFixtures extends Fixture
 
         //Creation d'un admin pour dev
         $participant = new Participant();
+        $participant->setPseudo('admin');
         $participant->setNom('admin');
         $participant->setPrenom('admin');
         $participant->setTelephone($faker->optional($weight = 0.7)->e164PhoneNumber);
         $participant->setEmail('admin@admin.admin');
-        $participant->setPassword($this->passwordEncoder->encodePassword($participant, '123456'));
+        $passwordEncoded = $this->passwordEncoder->encodePassword($participant, '123456');
+        $participant->setPassword($passwordEncoded);
+        $participant->setToken(substr(str_replace('/', '',$passwordEncoded),50));
         $participant->setRoles(['ROLE_ADMIN']);
         $ranomCampus = random_int(0, count($campuses)-1);
         $participant->setCampus($campuses[$ranomCampus]);
-
 
         $manager->persist($participant);
         $participants = [];
         //creation utilisateur pour connection et dev
         $participant = new Participant();
+        $participant->setPseudo('user');
         $participant->setNom('user');
         $participant->setPrenom('user');
         $participant->setTelephone($faker->optional($weight = 0.7)->e164PhoneNumber);
         $participant->setEmail('user@user.user');
-        $participant->setPassword($this->passwordEncoder->encodePassword($participant, '123456'));
+        $passwordEncoded = $this->passwordEncoder->encodePassword($participant, '123456');
+        $participant->setPassword($passwordEncoded);
+        $participant->setToken(substr(str_replace('/', '',$passwordEncoded),50));
         $participant->setRoles(['ROLE_USER']);
         $participants[0] = $participant;
         $ranomCampus = random_int(0, count($campuses)-1);
@@ -120,12 +125,15 @@ class AppFixtures extends Fixture
         //creation user
         for ($i = 1; $i < 20; $i++) {
             $participant = new Participant();
+            $participant->setPseudo($faker->userName);
             $participant->setNom($faker->firstName);
             $participant->setPrenom($faker->lastName);
             $participant->setTelephone($faker->optional($weight = 0.7)->e164PhoneNumber);
             $participant->setEmail($participant->getNom().".".$participant->getPrenom()."@eni-campus.fr");
             $participant->setRoles(['ROLE_USER']);
-            $participant->setPassword($this->passwordEncoder->encodePassword($participant, '123456'));
+            $passwordEncoded = $this->passwordEncoder->encodePassword($participant, '123456');
+            $participant->setPassword($passwordEncoded);
+            $participant->setToken(substr(str_replace('/', '',$passwordEncoded),50));
             $ranomCampus = random_int(0, count($campuses)-1);
             $participant->setCampus($campuses[$ranomCampus]);
             $participants[$i] = $participant;
