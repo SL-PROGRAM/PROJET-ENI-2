@@ -111,22 +111,22 @@ class SortieController extends AbstractController
     }
 
     /**
-     * @Route("/inscrire/{idSortie}/{idUser}", name="sortie_inscrire", methods={"GET"})
+     * @Route("/inscrire/{idSortie}", name="sortie_inscrire", methods={"GET"})
      */
-    public function inscrire(Request $request, Sortie $sortie, $idSortie, $idUser): Response
+    public function inscrire(Request $request, $idSortie): Response
     {
 
 
-        return $this->redirectToRoute('sortie_index');
+        return $this->redirectToRoute('accueil');
     }
 
     /**
-     * @Route("/desinscrire/{idSortie}/{idUser}", name="sortie_desinscrire", methods={"GET"})
+     * @Route("/desinscrire/{idSortie}", name="sortie_desinscrire", methods={"GET"})
      */
-    public function desinscrire(Request $request, Sortie $sortie, $idSortie, $idUser): Response
+    public function desinscrire(Request $request,  $idSortie): Response
     {
 
 
-        return $this->redirectToRoute('sortie_index');
+        return $this->redirectToRoute('accueil');
     }
 }
