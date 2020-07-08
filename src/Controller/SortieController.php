@@ -54,7 +54,16 @@ class SortieController extends AbstractController
      */
     public function show(Sortie $sortie): Response
     {
+        //calculer de durée en jour et heur
+        $dureeSeconde = $sortie->getDuree();
+        $dureeJour = $dureeSeconde / (3600*24);
+        $dureeSeconde = $dureeSeconde % (3600*24);
+        $dureeHour = $dureeSeconde / (3600);
+
+
         return $this->render('sortie/show.html.twig', [
+            'dureeJour' => $dureeJour,
+            'dureeHour' => $dureeHour,
             'sortie' => $sortie,
         ]);
     }
