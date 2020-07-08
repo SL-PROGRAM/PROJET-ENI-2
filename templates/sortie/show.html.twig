@@ -1,24 +1,44 @@
+{% extends 'base.html.twig' %}
+
 {% block title %}Sortie{% endblock %}
 
 {% block body %}
+    <style >
+        th {
+            width: 25%;
+        }
+        td{
+            width: 25%;
+        }
+    </style>
+
     <h1>Sortie</h1>
 
-    <table class="table">
+    <div >
+        <table class="table">
             <tr>
-                <th>Nom de la sortie :</th>
+                <th class="">Nom de la sortie :</th>
                 <td>{{ sortie.nom }}</td>
+                <th>Campus :</th>
+                <td>{{ sortie.campus.nom }}</td>
             </tr>
             <tr>
                 <th>Date et heure de la sortie :</th>
                 <td>{{ sortie.dateHeureDebut ? sortie.dateHeureDebut|date('Y-m-d H:i:s') : '' }}</td>
+                <th>Lieu :</th>
+                <td>{{ sortie.lieu.nom }}</td>
             </tr>
             <tr>
                 <th>Date limite d'inscription :</th>
                 <td>{{ sortie.dateLimiteInscription ? sortie.dateLimiteInscription|date('Y-m-d H:i:s') : '' }}</td>
+                <th>Rue :</th>
+                <td>{{ sortie.lieu.rue }}</td>
             </tr>
             <tr>
                 <th>Nombre de place :</th>
                 <td>{{ sortie.nbInscriptionMax }}</td>
+                <th>Code postal :</th>
+                <td>{{ sortie.lieu.ville.codePostal }}</td>
             </tr>
             <tr>
                 <th>Durée :</th>
@@ -34,35 +54,38 @@
                         {{ dureeHour }} heures
                     {% endif %}
                 </td>
-            </tr>
-            <tr>
-                <th>Description et infos :</th>
-                <td>{{ sortie.infosSortie }}</td>
-            </tr>
-              <tr>
-                <th>Campus :</th>
-                <td>{{ sortie.campus.nom }}</td>
-            </tr>
-            <tr>
-                <th>Lieu :</th>
-                <td>{{ sortie.lieu.nom }}</td>
-            </tr>
-            <tr>
-                <th>Rue :</th>
-                <td>{{ sortie.lieu.rue }}</td>
-            </tr>
-            <tr>
-                <th>Code postal :</th>
-                <td>{{ sortie.lieu.ville.codePostal }}</td>
-            </tr>
-            <tr>
                 <th>Longitude :</th>
                 <td>{{ sortie.lieu.longitude }}</td>
             </tr>
             <tr>
+                <th>Description et infos :</th>
+                <td>{{ sortie.infosSortie }}</td>
                 <th>Latitude :</th>
                 <td>{{ sortie.lieu.latitude }}</td>
             </tr>
+        </table>
+    </div>
+    <div>
+        <tr>
+
+        </tr>
+        <tr>
+
+        </tr>
+        <tr>
+
+        </tr>
+        <tr>
+
+        </tr>
+        <tr>
+
+        </tr>
+        <tr>
+
+        </tr>
+    </div>
+
 
 
     </table>
