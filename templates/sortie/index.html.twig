@@ -37,9 +37,9 @@
                         <a href="{{ path('sortie_show', {'id': sortie.id}) }}">Afficher</a>
                     {% endif %}
                     {% if p == "true" %}
-                        <a href="{{ path('sortie_inscrire', {'idSortie': sortie.id, 'idUser':app.user.id}) }}">S'inscrire</a>
+                        <a href="{{ path('sortie_inscrire', {'idSortie': sortie.id}) }}">S'inscrire</a>
                     {% else %}
-                        <a href="{{ path('sortie_desinsrire', {'idSortie': sortie.id, 'idUser':app.user.id}) }}">se désister</a>
+                        <a href="{{ path('sortie_desinscrire', {'idSortie': sortie.id}) }}">se désister</a>
                     {% endif %}
                     {% if app.user == sortie.organisateur %}
                         {% if sortie.etat == "Créée" %}
