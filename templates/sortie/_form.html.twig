@@ -1,4 +1,20 @@
+
 {{ form_start(form) }}
-    {{ form_widget(form) }}
+<div>
+    {{ form_row(form.nom) }}
+</div>
+<div>
+    {{ form_row(form.dateHeureDebut) }}
+
+</div>
+    {{ form_row(form.dateLimiteInscription) }}
+    {{ form_row(form.nbInscriptionMax) }}
+    {{ form_row(form.duree) }}
+    {{ form_row(form.infosSortie) }}
+
+
+    {{ form_row(form.villes) }}
+    {{ form_row(form.lieu) }}
+
     <button class="btn">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}

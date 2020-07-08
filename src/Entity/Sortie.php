@@ -90,6 +90,13 @@ class Sortie
      */
     private $campus;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Ville::class, inversedBy="sorties")
+     */
+    private $villes;
+
+
+
     public function __construct()
     {
         $this->sortieParticipants = new ArrayCollection();
@@ -257,5 +264,17 @@ class Sortie
     public function __toString()
     {
         return $this->getNom();
+    }
+
+    public function getVilles(): ?Ville
+    {
+        return $this->villes;
+    }
+
+    public function setVilles(?Ville $villes): self
+    {
+        $this->villes = $villes;
+
+        return $this;
     }
 }
