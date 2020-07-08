@@ -4,7 +4,6 @@
     <h1>Sortie</h1>
 
     <table class="table">
-        <tbody>
             <tr>
                 <th>Nom de la sortie :</th>
                 <td>{{ sortie.nom }}</td>
@@ -40,7 +39,7 @@
                 <th>Description et infos :</th>
                 <td>{{ sortie.infosSortie }}</td>
             </tr>
-            <tr>
+              <tr>
                 <th>Campus :</th>
                 <td>{{ sortie.campus.nom }}</td>
             </tr>
@@ -66,7 +65,6 @@
             </tr>
 
 
-        </tbody>
     </table>
 
     {{ include('sortie/liste_participant.html.twig') }}
