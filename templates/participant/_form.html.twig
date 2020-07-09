@@ -1,48 +1,49 @@
-<div class="form-control">
-    <div class="row">
-        {{ form_label(form.nom) }}
-        {{ form_widget(form.nom) }}
-        {{ form_errors(form.nom) }}
-    </div>
-    <div class="row">
-        {{ form_label(form.prenom) }}
-        {{ form_widget(form.prenom) }}
-        {{ form_errors(form.prenom) }}
-    </div>
-    <div class="row">
-        {{ form_label(form.email) }}
-        {{ form_widget(form.email) }}
-        {{ form_errors(form.email) }}
-    </div>
-    <div class="row">
-        {{ form_label(form.pseudo) }}
-        {{ form_widget(form.pseudo) }}
-        {{ form_errors(form.pseudo) }}
-    </div>
-    <div class="row">
-        {{ form_label(form.telephone) }}
-        {{ form_widget(form.telephone) }}
-        {{ form_errors(form.telephone) }}
-    </div>
-    <div class="row">
-        {{ form_label(form.campus) }}
-        {{ form_widget(form.campus) }}
-        {{ form_errors(form.campus) }}
-    </div>
-    <div class="row">
-        {{ form_label(form.imageUrl, 'image') }}
-        {{ form_widget(form.imageUrl) }}
-        {{ form_errors(form.imageUrl) }}
-    </div>
-    <div class="row">
-        <div class="form-check">
-            {{ form_label(form.actif) }}
-            {{ form_widget(form.actif) }}
-            {{ form_errors(form.actif) }}
+<div class="container">
+
+    <form class="form-vertical" role="form">
+        <div class="form-group">
+            <div class="row">
+                {{ form_label(form.nom) }}
+                {{ form_widget(form.nom) }}
+                {{ form_errors(form.nom) }}
+            </div>
+            <div class="row">
+                {{ form_label(form.prenom) }}
+                {{ form_widget(form.prenom) }}
+                {{ form_errors(form.prenom) }}
+            </div>
+            <div class="row">
+                {{ form_label(form.email) }}
+                {{ form_widget(form.email) }}
+                {{ form_errors(form.email) }}
+            </div>
+            <div class="row">
+                {{ form_label(form.pseudo) }}
+                {{ form_widget(form.pseudo) }}
+                {{ form_errors(form.pseudo) }}
+            </div>
+            <div class="row">
+                {{ form_label(form.telephone) }}
+                {{ form_widget(form.telephone) }}
+                {{ form_errors(form.telephone) }}
+            </div>
+            <div class="row">
+                {{ form_label(form.campus) }}
+                {{ form_widget(form.campus) }}
+                {{ form_errors(form.campus) }}
+            </div>
+            <div class="row">
+                {{ form_label(form.imageUrl, 'image') }}
+                {{ form_widget(form.imageUrl) }}
+                {{ form_errors(form.imageUrl) }}
+            </div>
+            <div class="row">
+                <div class="form-check">
+                    {{ form_label(form.actif) }}
+                    {{ form_widget(form.actif) }}
+                    {{ form_errors(form.actif) }}
+                </div>
+            </div>
         </div>
-    </div>
+    </form>
 </div>
-
-
-
-
