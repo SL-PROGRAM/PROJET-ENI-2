@@ -12,10 +12,14 @@
     {{ form_row(form.duree) }}
     {{ form_row(form.infosSortie) }}
 
+
     Campus : {{ sortie.campus }}
     {{ form_row(form.villes) }}
-    {{ form_row(form.lieu) }}
+    <h4> choisir le lieu</h4>
+    <ul class="lieu"  data-prototype-lieu="{{ form_row(form.lieu.vars.prototype)|e('html_attr') }}">
+    </ul>
 
+<button class="btn">{{ button_label|default('Save') }}</button>
 
-    <button class="btn">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}
+

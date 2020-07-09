@@ -2,10 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Lieu;
 use App\Entity\Sortie;
 use App\Entity\SortieParticipant;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
+use App\Repository\LieuRepository;
+use App\Repository\ParticipantRepository;
 use App\Repository\SortieParticipantRepository;
 use App\Repository\SortieRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -32,16 +35,46 @@ class SortieController extends AbstractController
     /**
      * @Route("/new", name="sortie_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request,
+                        EtatRepository $etatRepository,
+                        ParticipantRepository $participantRepository,
+                        LieuRepository $lieuRepository): Response
     {
+
         $sortie = new Sortie();
         $form = $this->createForm(SortieType::class, $sortie);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            /*
+             * remplir valeur manquant
+             */
+
+            $etat = $etatRepository->findOneBy(['libelle' => 'Créée']);
+            $sortie->setEtat($etat);
+            $organisateur = $participantRepository->findOneBy(['email' => $this->getUser()->getUsername()]);
+            $sortie->setOrganisateur($organisateur);
+            $etat = $etatRepository->findOneBy(['libelle' => 'Créée']);
+            $sortie->setEtat($etat);
+            $sortie->setCampus($organisateur->getCampus());
+            $lieu = $lieuRepository->findOneBy(['id' => 171]);
+            $sortie->setLieu($lieu);
+
+
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($sortie);
             $entityManager->flush();
+
+//            if ($form->get('sauvegarder')->isClicked()) {
+//                $etat = $etatRepository->findOneBy(['libelle' => 'Créée']);
+//                $sortie->setEtat($etat);
+//            }
+//            else{
+//                $etat = $etatRepository->findOneBy(['libelle' => 'Ouverte']);
+//                $sortie->setEtat($etat);
+//            }
 
             return $this->redirectToRoute('sortie_index');
         }
@@ -76,6 +109,7 @@ class SortieController extends AbstractController
      */
     public function edit(Request $request, Sortie $sortie): Response
     {
+
         $form = $this->createForm(SortieType::class, $sortie);
         $form->handleRequest($request);
 

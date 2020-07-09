@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Sortie;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -39,9 +40,18 @@ class SortieType extends AbstractType
             ->add('infosSortie', TextareaType::class, [
                 'label' => 'Description et information'
             ])
-            ->add('lieu')
             ->add('villes')
-        ;
+            ;
+            $builder->add('lieu', CollectionType::class, [
+                'entry_type' => LieuType::class,
+                'entry_options' => ['label' => false],
+                'label' => false,
+                'allow_add' => true,
+                'by_reference' => true,
+                'allow_delete' => true,
+                'prototype' => true,
+                'prototype_name' => 'player',
+                ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
