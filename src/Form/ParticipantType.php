@@ -30,6 +30,8 @@ class ParticipantType extends AbstractType
             ->add('telephone')
             ->add('pseudo')
             ->add('campus')
+            ->add('imageUrl')
+            ->add('actif')
         ;
     }
 
