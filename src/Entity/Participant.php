@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+
 /**
  * @ORM\Entity(repositoryClass=ParticipantRepository::class)
  */
@@ -108,6 +109,11 @@ class Participant implements UserInterface
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $imageUrl;
+
+    /**
+     * @Assert\Image(maxSize="1MB", maxHeight="1920", maxWidth="1080")
+     */
+    private $imageFile;
 
     public function __construct()
     {
