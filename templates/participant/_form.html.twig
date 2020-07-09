@@ -1,5 +1,6 @@
-<div class="container">
 
+{{ form_start(form) }}
+<div class="container">
     <form class="form-vertical" role="form">
         <div class="form-group">
             <div class="row">
@@ -34,8 +35,8 @@
             </div>
             <div class="row">
                 {{ form_label(form.imageFile) }}
-                {{ form_widget(form.imageUrl) }}
-                {{ form_errors(form.imageUrl) }}
+                {{ form_widget(form.imageFile) }}
+                {{ form_errors(form.imageFile) }}
             </div>
             <div class="row">
                 <div class="form-check">
@@ -47,5 +48,7 @@
             </div>
         </div>
     </form>
+
     <button class="btn">{{ button_label|default('Save') }}</button>
+    {{ form_end(form) }}
 </div>
