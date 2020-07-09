@@ -1,36 +1,60 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Sortie index{% endblock %}
-
 {% block body %}
-    <h1>Sortie index</h1>
 
-    <table class="table">
+       <table class="table table-striped table-responsive-md btn-table tablesorter" id="tablesorter">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Nom</th>
-                <th>DateHeureDebut</th>
-                <th>Duree</th>
-                <th>DateLimiteInscription</th>
-                <th>NbInscriptionMax</th>
-                <th>InfosSortie</th>
+                <th>Nom de la sortie</th>
+                <th>Date de la sortie</th>
+                <th>Cloture des inscriptions</th>
+                <th>inscrits/place</th>
+                <th>État</th>
+                <th>Inscrit</th>
+                <th>Organisateur</th>
                 <th>actions</th>
             </tr>
         </thead>
         <tbody>
         {% for sortie in sorties %}
+            {% if (date('now').diff(sortie.dateHeureDebut)).days<30 %}
+            {% set p = false %}
+            {% for sortieParticipant in sortie.sortieParticipants %}
+                {% if app.user == sortieParticipant.participant%}
+                    {% set p = "true" %}
+                {% endif %}
+            {% endfor %}
             <tr>
-                <td>{{ sortie.id }}</td>
                 <td>{{ sortie.nom }}</td>
-                <td>{{ sortie.dateHeureDebut ? sortie.dateHeureDebut|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ sortie.duree }}</td>
-                <td>{{ sortie.dateLimiteInscription ? sortie.dateLimiteInscription|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ sortie.nbInscriptionMax }}</td>
-                <td>{{ sortie.infosSortie }}</td>
+                <td>{{ sortie.dateHeureDebut ? sortie.dateHeureDebut|date('d/m/yy H:i') : '' }}</td>
+                <td>{{ sortie.dateLimiteInscription ? sortie.dateLimiteInscription|date('d/m/yy H:i') : '' }}</td>
+                <td>{{ sortie.sortieParticipants | length}} / {{ sortie.nbInscriptionMax }}</td>
+                <td>{{ sortie.etat }}</td>
                 <td>
-                    <a href="{{ path('sortie_show', {'id': sortie.id}) }}">show</a>
-                    <a href="{{ path('sortie_edit', {'id': sortie.id}) }}">edit</a>
+                    {% if p == "true" %}
+                        X
+                    {%  endif %}
+                </td>
+                <td>{{ sortie.organisateur }}</td>
+                <td>
+                        <a href="{{ path('sortie_show', {'id': sortie.id}) }}" class="btn btn-primary">Afficher</a>
+                    {% if p == "true" and sortie.organisateur != app.user and sortie.etat != "Passée" and sortie.etat != "Activité en cours" %}
+                        <a href="{{ path('sortie_desinscrire', {'id': sortie.id}) }}" class="btn btn-primary">Se désister</a>
+                    {% elseif p!="true" and sortie.organisateur != app.user and sortie.etat == "Ouverte" %}
+                        <a href="{{ path('sortie_inscrire', {'id': sortie.id}) }}" class="btn btn-primary">S'inscrire</a>
+                    {% endif %}
+                    {% if app.user == sortie.organisateur or is_granted('ROLE_ADMIN')%}
+                        {% if sortie.etat == "Créée" %}
+                            <a href="{{ path('sortie_publier', {'id': sortie.id}) }}" class="btn btn-primary">Publier</a>
+                        {% endif %}
+                        {% if sortie.etat == "Ouverte" or sortie.etat == "Clôturée" or is_granted("ROLE_ADMIN") %}
+                            <a href="{{ path('sortie_edit', {'id': sortie.id}) }}" class="btn btn-primary">Modifier</a>
+                        {% endif %}
+                        {% if sortie.etat == "Ouverte" or sortie.etat == "Créée" or sortie.etat == "Clôturée" %}
+                        <a href="{{ path('sortie_delete', {'id': sortie.id}) }}" class="btn btn-primary">Annuler</a>
+                            {% endif %}
+                    {% endif %}
+
+
+            {% endif %}
                 </td>
             </tr>
         {% else %}
@@ -41,5 +65,4 @@
         </tbody>
     </table>
 
-    <a href="{{ path('sortie_new') }}">Create new</a>
 {% endblock %}

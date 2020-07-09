@@ -3,7 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Sortie;
+use App\Entity\SortieParticipant;
 use App\Form\SortieType;
+use App\Repository\EtatRepository;
+use App\Repository\SortieParticipantRepository;
 use App\Repository\SortieRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,6 +23,7 @@ class SortieController extends AbstractController
      */
     public function index(SortieRepository $sortieRepository): Response
     {
+
         return $this->render('sortie/index.html.twig', [
             'sorties' => $sortieRepository->findAll(),
         ]);
@@ -53,7 +57,16 @@ class SortieController extends AbstractController
      */
     public function show(Sortie $sortie): Response
     {
+        //calculer de durée en jour et heur
+        $dureeSeconde = $sortie->getDuree();
+        $dureeJour = $dureeSeconde / (3600*24);
+        $dureeSeconde = $dureeSeconde % (3600*24);
+        $dureeHour = $dureeSeconde / (3600);
+
+
         return $this->render('sortie/show.html.twig', [
+            'dureeJour' => $dureeJour,
+            'dureeHour' => $dureeHour,
             'sortie' => $sortie,
         ]);
     }
@@ -79,16 +92,59 @@ class SortieController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="sortie_delete", methods={"DELETE"})
+     * @Route("/{id}/delete", name="sortie_delete", methods={"GET", "POST"})
      */
-    public function delete(Request $request, Sortie $sortie): Response
+    public function delete(Request $request, Sortie $sortie, EtatRepository $er): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$sortie->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($sortie);
-            $entityManager->flush();
+        $form = $this->createForm(SortieType::class, $sortie);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $sortie->setInfosSortie('ANNULATION :'.$sortie->getInfosSortie());
+            $sortie->setEtat($er->findOneBy(['libelle'=>'Annulée']));
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute('accueil');
         }
 
-        return $this->redirectToRoute('sortie_index');
+        return $this->render('sortie/annuler.html.twig', [
+            'sortie' => $sortie,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/inscrire/{id}", name="sortie_inscrire", methods={"GET"})
+     */
+    public function inscrire(Request $request, Sortie $sortie, SortieRepository $sr, int $id): Response
+    {
+        $sortieParticipant= new SortieParticipant();
+        $sortieParticipant->setSortie($sr->find($request->get('id')));
+        $sortieParticipant->setParticipant($this->getUser());
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($sortieParticipant);
+        $entityManager->flush();
+        return $this->redirectToRoute('accueil');
+    }
+
+    /**
+     * @Route("/desinscrire/{id}", name="sortie_desinscrire", methods={"GET"})
+     */
+    public function desinscrire(Request $request, Sortie $sortie,SortieParticipantRepository $sr, int $id): Response
+    {
+        $sortieParticipant=$sr->findOneBy(['sortie'=>$id, 'participant'=>$this->getUser()]);
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($sortieParticipant);
+        $entityManager->flush();
+        return $this->redirectToRoute('accueil');
+    }
+    /**
+     * @Route("/publier/{id}", name="sortie_publier", methods={"GET"})
+     */
+    public function publier(Request $request, Sortie $sortie,SortieRepository $sr, EtatRepository $er, int $id): Response
+    {
+        $sortie=$sr->find($id);
+        $sortie->setEtat($er->findOneBy(['libelle'=>'Ouverte']));
+        $this->getDoctrine()->getManager()->flush();
+        return $this->redirectToRoute('accueil');
     }
 }
