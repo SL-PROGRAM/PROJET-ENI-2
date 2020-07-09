@@ -45,32 +45,21 @@ class ParticipantController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $entityManager = $this->getDoctrine()->getManager();
             $passwordEncoded = $this->passwordEncoder->encodePassword($participant, '123456');
             $participant->setPassword($passwordEncoded);
             $participant->setToken(substr(str_replace('/', '',$passwordEncoded),50));
             $imageFile = $participant->getImageFile();
-
             if($imageFile){
                 $safeFileName = uniqid();
                 $newFileName = $safeFileName.".".$imageFile->guessExtension();
+                $imageFile->move($this->getParameter('upload_dir'),$newFileName);
                 $participant->setImageUrl($newFileName);
-
-                try{
-                    $imageFile->move($this->getParameter('upload_dir'),
-                        $newFileName);
-                } catch (FileException $e){
-
-                }
             }
-
             $entityManager->persist($participant);
             $entityManager->flush();
-
             return $this->redirectToRoute('participant_index');
         }
-
         return $this->render('participant/new.html.twig', [
             'participant' => $participant,
             'form' => $form->createView(),
@@ -95,24 +84,15 @@ class ParticipantController extends AbstractController
 
         $form = $this->createForm(ParticipantType::class, $participant);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
-
             //Récupérer l'image depuis le formulaire
             $imageFile = $participant->getImageFile();
             if($imageFile){
                 $safeFileName = uniqid();
                 $newFileName = $safeFileName.".".$imageFile->guessExtension();
+                $imageFile->move($this->getParameter('upload_dir'), $newFileName);
                 $participant->setImageUrl($newFileName);
-
-                try{
-                    $imageFile->move($this->getParameter('upload_dir'),
-                        $newFileName);
-                } catch (FileException $e){
-
-                }
             }
-
             $this->getDoctrine()->getManager()->flush();
             return $this->redirectToRoute('participant_index');
         }
