@@ -44,6 +44,14 @@
             </ul>
         </div>
     </nav>
+    {% block msg %}
+        {% for label, type in app.flashes(['info', 'warning', 'success', 'danger']) %}
+            {% for index, row in type %}
+                {% set message = row is iterable ?  row['message'] : row %}
+                {{ label }} {{  message|trans|replace(row['params'])  }}
+            {% endfor %}
+        {% endfor %}
+    {%  endblock %}
         {% block body %}{% endblock %}
         {% block javascripts %}
             <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
