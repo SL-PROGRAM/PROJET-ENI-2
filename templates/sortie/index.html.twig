@@ -1,5 +1,6 @@
 {% block body %}
-       <table class="table">
+
+       <table class="table table-striped table-responsive-md btn-table tablesorter" id="tablesorter">
         <thead>
             <tr>
                 <th>Nom de la sortie</th>
@@ -14,6 +15,7 @@
         </thead>
         <tbody>
         {% for sortie in sorties %}
+            {% if (date('now').diff(sortie.dateHeureDebut)).days<30 %}
             {% set p = false %}
             {% for sortieParticipant in sortie.sortieParticipants %}
                 {% if app.user == sortieParticipant.participant%}
@@ -22,8 +24,8 @@
             {% endfor %}
             <tr>
                 <td>{{ sortie.nom }}</td>
-                <td>{{ sortie.dateHeureDebut ? sortie.dateHeureDebut|date('Y-m-d H:i') : '' }}</td>
-                <td>{{ sortie.dateLimiteInscription ? sortie.dateLimiteInscription|date('Y-m-d') : '' }}</td>
+                <td>{{ sortie.dateHeureDebut ? sortie.dateHeureDebut|date('d/m/yy H:i') : '' }}</td>
+                <td>{{ sortie.dateLimiteInscription ? sortie.dateLimiteInscription|date('d/m/yy H:i') : '' }}</td>
                 <td>{{ sortie.sortieParticipants | length}} / {{ sortie.nbInscriptionMax }}</td>
                 <td>{{ sortie.etat }}</td>
                 <td>
@@ -33,26 +35,26 @@
                 </td>
                 <td>{{ sortie.organisateur }}</td>
                 <td>
-                    {% if app.user != sortie.organisateur %}
-                        <a href="{{ path('sortie_show', {'id': sortie.id}) }}">Afficher</a>
+                        <a href="{{ path('sortie_show', {'id': sortie.id}) }}" class="btn btn-primary">Afficher</a>
+                    {% if p == "true" and sortie.organisateur != app.user and sortie.etat != "Passée" and sortie.etat != "Activité en cours" %}
+                        <a href="{{ path('sortie_desinscrire', {'id': sortie.id}) }}" class="btn btn-primary">Se désister</a>
+                    {% elseif p!="true" and sortie.organisateur != app.user and sortie.etat == "Ouverte" %}
+                        <a href="{{ path('sortie_inscrire', {'id': sortie.id}) }}" class="btn btn-primary">S'inscrire</a>
                     {% endif %}
-                    {% if p == "true" %}
-                        <a href="{{ path('sortie_inscrire', {'idSortie': sortie.id}) }}">S'inscrire</a>
-                    {% else %}
-                        <a href="{{ path('sortie_desinscrire', {'idSortie': sortie.id}) }}">se désister</a>
-                    {% endif %}
-                    {% if app.user == sortie.organisateur %}
+                    {% if app.user == sortie.organisateur or is_granted('ROLE_ADMIN')%}
                         {% if sortie.etat == "Créée" %}
-                            <a href="{{ path('sortie_edit', {'id': sortie.id}) }}">Publier</a>
+                            <a href="{{ path('sortie_publier', {'id': sortie.id}) }}" class="btn btn-primary">Publier</a>
                         {% endif %}
-                        {% if sortie.etat == "Ouverte" %}
-                            <a href="{{ path('sortie_edit', {'id': sortie.id}) }}">Modifier</a>
+                        {% if sortie.etat == "Ouverte" or sortie.etat == "Clôturée" or is_granted("ROLE_ADMIN") %}
+                            <a href="{{ path('sortie_edit', {'id': sortie.id}) }}" class="btn btn-primary">Modifier</a>
                         {% endif %}
-                        <a href="{{ path('sortie_edit', {'id': sortie.id}) }}">Annuler</a>
+                        {% if sortie.etat == "Ouverte" or sortie.etat == "Créée" or sortie.etat == "Clôturée" %}
+                        <a href="{{ path('sortie_delete', {'id': sortie.id}) }}" class="btn btn-primary">Annuler</a>
+                            {% endif %}
                     {% endif %}
 
 
-
+            {% endif %}
                 </td>
             </tr>
         {% else %}
@@ -63,5 +65,4 @@
         </tbody>
     </table>
 
-    <a href="{{ path('sortie_new') }}">Create new</a>
 {% endblock %}

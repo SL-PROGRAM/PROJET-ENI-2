@@ -15,6 +15,8 @@
                 <th>Nom</th>
                 <th>Prenom</th>
                 <th>Telephone</th>
+                <th>Pseudo</th>
+                <th>Token</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -28,6 +30,8 @@
                 <td>{{ participant.nom }}</td>
                 <td>{{ participant.prenom }}</td>
                 <td>{{ participant.telephone }}</td>
+                <td>{{ participant.pseudo }}</td>
+                <td>{{ participant.token }}</td>
                 <td>
                     <a href="{{ path('participant_show', {'id': participant.id}) }}">show</a>
                     <a href="{{ path('participant_edit', {'id': participant.id}) }}">edit</a>
@@ -35,7 +39,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="8">no records found</td>
+                <td colspan="10">no records found</td>
             </tr>
         {% endfor %}
         </tbody>

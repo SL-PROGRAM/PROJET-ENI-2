@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Sortie;
+use App\Entity\SortieParticipant;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
+use App\Repository\SortieParticipantRepository;
 use App\Repository\SortieRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -101,7 +103,7 @@ class SortieController extends AbstractController
             $sortie->setEtat($er->findOneBy(['libelle'=>'Annulée']));
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('sortie_index');
+            return $this->redirectToRoute('accueil');
         }
 
         return $this->render('sortie/annuler.html.twig', [
@@ -111,22 +113,38 @@ class SortieController extends AbstractController
     }
 
     /**
-     * @Route("/inscrire/{idSortie}", name="sortie_inscrire", methods={"GET"})
+     * @Route("/inscrire/{id}", name="sortie_inscrire", methods={"GET"})
      */
-    public function inscrire(Request $request, $idSortie): Response
+    public function inscrire(Request $request, Sortie $sortie, SortieRepository $sr, int $id): Response
     {
-
-
+        $sortieParticipant= new SortieParticipant();
+        $sortieParticipant->setSortie($sr->find($request->get('id')));
+        $sortieParticipant->setParticipant($this->getUser());
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($sortieParticipant);
+        $entityManager->flush();
         return $this->redirectToRoute('accueil');
     }
 
     /**
-     * @Route("/desinscrire/{idSortie}", name="sortie_desinscrire", methods={"GET"})
+     * @Route("/desinscrire/{id}", name="sortie_desinscrire", methods={"GET"})
      */
-    public function desinscrire(Request $request,  $idSortie): Response
+    public function desinscrire(Request $request, Sortie $sortie,SortieParticipantRepository $sr, int $id): Response
     {
-
-
+        $sortieParticipant=$sr->findOneBy(['sortie'=>$id, 'participant'=>$this->getUser()]);
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($sortieParticipant);
+        $entityManager->flush();
+        return $this->redirectToRoute('accueil');
+    }
+    /**
+     * @Route("/publier/{id}", name="sortie_publier", methods={"GET"})
+     */
+    public function publier(Request $request, Sortie $sortie,SortieRepository $sr, EtatRepository $er, int $id): Response
+    {
+        $sortie=$sr->find($id);
+        $sortie->setEtat($er->findOneBy(['libelle'=>'Ouverte']));
+        $this->getDoctrine()->getManager()->flush();
         return $this->redirectToRoute('accueil');
     }
 }
