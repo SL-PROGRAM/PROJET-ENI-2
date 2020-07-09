@@ -111,9 +111,25 @@ class Participant implements UserInterface
     private $imageUrl;
 
     /**
-     * @Assert\Image(maxSize="1MB", maxHeight="1920", maxWidth="1080")
+     * @Assert\Image(maxSize="1M", maxHeight="1920", maxWidth="1080")
      */
     private $imageFile;
+
+    /**
+     * @return mixed
+     */
+    public function getImageFile()
+    {
+        return $this->imageFile;
+    }
+
+    /**
+     * @param mixed $imageFile
+     */
+    public function setImageFile($imageFile): void
+    {
+        $this->imageFile = $imageFile;
+    }
 
     public function __construct()
     {
