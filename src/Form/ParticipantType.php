@@ -32,7 +32,8 @@ class ParticipantType extends AbstractType
             ->add('pseudo')
             ->add('campus')
             ->add('imageFile', FileType::class, [
-                'required'=>false
+                'required'=>false,
+                'label' => 'image'
             ])
             ->add('actif')
         ;
