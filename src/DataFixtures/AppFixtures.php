@@ -12,11 +12,13 @@ use App\Entity\Ville;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AppFixtures extends Fixture
 {
     private $passwordEncoder;
+
 
      public function __construct(UserPasswordEncoderInterface $passwordEncoder)
      {
@@ -88,7 +90,6 @@ class AppFixtures extends Fixture
      */
     public function loadFixtureParticipant(ObjectManager $manager, \Faker\Generator $faker, array $campuses): array
     {
-
         //Creation d'un admin pour dev
         $participant = new Participant();
         $participant->setPseudo('admin');
@@ -100,9 +101,10 @@ class AppFixtures extends Fixture
         $participant->setPassword($passwordEncoded);
         $participant->setToken(substr(str_replace('/', '',$passwordEncoded),50));
         $participant->setRoles(['ROLE_ADMIN']);
+        $participant->setImageUrl('http://lorempixel.com/400/400/');
+        $participant->setActif(true);
         $ranomCampus = random_int(0, count($campuses)-1);
         $participant->setCampus($campuses[$ranomCampus]);
-
         $manager->persist($participant);
         $participants = [];
         //creation utilisateur pour connection et dev
@@ -116,6 +118,8 @@ class AppFixtures extends Fixture
         $participant->setPassword($passwordEncoded);
         $participant->setToken(substr(str_replace('/', '',$passwordEncoded),50));
         $participant->setRoles(['ROLE_USER']);
+        $participant->setImageUrl('http://lorempixel.com/400/400/');
+        $participant->setActif(true);
         $participants[0] = $participant;
         $ranomCampus = random_int(0, count($campuses)-1);
         $participant->setCampus($campuses[$ranomCampus]);
@@ -131,13 +135,14 @@ class AppFixtures extends Fixture
             $participant->setTelephone($faker->optional($weight = 0.7)->e164PhoneNumber);
             $participant->setEmail($participant->getNom().".".$participant->getPrenom()."@eni-campus.fr");
             $participant->setRoles(['ROLE_USER']);
+            $participant->setImageUrl('http://lorempixel.com/400/400/');
+            $participant->setActif(true);
             $passwordEncoded = $this->passwordEncoder->encodePassword($participant, '123456');
             $participant->setPassword($passwordEncoded);
             $participant->setToken(substr(str_replace('/', '',$passwordEncoded),50));
             $ranomCampus = random_int(0, count($campuses)-1);
             $participant->setCampus($campuses[$ranomCampus]);
             $participants[$i] = $participant;
-
             $manager->persist($participant);
         }
 
