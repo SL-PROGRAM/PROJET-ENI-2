@@ -12,9 +12,10 @@
     {{ form_row(form.duree) }}
     {{ form_row(form.infosSortie) }}
 
-
+    Campus : {{ app.user.campus }}
     {{ form_row(form.villes) }}
     {{ form_row(form.lieu) }}
+
 
     <button class="btn">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}
