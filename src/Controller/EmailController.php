@@ -40,10 +40,9 @@ class EmailController extends AbstractController
         if(!$user){
             throw $this->createNotFoundException('Utilisateur introuvable, avez-vous correctement saisi votre email?');
         }
-        $hashPwd = substr($user->getPassword(), 30);
 
         $email = (new TemplatedEmail())
-            ->from('contact@sortir.com')
+            ->from('contact.sortir.eni@gmail.com')
             ->to($adresse)
             ->subject('Votre nouveau mot de passe')
             ->htmlTemplate('password/mail.html.twig')
@@ -52,7 +51,7 @@ class EmailController extends AbstractController
             ]);
         $mailer->send($email);
         $this->addFlash('success', 'Un mail contenant un lien de réinitialisation de mot de passe a été envoyé sur cette adresse mail : '.$adresse.'.');
-        return $this->redirectToRoute('accueil');
+        return $this->redirectToRoute('accueillogin');
     }
 
     /**
