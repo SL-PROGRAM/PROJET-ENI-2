@@ -5,9 +5,11 @@ namespace App\Controller;
 use App\Entity\Participant;
 use App\Form\ParticipantType;
 use App\Repository\ParticipantRepository;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
@@ -35,7 +37,7 @@ class ParticipantController extends AbstractController
     /**
      * @Route("/new", name="participant_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(MailerInterface $mailer, Request $request): Response
     {
         $participant = new Participant();
         $participant -> setPassword('123456');
@@ -48,12 +50,25 @@ class ParticipantController extends AbstractController
             $passwordEncoded = $this->passwordEncoder->encodePassword($participant, '123456');
             $participant->setPassword($passwordEncoded);
             $participant->setToken(substr(str_replace('/', '',$passwordEncoded),50));
+            $imageFile = $participant->getImageFile();
+            if($imageFile){
+                $safeFileName = uniqid();
+                $newFileName = $safeFileName.".".$imageFile->guessExtension();
+                $imageFile->move($this->getParameter('upload_dir'),$newFileName);
+                $participant->setImageUrl($newFileName);
+            }
             $entityManager->persist($participant);
             $entityManager->flush();
 
+            //Envoyer un mail à l'utilisateur qui vient d'être inscrit pour lui proposer d'initialiser son mot de passe
+            $email = (new TemplatedEmail())
+                ->from('contact@sortir.com')
+                ->to($participant->getEmail())
+                ->subject('Votre compte sur Sortir.com')
+                ->htmlTemplate('password/mailNouvelUtilisateur.html.twig');
+            $mailer->send($email);
             return $this->redirectToRoute('participant_index');
         }
-
         return $this->render('participant/new.html.twig', [
             'participant' => $participant,
             'form' => $form->createView(),
@@ -75,12 +90,19 @@ class ParticipantController extends AbstractController
      */
     public function edit(Request $request, Participant $participant): Response
     {
+
         $form = $this->createForm(ParticipantType::class, $participant);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
+            //Récupérer l'image depuis le formulaire
+            $imageFile = $participant->getImageFile();
+            if($imageFile){
+                $safeFileName = uniqid();
+                $newFileName = $safeFileName.".".$imageFile->guessExtension();
+                $imageFile->move($this->getParameter('upload_dir'), $newFileName);
+                $participant->setImageUrl($newFileName);
+            }
             $this->getDoctrine()->getManager()->flush();
-
             return $this->redirectToRoute('participant_index');
         }
 
