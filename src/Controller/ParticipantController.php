@@ -6,6 +6,7 @@ use App\Entity\Participant;
 use App\Form\ParticipantType;
 use App\Repository\ParticipantRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -79,8 +80,21 @@ class ParticipantController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
 
+            $imageFile = $participant->getImageFile();
+            if($imageFile){
+                $safeFileName = uniqid();
+                $newFileName = $safeFileName.".".$imageFile->guessExtension();
+                $participant->setImageUrl($newFileName);
+
+                try{
+                    $imageFile->move($this->getParameter('upload_dir'),
+                    $newFileName);
+                } catch (FileException $e){
+
+                }
+            }
+            $this->getDoctrine()->getManager()->flush();
             return $this->redirectToRoute('participant_index');
         }
 
