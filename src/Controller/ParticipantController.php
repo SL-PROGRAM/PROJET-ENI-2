@@ -45,11 +45,13 @@ class ParticipantController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             $entityManager = $this->getDoctrine()->getManager();
             $passwordEncoded = $this->passwordEncoder->encodePassword($participant, '123456');
             $participant->setPassword($passwordEncoded);
             $participant->setToken(substr(str_replace('/', '',$passwordEncoded),50));
             $imageFile = $participant->getImageFile();
+
             if($imageFile){
                 $safeFileName = uniqid();
                 $newFileName = $safeFileName.".".$imageFile->guessExtension();
@@ -90,11 +92,13 @@ class ParticipantController extends AbstractController
      */
     public function edit(Request $request, Participant $participant): Response
     {
+
         $form = $this->createForm(ParticipantType::class, $participant);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+            //Récupérer l'image depuis le formulaire
             $imageFile = $participant->getImageFile();
             if($imageFile){
                 $safeFileName = uniqid();
@@ -103,11 +107,12 @@ class ParticipantController extends AbstractController
 
                 try{
                     $imageFile->move($this->getParameter('upload_dir'),
-                    $newFileName);
+                        $newFileName);
                 } catch (FileException $e){
 
                 }
             }
+
             $this->getDoctrine()->getManager()->flush();
             return $this->redirectToRoute('participant_index');
         }
