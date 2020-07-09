@@ -12,7 +12,11 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-
+/**
+ * Class EmailController
+ * @package App\Controller
+ * @Route("/mdp")
+ */
 class EmailController extends AbstractController
 {
     /**
@@ -51,7 +55,7 @@ class EmailController extends AbstractController
             ]);
         $mailer->send($email);
         $this->addFlash('success', 'Un mail contenant un lien de réinitialisation de mot de passe a été envoyé sur cette adresse mail : '.$adresse.'.');
-        return $this->redirectToRoute('accueillogin');
+        return $this->redirectToRoute('accueil');
     }
 
     /**
