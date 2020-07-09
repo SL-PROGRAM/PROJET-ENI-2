@@ -49,6 +49,20 @@ class ParticipantController extends AbstractController
             $passwordEncoded = $this->passwordEncoder->encodePassword($participant, '123456');
             $participant->setPassword($passwordEncoded);
             $participant->setToken(substr(str_replace('/', '',$passwordEncoded),50));
+            $imageFile = $participant->getImageFile();
+            if($imageFile){
+                $safeFileName = uniqid();
+                $newFileName = $safeFileName.".".$imageFile->guessExtension();
+                $participant->setImageUrl($newFileName);
+
+                try{
+                    $imageFile->move($this->getParameter('upload_dir'),
+                        $newFileName);
+                } catch (FileException $e){
+
+                }
+            }
+
             $entityManager->persist($participant);
             $entityManager->flush();
 
