@@ -9,6 +9,7 @@ use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -37,7 +38,7 @@ class ParticipantController extends AbstractController
     /**
      * @Route("/new", name="participant_new", methods={"GET","POST"})
      */
-    public function new(MailerInterface $mailer, Request $request): Response
+    public function new(Request $request, MailerInterface $mailer): Response
     {
         $participant = new Participant();
         $participant -> setPassword('123456');
@@ -59,20 +60,32 @@ class ParticipantController extends AbstractController
             }
             $entityManager->persist($participant);
             $entityManager->flush();
+            $this->sendNewUserEmail($mailer,$participant);
 
-            //Envoyer un mail à l'utilisateur qui vient d'être inscrit pour lui proposer d'initialiser son mot de passe
-            $email = (new TemplatedEmail())
-                ->from('contact@sortir.com')
-                ->to($participant->getEmail())
-                ->subject('Votre compte sur Sortir.com')
-                ->htmlTemplate('password/mailNouvelUtilisateur.html.twig');
-            $mailer->send($email);
             return $this->redirectToRoute('participant_index');
         }
         return $this->render('participant/new.html.twig', [
             'participant' => $participant,
             'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * Simple new User Email sending function
+     * @param Participant $participant
+     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
+     */
+    public function sendNewUserEmail(Mailer $mailer, Participant $participant)
+    {
+        $email = (new TemplatedEmail())
+            ->from('contact@sortir.com')
+            ->to($participant->getEmail())
+            ->subject('Votre compte sur Sortir.com')
+            ->htmlTemplate('password/mailNouvelUtilisateur.html.twig')
+            ->context([
+                'token'=>$participant->getToken()
+            ]);
+        $mailer->send($email);
     }
 
     /**
