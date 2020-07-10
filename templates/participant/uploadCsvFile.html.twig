@@ -2,9 +2,8 @@
 
 {% block body %}
 
-    <p>PLOP</p>
-{#    <label>Votre fichier csv</label>#}
-{#    <input type="file">#}
-{#    <input type="submit">#}
+    <form action="{{ path('app_importCsvFile') }}" method="post" enctype="multipart/form-data">
+        <input type="file" name="csv" value="" />
+        <input type="submit" name="submit" value="Save" /></form>
 
 {% endblock %}

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Campus;
 use App\Entity\Participant;
 use App\Form\ParticipantType;
 use App\Repository\ParticipantRepository;
@@ -68,6 +69,93 @@ class ParticipantController extends AbstractController
             'participant' => $participant,
             'form' => $form->createView(),
         ]);
+    }
+    /**
+     * @Route ("/importCsvFile", name="app_importCsvFile", methods={"GET","POST","DELETE"})
+     */
+    public function csv(Request $request)
+    {
+        if($_FILES){
+            if($_FILES['csv']['error'] == 0) {
+                $this->CheckAndRegisterCsvFile($_FILES['csv']);
+            }
+        }
+        return $this->render('participant/uploadCsvFile.html.twig');
+    }
+
+    public function CheckAndRegisterCsvFile($csvFile)
+    {
+        $csv = array();
+
+        $tmpName = $_FILES['csv']['tmp_name'];
+
+        if(($handle = fopen($tmpName, 'r')) !== FALSE) {
+            //Définit une limite de temps pour lire le csv et effectuer les actions
+            set_time_limit(0);
+
+            //Initialise les lignes à 0;
+            $row = 0;
+
+            //Lit le CSV
+            while(($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
+
+                // number of fields in the csv
+                $col_count = count($data);
+                $csv[$row]['users'] = $data[0];
+                // increment the row
+                $row++;
+            }
+            //Insertion des données
+            for($i = 1; $i < 4; $i++){
+                $entry = $csv[$i]['users'];
+                $this->insertNewUser($entry);
+            }
+
+            fclose($handle);
+        }
+        echo 'DONE';
+    }
+
+    private function insertNewUser($raw){
+        $rawParticipant = explode(",", $raw);
+
+        $this->createNewParticipant($rawParticipant);
+    }
+
+    private function createNewParticipant(array $rawParticipant){
+        $em = $this->getDoctrine()->getManager();
+        $campus = $this->getDoctrine()
+            ->getRepository(Campus::class)
+            ->find($rawParticipant[1]);
+        if (!$campus){
+            throw $this->createNotFoundException(
+                'Pas de campus avec cet ID : '.$rawParticipant[1]
+            );
+        }
+
+        $participant = $this->getDoctrine()
+            ->getRepository(Participant::class)
+            ->findOneBy(['email' => $rawParticipant[2]]);
+        //Si il existe déjà un participant dans la base, continuer à lire le fichier
+        if($participant){
+            return;
+        }
+
+        $participant = new Participant();
+        $participant->setCampus($campus);
+        $participant->setEmail($rawParticipant[2]);
+        $participant->setRoles(['ROLE_USER']);
+        $passwordEncoded = $this->passwordEncoder->encodePassword($participant, $rawParticipant[4]);
+        $participant->setPassword($passwordEncoded);
+        $participant->setNom($rawParticipant[5]);
+        $participant->setPrenom($rawParticipant[6]);
+        $participant->setTelephone($rawParticipant[7]);
+        $participant->setToken(substr(str_replace('/', '',$passwordEncoded),50));
+        $participant->setActif(true);
+        $participant->setPseudo($rawParticipant[8]);
+        $participant->setImageUrl($rawParticipant[11]);
+        $em->persist($participant);
+        $em->flush();
     }
 
     /**
