@@ -6,6 +6,7 @@ use App\Entity\Campus;
 use App\Entity\Participant;
 use App\Form\ParticipantType;
 use App\Repository\ParticipantRepository;
+use http\Exception\RuntimeException;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -87,30 +88,31 @@ class ParticipantController extends AbstractController
     {
         $csv = array();
 
-        $tmpName = $_FILES['csv']['tmp_name'];
-
-        if(($handle = fopen($tmpName, 'r')) !== FALSE) {
+        $csvFilename = $_FILES['csv']['name'];
+        //Récupère les 3 derniers caractères du nom du fichier et vérifie que ça soit bien un fichier CSV
+        $csvExtension = substr($csvFilename, -3);
+        if($csvExtension !== 'csv'){
+            dd('Extension de fichier non prise en charge');
+        }
+        $csvFilename = $_FILES['csv']['tmp_name'];
+        if(($handle = fopen($csvFilename, 'r')) !== FALSE) {
             //Définit une limite de temps pour lire le csv et effectuer les actions
             set_time_limit(0);
 
             //Initialise les lignes à 0;
             $row = 0;
 
-            //Lit le CSV
+            //Lit toutes les lignes du csv et rempli le tableau 2D $csv
             while(($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
-
-                // number of fields in the csv
-                $col_count = count($data);
                 $csv[$row]['users'] = $data[0];
-                // increment the row
                 $row++;
             }
-            //Insertion des données
+
+            //Vérification et insertion des données en BDD
             for($i = 1; $i < 4; $i++){
                 $entry = $csv[$i]['users'];
                 $this->insertNewUser($entry);
             }
-
             fclose($handle);
         }
         echo 'DONE';
