@@ -104,12 +104,14 @@ class ParticipantController extends AbstractController
 
             //Lit toutes les lignes du csv et rempli le tableau 2D $csv
             while(($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
+                //Vérifier ici que le nombre de colonnes est correct (12)
+                //Que tout les titres des champs soient correctement nommés
                 $csv[$row]['users'] = $data[0];
                 $row++;
             }
 
             //Vérification et insertion des données en BDD
-            for($i = 1; $i < 4; $i++){
+            for($i = 1; $i < $row; $i++){
                 $entry = $csv[$i]['users'];
                 $this->insertNewUser($entry);
             }
@@ -146,7 +148,10 @@ class ParticipantController extends AbstractController
         $participant = new Participant();
         $participant->setCampus($campus);
         $participant->setEmail($rawParticipant[2]);
-        $participant->setRoles(['ROLE_USER']);
+        if($rawParticipant[3] === ['"ROLE_ADMIN"'])
+            $participant->setRoles(['ROLE_ADMIN']);
+        else
+            $participant->setRoles(['ROLE_USER']);
         $passwordEncoded = $this->passwordEncoder->encodePassword($participant, $rawParticipant[4]);
         $participant->setPassword($passwordEncoded);
         $participant->setNom($rawParticipant[5]);
