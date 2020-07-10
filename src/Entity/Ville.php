@@ -130,7 +130,7 @@ class Ville
     {
         if (!$this->sorties->contains($sorty)) {
             $this->sorties[] = $sorty;
-            $sorty->setVilles($this);
+            $sorty->setVille($this);
         }
 
         return $this;
@@ -141,8 +141,8 @@ class Ville
         if ($this->sorties->contains($sorty)) {
             $this->sorties->removeElement($sorty);
             // set the owning side to null (unless already changed)
-            if ($sorty->getVilles() === $this) {
-                $sorty->setVilles(null);
+            if ($sorty->getVille() === $this) {
+                $sorty->setVille(null);
             }
         }
 

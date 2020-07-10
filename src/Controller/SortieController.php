@@ -44,18 +44,30 @@ class SortieController extends AbstractController
     /**
      * @Route("/sortie/new", name="sortie_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, ParticipantRepository $participantRepository, EtatRepository $etatRepository): Response
     {
         $sortie = new Sortie();
         $form = $this->createForm(SortieType::class, $sortie);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $organisateur = $participantRepository->findOneBy(['email' => $this->getUser()->getUsername()]);
+            $sortie->setCampus($organisateur->getCampus());
+            $sortieParticipant = new SortieParticipant();
+            $sortieParticipant->setParticipant($organisateur);
+            $sortieParticipant->setSortie($sortie);
+            $sortie->addSortieParticipant($sortieParticipant);
+
+            $sortie->setEtat($etatRepository->findOneBy(['libelle' => "Créée"]));
+
+            $sortie->getLieu()->setVille($sortie->getVille());
+
             $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($sortieParticipant);
             $entityManager->persist($sortie);
             $entityManager->flush();
 
-            return $this->redirectToRoute('sortie_index');
+            return $this->redirectToRoute('accueil');
         }
 
         return $this->render('sortie/new.html.twig', [
@@ -94,7 +106,7 @@ class SortieController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('sortie_index');
+            return $this->redirectToRoute('accueil');
         }
 
         return $this->render('sortie/edit.html.twig', [

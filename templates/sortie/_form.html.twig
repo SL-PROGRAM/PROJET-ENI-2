@@ -1,37 +1,171 @@
 
-{{ form_start(form) }}
-<div>
-    {{ form_row(form.nom) }}
-</div>
-<div>
-    {{ form_row(form.dateHeureDebut) }}
 
-</div>
-    {{ form_row(form.dateLimiteInscription) }}
-    {{ form_row(form.nbInscriptionMax) }}
-    {{ form_row(form.duree) }}
-    {{ form_row(form.infosSortie) }}
-
-
-    Campus : {{ sortie.campus }}
-    {{ form_row(form.villes) }}
-    <div id="form-lieu">
-        <div>
-            {{ form_row(form.lieu) }}
-            <span id="remove-lieu" onclick="seelist()"><img class="click-button" src="{{ asset('asset/image/Remove-icon.png') }}" alt="ajouter un lieu"></span>
+    {{ form_start(form) }}
+<table>
+    <tr>
+        <div class="form-group">
+            <td>
+                <strong>Nom de la sortie :</strong>
+            </td>
+            <td>
+                {{ form_widget(form.nom) }}
+            </td>
         </div>
+        <div class="form-group">
+            <td>
+                <strong>Campus :</strong>
+            </td>
+            <td>
+                {% if new is not defined %}
+                   {{ sortie.campus }}
+                {% endif %}
+                {% if new is defined %}
+                    {{ app.user.campus }}
+                    Campus : {{ new }}
+                {% endif %}
+            </td>
+        </div>
+    </tr>
+    <tr>
+        <div class="form-group">
+            <td>
+                <strong>Date et heure de sortie :</strong>
+            </td>
+            <td>
+                {{ form_widget(form.dateHeureDebut) }}
+            </td>
+        </div>
+        <div class="form-group">
+            <td>
+                <strong>Ville :</strong>
+            </td>
+            <td>
+                {{ form_widget(form.ville) }}
+            </td>
+        </div>
+    </tr>
+    <tr>
+        <div class="form-group">
+            <td>
+                <strong>Date limite d'inscription :</strong>
+            </td>
+            <td>
+                {{ form_widget(form.dateLimiteInscription) }}
+            </td>
+        </div>
+        <div class="form-group">
+            <td class="colspanChange">
+                <strong>Lieu :</strong>
+            </td>
+            <td class="colspanChange">
+                <div id="form-lieu">
+                    <div>
+                        {{ form_widget(form.lieu) }}
+                        <span id="remove-lieu" onclick="seelist()"><img class="click-button" src="{{ asset('asset/image/Remove-icon.png') }}" alt="ajouter un lieu"></span>
+                    </div>
+                </div>
+                <div id="list-lieu">
+                    <div>
+                        {{ form_widget(form.lieu_) }}
+                        <span id="add-lieu" onclick=seeForm()><img class="click-button" src="{{ asset('asset/image/Add-icon.png') }}" alt="ajouter un lieu"></span>
+                    </div>
+                </div>
+            </td>
+        </div>
+    </tr>
+    <tr>
+        <div class="form-group">
+            <td>
+                <strong>Nombre de place :</strong>
+            </td>
+            <td>
+                {{ form_widget(form.nbInscriptionMax) }}
+            </td>
+        </div>
+        <div class="form-group disparaitre">
+            <td>
+                <strong>Rue :</strong>
+            </td>
+            <td>
+                TEXTE A FAIRE APPARAITRE EN AJAX
+            </td>
+        </div>
+    </tr>
+    <tr>
+        <div class="form-group">
+            <td>
+                <strong>Durée :</strong>
+            </td>
+            <td>
+                {{ form_widget(form.duree) }}
+            </td>
+        </div>
+        <div class="form-group disparaitre">
+            <td>
+                <strong>Code Postal:</strong>
+            </td>
+            <td id="codePostal">
+                TEXTE A FAIRE APPARAITRE EN AJAX
+            </td>
+        </div>
+    </tr>
+    <tr>
+        <div class="form-group">
+            <td rowspan="2">
+                <strong>Description et information :</strong>
+            </td>
+            <td rowspan="2">
+                {{ form_widget(form.infosSortie) }}
+            </td>
+        </div>
+        <div class="form-group disparaitre">
+            <td>
+                <strong>Latitide :</strong>
+            </td>
+            <td>
+                TEXTE A FAIRE APPARAITRE EN AJAX
+            </td>
+        </div>
+    </tr>
+    <tr>
+
+        <div class="form-group disparaitre">
+            <td>
+                <strong>Longitude :</strong>
+            </td>
+            <td>
+                TEXTE A FAIRE APPARAITRE EN AJAX
+            </td>
+        </div>
+    </tr>
+
+</table>
+
+
+
+
+    <div class="form-group">
+    </div>
+    <div class="form-group">
+    </div>
+    <div class="form-group">
+    </div>
+    <div class="form-group">
+    </div>
+    <div class="form-group">
 
     </div>
-    <div id="list-lieu">
-        <div>
-            {{ form_row(form.lieu_) }}
-            <span id="add-lieu" onclick=seeForm()><img class="click-button" src="{{ asset('asset/image/Add-icon.png') }}" alt="ajouter un lieu"></span>
-        </div>
-        </div>
 
-<button class="btn">{{ button_label|default('Save') }}</button>
 
-{{ form_end(form) }}
+
+
+    <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+    <button class="btn btn-primary">{{ button_label|default('Publier la sortie') }}</button>
+
+    <a href="{{ path('accueil') }}" class="btn btn-primary">Annuler</a>
+
+    {{ form_end(form) }}
+
 
 <style>
     .click-button{
@@ -42,6 +176,9 @@
 
 {% block javascripts %}
     <script type="text/javascript">
+
+
+
         $addLieu = document.querySelector('div#add-lieu');
         $removeLieu = document.querySelector('div#remove-lieu');
         $formLieu = document.querySelector('div#form-lieu');
@@ -52,12 +189,18 @@
         console.log($formLieuChild);
         console.log($listLieuChild);
 
-
-
         function seeForm() {
             $formLieu.appendChild($formLieuChild)
             $listLieu.innerHTML = "";
                         }
+            $elemDisparaitre = document.querySelectorAll(".disparaitre");
+            $elemDisparaitre.forEach( $elem => {
+                    $elem.style.display = "none"
+            });
+                $elemDisparaitre = document.querySelectorAll(".colspanChange")
+
+
+
 
         function seelist() {
 

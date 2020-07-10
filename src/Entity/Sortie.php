@@ -93,7 +93,7 @@ class Sortie
     /**
      * @ORM\ManyToOne(targetEntity=Ville::class, inversedBy="sorties")
      */
-    private $villes;
+    private $ville;
 
 
 
@@ -266,14 +266,14 @@ class Sortie
         return $this->getNom();
     }
 
-    public function getVilles(): ?Ville
+    public function getVille(): ?Ville
     {
-        return $this->villes;
+        return $this->ville;
     }
 
-    public function setVilles(?Ville $villes): self
+    public function setVille(?Ville $ville): self
     {
-        $this->villes = $villes;
+        $this->ville = $ville;
 
         return $this;
     }
