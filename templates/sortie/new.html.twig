@@ -13,71 +13,29 @@
 {% block javascripts %}
     {{ parent() }}
     <script type="text/javascript">
+        // add-collection-widget.js
+        jQuery(document).ready(function () {
+            console.log("bob")
+            jQuery('.add-another-collection-widget').click(function (e) {
+                var list = jQuery(jQuery(this).attr('data-list-selector'));
+                // Try to find the counter of the list or use the length of the list
+                var counter = list.data('widget-counter') || list.children().length;
 
+                // grab the prototype template
+                var newWidget = list.attr('data-prototype');
+                // replace the "__name__" used in the id and name of the prototype
+                // with a number that's unique to your emails
+                // end name attribute looks like name="contact[emails][2]"
+                newWidget = newWidget.replace(/__name__/g, counter);
+                // Increase the counter
+                counter++;
+                // And store it, the length cannot be used if deleting widgets is allowed
+                list.data('widget-counter', counter);
 
-        var $collectionHolderLieu;
-        var $addLieuButton = $('<div><button type="button" class="add_lieu_link btn">Ajouter un nouveau lieu</button></div>');
-        var $newLinkLiLieu = $('<li></li>').append($addLieuButton);
-        //
-
-        $(document).ready(function() {
-
-            $collectionHolderLieu = $('ul.lieu');
-            $collectionHolderLieu.find('li').each(function() {
-                addLieuFormDeleteLink($(this));
+                // create a new list element and add it to the list
+                var newElem = jQuery(list.attr('data-widget-tags')).html(newWidget);
+                newElem.appendTo(list);
             });
-            $collectionHolderLieu.append($newLinkLiLieu);
-            $collectionHolderLieu.data('lieuIndex', $collectionHolderLieu.find(':input').length);
-
-            $addLieuButton.on('click', function(e) {
-                // add a new Socity form (see next code block)
-                addLieuForm($collectionHolderLieu, $newLinkLiLieu);
-            });
-
         });
-
-        function addLieuForm($collectionHolderLieu, $newLinkLiLieu) {
-            // Get the data-prototype explained earlier
-            var lieuPrototype = $collectionHolderLieu.data('prototype-lieu');
-
-            // get the new index
-            var index = $collectionHolderLieu.data('lieuIndex');
-
-            var newForm = lieuPrototype;
-            // You need this only if you didn't set 'label' => false in your Socitys field in TaskType
-            // Replace '__name__label__' in the prototype's HTML to
-            // instead be a number based on how many items we have
-            // newForm = newForm.replace(/__name__label__/g, index);
-
-            // Replace '__name__' in the prototype's HTML to
-            // instead be a number based on how many items we have
-            newForm = newForm.replace(/player/g, index);
-            console.log(newForm);
-
-
-            // increase the index with one for the next item
-            $collectionHolderLieu.data('lieuIndex', index + 1);
-
-            // Display the form in the page in an li, before the "Add a Socity" link li
-            var $newLieuFormLi = $('<li><h3>Lieu</h3></li>').append(newForm);
-            $newLieuFormLi.append($addLieuButton);
-
-            $newLinkLiLieu.before($newLieuFormLi);
-            addLieuFormDeleteLink($newLieuFormLi);
-            //surrpimer l'ajout de lieu
-            // $addLieuButton.remove();
-        }
-
-        function addLieuFormDeleteLink($lieuFormLi) {
-            var $removeFormButton = $('<button type="button" class="btn">Annuler nouveau lieu</button>');
-            $lieuFormLi.append($removeFormButton);
-
-            $removeFormButton.on('click', function(e) {
-                // remove the li for the tag form
-                $lieuFormLi.remove();
-
-
-            })
-        }
     </script>
 {% endblock %}

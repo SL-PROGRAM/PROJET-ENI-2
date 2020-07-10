@@ -2,7 +2,9 @@
 
 namespace App\Form;
 
+use App\Entity\Lieu;
 use App\Entity\Sortie;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
@@ -42,16 +44,12 @@ class SortieType extends AbstractType
             ])
             ->add('villes')
             ;
-            $builder->add('lieu', CollectionType::class, [
-                'entry_type' => LieuType::class,
-                'entry_options' => ['label' => false],
-                'label' => false,
-                'allow_add' => true,
-                'by_reference' => true,
-                'allow_delete' => true,
-                'prototype' => true,
-                'prototype_name' => 'player',
+            $builder->add('lieu', LieuType::class, [
+            ]);
+            $builder->add('lieu_', EntityType::class, [
+                'class' => Lieu::class,
                 ]);
+
     }
 
     public function configureOptions(OptionsResolver $resolver)

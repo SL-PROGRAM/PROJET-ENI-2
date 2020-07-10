@@ -43,6 +43,7 @@ class SortieController extends AbstractController
 
         $sortie = new Sortie();
         $form = $this->createForm(SortieType::class, $sortie);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -58,8 +59,7 @@ class SortieController extends AbstractController
             $etat = $etatRepository->findOneBy(['libelle' => 'Créée']);
             $sortie->setEtat($etat);
             $sortie->setCampus($organisateur->getCampus());
-            $lieu = $lieuRepository->findOneBy(['id' => 171]);
-            $sortie->setLieu($lieu);
+
 
 
 

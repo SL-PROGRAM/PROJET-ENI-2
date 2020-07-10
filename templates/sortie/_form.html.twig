@@ -15,11 +15,55 @@
 
     Campus : {{ sortie.campus }}
     {{ form_row(form.villes) }}
-    <h4> choisir le lieu</h4>
-    <ul class="lieu"  data-prototype-lieu="{{ form_row(form.lieu.vars.prototype)|e('html_attr') }}">
-    </ul>
+    <div id="form-lieu">
+        <div>
+            {{ form_row(form.lieu) }}
+            <span id="remove-lieu" onclick="seelist()"><img class="click-button" src="{{ asset('asset/image/Remove-icon.png') }}" alt="ajouter un lieu"></span>
+        </div>
+
+    </div>
+    <div id="list-lieu">
+        <div>
+            {{ form_row(form.lieu_) }}
+            <span id="add-lieu" onclick=seeForm()><img class="click-button" src="{{ asset('asset/image/Add-icon.png') }}" alt="ajouter un lieu"></span>
+        </div>
+        </div>
 
 <button class="btn">{{ button_label|default('Save') }}</button>
 
 {{ form_end(form) }}
 
+<style>
+    .click-button{
+        width: 50px;
+        height: auto;
+    }
+</style>
+
+{% block javascripts %}
+    <script type="text/javascript">
+        $addLieu = document.querySelector('div#add-lieu');
+        $removeLieu = document.querySelector('div#remove-lieu');
+        $formLieu = document.querySelector('div#form-lieu');
+        $formLieuChild = document.querySelector('div#form-lieu>div');
+        $listLieu = document.querySelector('div#list-lieu');
+        $listLieuChild = document.querySelector('div#list-lieu>div');
+        $formLieu.innerHTML = "";
+        console.log($formLieuChild);
+        console.log($listLieuChild);
+
+
+
+        function seeForm() {
+            $formLieu.appendChild($formLieuChild)
+            $listLieu.innerHTML = "";
+                        }
+
+        function seelist() {
+
+            $formLieu.innerHTML = "";
+            $listLieu.appendChild($listLieuChild);
+        }
+
+    </script>
+{% endblock %}
