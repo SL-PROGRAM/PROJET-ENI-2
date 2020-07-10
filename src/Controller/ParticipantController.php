@@ -6,7 +6,6 @@ use App\Entity\Campus;
 use App\Entity\Participant;
 use App\Form\ParticipantType;
 use App\Repository\ParticipantRepository;
-use http\Exception\RuntimeException;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -74,17 +73,17 @@ class ParticipantController extends AbstractController
     /**
      * @Route ("/importCsvFile", name="app_importCsvFile", methods={"GET","POST","DELETE"})
      */
-    public function csv(Request $request)
+    public function csv()
     {
         if($_FILES){
             if($_FILES['csv']['error'] == 0) {
-                $this->CheckAndRegisterCsvFile($_FILES['csv']);
+                $this->CheckAndRegisterCsvFile();
             }
         }
         return $this->render('participant/uploadCsvFile.html.twig');
     }
 
-    public function CheckAndRegisterCsvFile($csvFile)
+    public function CheckAndRegisterCsvFile()
     {
         $csv = array();
 
