@@ -8,5 +8,7 @@
     {{ include('sortie/_form.html.twig', {'button_label': 'Update'}) }}
 
     <a href="{{ path('accueil') }}">back to list</a>
+    <a href="{{ path('sortie_delete', {'id':sortie.id}) }}" class="btn btn-primary">Supprimer la sortie</a>
+
 
 {% endblock %}
