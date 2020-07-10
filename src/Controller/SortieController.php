@@ -2,12 +2,12 @@
 
 namespace App\Controller;
 
-use App\Entity\Lieu;
+use App\Data\Search;
 use App\Entity\Sortie;
 use App\Entity\SortieParticipant;
+use App\Form\FiltreSortieType;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
-use App\Repository\LieuRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\SortieParticipantRepository;
 use App\Repository\SortieRepository;
@@ -16,65 +16,44 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/sortie")
- */
+
 class SortieController extends AbstractController
 {
     /**
-     * @Route("/", name="sortie_index", methods={"GET"})
+     * @Route("/", name="accueil", methods={"GET","POST"})
      */
-    public function index(SortieRepository $sortieRepository): Response
+    public function index(SortieRepository $sortieRepository, Request $request, ParticipantRepository $participantRepository): Response
     {
-
+        $data = new Search();
+        $form = $this->createForm(FiltreSortieType::class, $data);
+        $participant= $participantRepository->findOneBy(['email' => $this->getUser()->getUsername()]);
+        $form->handleRequest($request);
+        if($form->isSubmitted()) {
+            $data=$form->getData();
+            $sorties = $sortieRepository->findSearch($data,$participant);
+        }else{
+            $sorties=$sortieRepository->findAll();
+        }
         return $this->render('sortie/index.html.twig', [
-            'sorties' => $sortieRepository->findAll(),
+            'sorties'=>$sorties,
+            'form'=>$form->createView(),
+            'participant'=> $participant
         ]);
     }
 
     /**
-     * @Route("/new", name="sortie_new", methods={"GET","POST"})
+     * @Route("/sortie/new", name="sortie_new", methods={"GET","POST"})
      */
-    public function new(Request $request,
-                        EtatRepository $etatRepository,
-                        ParticipantRepository $participantRepository,
-                        LieuRepository $lieuRepository): Response
+    public function new(Request $request): Response
     {
-
         $sortie = new Sortie();
         $form = $this->createForm(SortieType::class, $sortie);
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
-            /*
-             * remplir valeur manquant
-             */
-
-            $etat = $etatRepository->findOneBy(['libelle' => 'Créée']);
-            $sortie->setEtat($etat);
-            $organisateur = $participantRepository->findOneBy(['email' => $this->getUser()->getUsername()]);
-            $sortie->setOrganisateur($organisateur);
-            $etat = $etatRepository->findOneBy(['libelle' => 'Créée']);
-            $sortie->setEtat($etat);
-            $sortie->setCampus($organisateur->getCampus());
-
-
-
-
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($sortie);
             $entityManager->flush();
-
-//            if ($form->get('sauvegarder')->isClicked()) {
-//                $etat = $etatRepository->findOneBy(['libelle' => 'Créée']);
-//                $sortie->setEtat($etat);
-//            }
-//            else{
-//                $etat = $etatRepository->findOneBy(['libelle' => 'Ouverte']);
-//                $sortie->setEtat($etat);
-//            }
 
             return $this->redirectToRoute('sortie_index');
         }
@@ -86,7 +65,7 @@ class SortieController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="sortie_show", methods={"GET"})
+     * @Route("/sortie/{id}", name="sortie_show", methods={"GET"})
      */
     public function show(Sortie $sortie): Response
     {
@@ -105,11 +84,10 @@ class SortieController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="sortie_edit", methods={"GET","POST"})
+     * @Route("/sortie/{id}/edit", name="sortie_edit", methods={"GET","POST"})
      */
     public function edit(Request $request, Sortie $sortie): Response
     {
-
         $form = $this->createForm(SortieType::class, $sortie);
         $form->handleRequest($request);
 
@@ -126,7 +104,7 @@ class SortieController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/delete", name="sortie_delete", methods={"GET", "POST"})
+     * @Route("/sortie/{id}/delete", name="sortie_delete", methods={"GET", "POST"})
      */
     public function delete(Request $request, Sortie $sortie, EtatRepository $er): Response
     {
@@ -147,7 +125,7 @@ class SortieController extends AbstractController
     }
 
     /**
-     * @Route("/inscrire/{id}", name="sortie_inscrire", methods={"GET"})
+     * @Route("/sortie/inscrire/{id}", name="sortie_inscrire", methods={"GET"})
      */
     public function inscrire(Request $request, Sortie $sortie, SortieRepository $sr, int $id): Response
     {
@@ -161,7 +139,7 @@ class SortieController extends AbstractController
     }
 
     /**
-     * @Route("/desinscrire/{id}", name="sortie_desinscrire", methods={"GET"})
+     * @Route("/sortie/desinscrire/{id}", name="sortie_desinscrire", methods={"GET"})
      */
     public function desinscrire(Request $request, Sortie $sortie,SortieParticipantRepository $sr, int $id): Response
     {
@@ -172,7 +150,7 @@ class SortieController extends AbstractController
         return $this->redirectToRoute('accueil');
     }
     /**
-     * @Route("/publier/{id}", name="sortie_publier", methods={"GET"})
+     * @Route("/sortie/publier/{id}", name="sortie_publier", methods={"GET"})
      */
     public function publier(Request $request, Sortie $sortie,SortieRepository $sr, EtatRepository $er, int $id): Response
     {
