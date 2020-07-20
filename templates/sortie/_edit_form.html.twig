@@ -1,0 +1,111 @@
+
+
+{{ form_start(form) }}
+<table>
+    <tr>
+        <div class="form-group">
+            <td>
+                <strong>Nom de la sortie :</strong>
+            </td>
+            <td>
+                {{ form_widget(form.nom) }}
+            </td>
+        </div>
+        <div class="form-group">
+            <td>
+                <strong>Campus :</strong>
+            </td>
+            <td>
+                    {{ sortie.campus }}
+            </td>
+        </div>
+    </tr>
+    <tr>
+        <div class="form-group">
+            <td>
+                <strong>Date et heure de sortie :</strong>
+            </td>
+            <td>
+                {{ form_widget(form.dateHeureDebut) }}
+            </td>
+        </div>
+        <div class="form-group">
+            <td>
+                <strong>Ville :</strong>
+            </td>
+            <td>
+                {{ form_widget(form.ville) }}
+            </td>
+        </div>
+    </tr>
+    <tr>
+        <div class="form-group">
+            <td>
+                <strong>Date limite d'inscription :</strong>
+            </td>
+            <td>
+                {{ form_widget(form.dateLimiteInscription) }}
+            </td>
+        </div>
+        <div class="form-group">
+            <td rowspan="5">
+                <strong>Lieu :</strong>
+            </td>
+            <td rowspan="5">
+                <div id="form-lieu">
+                    <div>
+                        {{ form_widget(form.lieu) }}
+                    </div>
+                </div>
+            </td>
+        </div>
+    </tr>
+    <tr>
+        <div class="form-group">
+            <td>
+                <strong>Nombre de place :</strong>
+            </td>
+            <td>
+                {{ form_widget(form.nbInscriptionMax) }}
+            </td>
+        </div>
+    </tr>
+    <tr>
+        <div class="form-group">
+            <td>
+                <strong>Durée :</strong>
+            </td>
+            <td>
+                {{ form_widget(form.duree) }}
+            </td>
+        </div>
+    </tr>
+    <tr>
+        <div class="form-group">
+            <td rowspan="2">
+                <strong>Description et information :</strong>
+            </td>
+            <td rowspan="2">
+                {{ form_widget(form.infosSortie) }}
+            </td>
+        </div>
+    </tr>
+
+</table>
+<div>
+    {{ form_widget(form.Enregistrer) }}
+    {{ form_widget(form.Publier) }}
+    <a href="{{ path('accueil') }}" class="btn btn-primary">Annuler</a>
+
+</div>
+
+
+{{ form_end(form) }}
+
+
+<style>
+    .click-button{
+        width: 50px;
+        height: auto;
+    }
+</style>
