@@ -6,6 +6,8 @@ use App\Entity\Participant;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -14,7 +16,8 @@ class ParticipantType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('email')
+            ->add('email', EmailType::class
+            )
             ->add('roles', CollectionType::class, [
                 'entry_type' => ChoiceType::class,
                 'entry_options' => [
@@ -30,6 +33,11 @@ class ParticipantType extends AbstractType
             ->add('telephone')
             ->add('pseudo')
             ->add('campus')
+            ->add('imageFile', FileType::class, [
+                'required'=>false,
+                'label' => 'image'
+            ])
+            ->add('actif')
         ;
     }
 

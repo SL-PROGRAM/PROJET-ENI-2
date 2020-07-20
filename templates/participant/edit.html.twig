@@ -3,12 +3,20 @@
 {% block title %}Edit Participant{% endblock %}
 
 {% block body %}
-    <h1>Edit Participant</h1>
-
+    {% if is_granted('ROLE_ADMIN') %}
+    <h1 class="text-center">Modifier un participant</h1>
+    {% else %}
+    <h1 class="text-center">Modifier votre profil</h1>
+    {% endif %}
     {{ include('participant/_form.html.twig', {'button_label': 'Update'}) }}
 
 
-    <a href="{{ path('participant_index') }}">back to list</a>
+<div class="row justify-content">
+    <div class="col" >
+        {{ include('participant/_delete_form.html.twig') }}
+    </div>
+</div>
 
-    {{ include('participant/_delete_form.html.twig') }}
+
+
 {% endblock %}

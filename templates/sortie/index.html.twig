@@ -52,6 +52,8 @@
     </div>
     <input type="submit" class="btn btn-primary" value="Rechercher"/>
     {{ form_end(form) }}
+           <div class="pre-scrollable">
+                <div class="table-responsive">
     <table class="table table-striped table-responsive-md btn-table tablesorter" id="tablesorter">
         <thead>
         <tr>
@@ -85,7 +87,7 @@
                         X
                     {% endif %}
                 </td>
-                <td>{{ sortie.organisateur }}</td>
+                <td><a href="{{ path('participant_show', {'id': sortie.organisateur.id}) }}">{{ sortie.organisateur }}</a></td>
                 <td>
                 <a href="{{ path('sortie_show', {'id': sortie.id}) }}" class="btn btn-primary">Afficher</a>
                 {% if p == "true" and sortie.organisateur != app.user and sortie.etat != "Passée" and sortie.etat != "Activité en cours" %}
@@ -117,6 +119,8 @@
         {% endfor %}
         </tbody>
     </table>
+    </div>
+           </div>
 </div>
 <a href="{{ path('sortie_new') }}" class="btn btn-primary">Ajouter une sortie</a>
 {% endblock %}
