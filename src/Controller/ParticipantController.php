@@ -116,7 +116,9 @@ class ParticipantController extends AbstractController
             }
             fclose($handle);
         }
-        echo 'DONE';
+        //Affiche un message flash pour informer de l'état de la requête
+        $this->addFlash('success', 'Intégration du fichier CSV réussie');
+        return $this->redirectToRoute('participant_index');
     }
 
     private function insertNewUser($raw){
