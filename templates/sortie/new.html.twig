@@ -155,10 +155,13 @@
                     </div>
                 </div>
             </div>
+            <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+            <a class="btn btn-primary" href="{{ path('accueil') }}">back to list</a>
         </form>
     </div>
 
 
-    <a class="btn btn-primary" href="{{ path('accueil') }}">back to list</a>
-    <button type="submit" class="btn btn-primary">{{ button_label|default('Save') }}</button>
+
+
+
 {% endblock %}
