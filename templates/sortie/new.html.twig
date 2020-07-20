@@ -3,9 +3,162 @@
 {% block title %}New Sortie{% endblock %}
 
 {% block body %}
-    <h1>Create new Sortie</h1>
+    <h1>Créer une nouvelle sortie</h1>
 
-    {{ include('sortie/_form.html.twig') }}
+   {# {{ include('sortie/_form.html.twig') }}#}
 
-    <a href="{{ path('sortie_index') }}">back to list</a>
+    <div class="container">
+        <form class="form-vertical" role="form">
+            <div class="form-group">
+                <div class="row justify-content">
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col">
+                        <div class="row">
+                            <div class="col">
+                                {{ form_label(form.nom) }}
+                            </div>
+                            <div class="col">
+                                {{ form_widget(form.nom) }}
+                            </div>
+                            <div class="col">
+                                {{ form_errors(form.nom) }}
+                            </div>
+                        </div>
+
+
+
+                        <div class="row">
+                            <div class="col">
+                                {{ form_label(form.dateHeureDebut) }}
+                            </div>
+                            <div class="col">
+                                {{ form_widget(form.dateHeureDebut) }}
+                            </div>
+                            <div class="col">
+                                {{ form_errors(form.dateHeureDebut) }}
+                            </div>
+                        </div>
+
+
+
+                        <div class="row">
+                            <div class="col">
+                                {{ form_label(form.duree) }}
+                            </div>
+                            <div class="col">
+                                {{ form_widget(form.duree) }}
+                            </div>
+                            <div class="col">
+                                {{ form_errors(form.duree) }}
+                            </div>
+                        </div>
+
+
+
+                        <div class="row">
+                            <div class="col">
+                                {{ form_label(form.dateLimiteInscription) }}
+                            </div>
+                            <div class="col">
+                                {{ form_widget(form.dateLimiteInscription) }}
+                            </div>
+                            <div class="col">
+                                {{ form_errors(form.dateLimiteInscription) }}
+                            </div>
+                        </div>
+
+
+
+                        <div class="row">
+                            <div class="col">
+                                {{ form_label(form.nbInscriptionMax) }}
+                            </div>
+                            <div class="col">
+                                {{ form_widget(form.nbInscriptionMax) }}
+                            </div>
+                            <div class="col">
+                                {{ form_errors(form.nbInscriptionMax) }}
+                            </div>
+                        </div>
+
+
+
+                        <div class="row">
+                            <div class="col">
+                                {{ form_label(form.infosSortie) }}
+                            </div>
+                            <div class="col">
+                                {{ form_widget(form.infosSortie) }}
+                            </div>
+                            <div class="col">
+                                {{ form_errors(form.infosSortie) }}
+                            </div>
+                        </div>
+
+
+
+                        <div class="row">
+                            <div class="col">
+                                {{ form_label(form.etat) }}
+                            </div>
+                            <div class="col">
+                                {{ form_widget(form.etat) }}
+                            </div>
+                            <div class="col">
+                                {{ form_errors(form.etat) }}
+                            </div>
+                        </div>
+
+
+
+                        <div class="row">
+                            <div class="col">
+                                {{ form_label(form.lieu) }}
+                            </div>
+                            <div class="col">
+                                {{ form_widget(form.lieu) }}
+                            </div>
+                            <div class="col">
+                                {{ form_errors(form.lieu) }}
+                            </div>
+                        </div>
+
+
+
+                        <div class="row">
+                            <div class="col">
+                                {{ form_label(form.organisateur) }}
+                            </div>
+                            <div class="col">
+                                {{ form_widget(form.organisateur) }}
+                            </div>
+                            <div class="col">
+                                {{ form_errors(form.organisateur) }}
+                            </div>
+                        </div>
+
+
+
+                        <div class="row">
+                            <div class="col">
+                                {{ form_label(form.campus) }}
+                            </div>
+                            <div class="col">
+                                {{ form_widget(form.campus) }}
+                            </div>
+                            <div class="col">
+                                {{ form_errors(form.campus) }}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <a class="btn btn-primary" href="{{ path('sortie_index') }}">back to list</a>
+    <button type="submit" class="btn btn-primary">{{ button_label|default('Save') }}</button>
 {% endblock %}
