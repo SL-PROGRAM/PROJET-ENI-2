@@ -14,9 +14,6 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-/**
- * @Route("/participant")
- */
 class ParticipantController extends AbstractController
 {
     private $passwordEncoder;
@@ -26,7 +23,7 @@ class ParticipantController extends AbstractController
     }
 
     /**
-     * @Route("/", name="participant_index", methods={"GET"})
+     * @Route("/admin/participant/", name="participant_index", methods={"GET"})
      */
     public function index(ParticipantRepository $participantRepository): Response
     {
@@ -36,7 +33,7 @@ class ParticipantController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="participant_new", methods={"GET","POST"})
+     * @Route("/admin/participant/new", name="participant_new", methods={"GET","POST"})
      */
     public function new(Request $request, MailerInterface $mailer): Response
     {
@@ -75,7 +72,7 @@ class ParticipantController extends AbstractController
      * @param Participant $participant
      * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
      */
-    public function sendNewUserEmail(Mailer $mailer, Participant $participant)
+    private function sendNewUserEmail(Mailer $mailer, Participant $participant)
     {
         $email = (new TemplatedEmail())
             ->from('contact@sortir.com')
@@ -89,7 +86,7 @@ class ParticipantController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/show", name="participant_show", methods={"GET"})
+     * @Route("participant/{id}/show", name="participant_show", methods={"GET"})
      */
     public function show(Participant $participant): Response
     {
@@ -99,26 +96,34 @@ class ParticipantController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="participant_edit", methods={"GET","POST"})
+     * @Route("participant/{id}/edit", name="participant_edit", methods={"GET","POST"})
      */
     public function edit(Request $request, Participant $participant): Response
     {
-
-        $form = $this->createForm(ParticipantType::class, $participant);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            //Récupérer l'image depuis le formulaire
-            $imageFile = $participant->getImageFile();
-            if($imageFile){
-                $safeFileName = uniqid();
-                $newFileName = $safeFileName.".".$imageFile->guessExtension();
-                $imageFile->move($this->getParameter('upload_dir'), $newFileName);
-                $participant->setImageUrl($newFileName);
+        $ok = false;
+        foreach ( $this->getUser()->getRoles() as $role){
+            if ($role == "ROLE_ADMIN"){
+                $ok = true;
             }
-            $this->getDoctrine()->getManager()->flush();
-            return $this->redirectToRoute('participant_index');
         }
-
+        if($participant->getEmail() == $this->getUser()->getUsername() || $ok) {
+            $form = $this->createForm(ParticipantType::class, $participant);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                //Récupérer l'image depuis le formulaire
+                $imageFile = $participant->getImageFile();
+                if ($imageFile) {
+                    $safeFileName = uniqid();
+                    $newFileName = $safeFileName . "." . $imageFile->guessExtension();
+                    $imageFile->move($this->getParameter('upload_dir'), $newFileName);
+                    $participant->setImageUrl($newFileName);
+                }
+                $this->getDoctrine()->getManager()->flush();
+                return $this->redirectToRoute('participant_index');
+            }
+        }else{
+            return $this->redirectToRoute("sortie_index");
+        }
         return $this->render('participant/edit.html.twig', [
             'participant' => $participant,
             'form' => $form->createView(),
@@ -126,7 +131,7 @@ class ParticipantController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="participant_delete", methods={"DELETE"})
+     * @Route("/admin/participant/{id}", name="participant_delete", methods={"DELETE"})
      */
     public function delete(Request $request, Participant $participant): Response
     {
