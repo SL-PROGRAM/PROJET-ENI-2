@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Campus;
 use App\Entity\Participant;
 use App\Form\ParticipantType;
 use App\Repository\ParticipantRepository;
@@ -65,6 +66,99 @@ class ParticipantController extends AbstractController
             'participant' => $participant,
             'form' => $form->createView(),
         ]);
+    }
+    /**
+     * @Route ("/importCsvFile", name="app_importCsvFile", methods={"GET","POST","DELETE"})
+     */
+    public function csv()
+    {
+        if($_FILES){
+            if($_FILES['csv']['error'] == 0) {
+                $this->CheckAndRegisterCsvFile();
+            }
+        }
+        return $this->render('participant/uploadCsvFile.html.twig');
+    }
+
+    public function CheckAndRegisterCsvFile()
+    {
+        $csv = array();
+
+        $csvFilename = $_FILES['csv']['name'];
+        //Récupère les 3 derniers caractères du nom du fichier et vérifie que ça soit bien un fichier CSV
+        $csvExtension = substr($csvFilename, -3);
+        if($csvExtension !== 'csv'){
+            dd('Extension de fichier non prise en charge');
+        }
+        $csvFilename = $_FILES['csv']['tmp_name'];
+        if(($handle = fopen($csvFilename, 'r')) !== FALSE) {
+            //Définit une limite de temps pour lire le csv et effectuer les actions
+            set_time_limit(0);
+
+            //Initialise les lignes à 0;
+            $row = 0;
+
+            //Lit toutes les lignes du csv et rempli le tableau 2D $csv
+            while(($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
+                $csv[$row]['users'] = $data[0];
+                $row++;
+            }
+
+            //Vérification et insertion des données en BDD
+            for($i = 1; $i < $row; $i++){
+                $entry = $csv[$i]['users'];
+                $this->insertNewUser($entry);
+            }
+            fclose($handle);
+        }
+        //Affiche un message flash pour informer de l'état de la requête
+        $this->addFlash('success', 'Intégration du fichier CSV réussie');
+        return $this->redirectToRoute('participant_index');
+    }
+
+    private function insertNewUser($raw){
+        $rawParticipant = explode(",", $raw);
+
+        $this->createNewParticipant($rawParticipant);
+    }
+
+    private function createNewParticipant(array $rawParticipant){
+        $em = $this->getDoctrine()->getManager();
+        $campus = $this->getDoctrine()
+            ->getRepository(Campus::class)
+            ->find($rawParticipant[1]);
+        if (!$campus){
+            throw $this->createNotFoundException(
+                'Pas de campus avec cet ID : '.$rawParticipant[1]
+            );
+        }
+
+        $participant = $this->getDoctrine()
+            ->getRepository(Participant::class)
+            ->findOneBy(['email' => $rawParticipant[2]]);
+        //Si il existe déjà un participant dans la base, continuer à lire le fichier
+        if($participant){
+            return;
+        }
+
+        $participant = new Participant();
+        $participant->setCampus($campus);
+        $participant->setEmail($rawParticipant[2]);
+        if($rawParticipant[3] === ['"ROLE_ADMIN"'])
+            $participant->setRoles(['ROLE_ADMIN']);
+        else
+            $participant->setRoles(['ROLE_USER']);
+        $passwordEncoded = $this->passwordEncoder->encodePassword($participant, $rawParticipant[4]);
+        $participant->setPassword($passwordEncoded);
+        $participant->setNom($rawParticipant[5]);
+        $participant->setPrenom($rawParticipant[6]);
+        $participant->setTelephone($rawParticipant[7]);
+        $participant->setToken(substr(str_replace('/', '',$passwordEncoded),50));
+        $participant->setActif(true);
+        $participant->setPseudo($rawParticipant[8]);
+        $participant->setImageUrl($rawParticipant[11]);
+        $em->persist($participant);
+        $em->flush();
     }
 
     /**
