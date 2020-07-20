@@ -16,12 +16,7 @@
                 <strong>Campus :</strong>
             </td>
             <td>
-                {% if new is not defined %}
                     {{ sortie.campus }}
-                {% endif %}
-                {% if new is defined %}
-                    {{ new.campus }}
-                {% endif %}
             </td>
         </div>
     </tr>
@@ -114,52 +109,3 @@
         height: auto;
     }
 </style>
-
-{% block javascripts %}
-    <script type="text/javascript">
-
-        $addLieu = document.querySelector('div#add-lieu');
-        $removeLieu = document.querySelector('div#remove-lieu');
-        $formLieu = document.querySelector('div#form-lieu');
-        $formLieuChild = document.querySelector('div#form-lieu>div');
-        $listLieu = document.querySelector('div#list-lieu');
-        $listLieuChild = document.querySelector('div#list-lieu>div');
-
-        $codePostal = document.querySelector("#codePostal");
-        $rue = document.querySelector("#rue");
-        $latitude = document.querySelector("#latitude");
-        $longitude = document.querySelector("#longitude");
-
-        $elemDisparaitre = document.querySelectorAll(".disparaitre");
-        $rowspan = document.querySelectorAll(".rowspanChange")
-
-
-
-        function seeForm() {
-            $formLieu.appendChild($formLieuChild)
-            $listLieu.innerHTML = "";
-
-            $elemDisparaitre.forEach($elem => {
-                $elem.style.display = "none";
-            });
-            $rowspan.forEach($elem => {
-                $elem.rowSpan = "5";
-            })
-
-        }
-
-        function seelist() {
-
-            $formLieu.innerHTML = "";
-            $listLieu.appendChild($listLieuChild);
-            $elemDisparaitre.forEach($elem => {
-                $elem.style.display = "";
-            });
-            $rowspan.forEach($elem => {
-                $elem.rowSpan = "1";
-            })
-        }
-
-
-    </script>
-{% endblock %}
