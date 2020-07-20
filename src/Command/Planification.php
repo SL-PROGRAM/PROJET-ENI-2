@@ -25,6 +25,11 @@ crons:
 
 class Planification extends Command
 {
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
     public function __construct(ContainerInterface $container)
     {
         parent::__construct();
