@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Data\Search;
+use App\Entity\Lieu;
 use App\Entity\Sortie;
 use App\Entity\SortieParticipant;
 use App\Form\FiltreSortieType;
@@ -52,17 +53,38 @@ class SortieController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $organisateur = $participantRepository->findOneBy(['email' => $this->getUser()->getUsername()]);
+            $sortie->setOrganisateur($organisateur);
             $sortie->setCampus($organisateur->getCampus());
             $sortieParticipant = new SortieParticipant();
             $sortieParticipant->setParticipant($organisateur);
             $sortieParticipant->setSortie($sortie);
             $sortie->addSortieParticipant($sortieParticipant);
 
-            $sortie->setEtat($etatRepository->findOneBy(['libelle' => "Créée"]));
-
-            $sortie->getLieu()->setVille($sortie->getVille());
-
             $entityManager = $this->getDoctrine()->getManager();
+
+            if ($sortie->getLieu() == null){
+                $sortieLIeu = ($request->get("sortie"));
+                $lieu = new Lieu();
+                $lieu->setNom($sortieLIeu['lieu']['nom']);
+                $lieu->setVille($sortie->getVille());
+                $lieu->setRue($sortieLIeu['lieu']['rue']);
+                $lieu->setLongitude($sortieLIeu['lieu']['latitude']);
+                $lieu->setLatitude($sortieLIeu['lieu']['longitude']);
+
+                $entityManager->persist($lieu);
+                $sortie->setLieu($lieu);
+            }
+
+            if ($form->get('Enregistrer') === $form->getClickedButton() ){
+               $sortie->setEtat($etatRepository->findOneBy(['libelle' => "Créée"]));
+            }
+            if ($form->get('Publier') === $form->getClickedButton() ){
+                $sortie->setEtat($etatRepository->findOneBy(['libelle' => "Ouverte"]));
+            }
+
+
+
+
             $entityManager->persist($sortieParticipant);
             $entityManager->persist($sortie);
             $entityManager->flush();
@@ -104,7 +126,11 @@ class SortieController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+
+            $sortie->getLieu()->setVille($sortie->getVille());
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($sortie);
+            $entityManager->flush();
 
             return $this->redirectToRoute('accueil');
         }

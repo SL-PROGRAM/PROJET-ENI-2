@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -36,13 +37,27 @@ class SortieType extends AbstractType
             ->add('infosSortie', TextareaType::class, [
             ])
             ->add('ville')
-            ;
-            $builder->add('lieu', LieuType::class, [
-            ]);
-            $builder->add('lieu_', EntityType::class, [
-                'class' => Lieu::class,
 
-                ]);
+            ->add('lieu', LieuType::class, [
+                'by_reference' => true
+            ])
+            ->add('lieu_', EntityType::class, [
+                'class' => Lieu::class,
+            ])
+            ->add('Enregistrer', SubmitType::class, [
+                'label' => 'Enregistrer',
+                'attr' => [
+                    'class' => "btn btn-primary"
+                ]
+            ])
+            ->add('Publier', SubmitType::class, [
+                'label' => 'Publier la sortie',
+                'attr' => [
+                    'class' => "btn btn-primary"
+                ]
+            ])
+        ;
+
     }
 
     public function configureOptions(OptionsResolver $resolver)
