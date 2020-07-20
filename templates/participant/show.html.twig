@@ -7,10 +7,7 @@
 
     <table class="table">
         <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ participant.id }}</td>
-            </tr>
+
             <tr>
                 <th>Email</th>
                 <td>{{ participant.email }}</td>
@@ -46,9 +43,9 @@
         </tbody>
     </table>
 
-    <a href="{{ path('participant_index') }}">back to list</a>
+    <a class="btn btn-primary" href="{{ path('participant_index') }}">back to list</a>
 
-    <a href="{{ path('participant_edit', {'id': participant.id}) }}">edit</a>
+    <a class="btn btn-primary" href="{{ path('participant_edit', {'id': participant.id}) }}">edit</a>
 
     {{ include('participant/_delete_form.html.twig') }}
 {% endblock %}

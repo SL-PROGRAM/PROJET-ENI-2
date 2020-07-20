@@ -12,7 +12,11 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-
+/**
+ * Class EmailController
+ * @package App\Controller
+ * @Route("/mdp")
+ */
 class EmailController extends AbstractController
 {
     /**
@@ -40,10 +44,9 @@ class EmailController extends AbstractController
         if(!$user){
             throw $this->createNotFoundException('Utilisateur introuvable, avez-vous correctement saisi votre email?');
         }
-        $hashPwd = substr($user->getPassword(), 30);
 
         $email = (new TemplatedEmail())
-            ->from('contact@sortir.com')
+            ->from('contact.sortir.eni@gmail.com')
             ->to($adresse)
             ->subject('Votre nouveau mot de passe')
             ->htmlTemplate('password/mail.html.twig')
@@ -56,7 +59,7 @@ class EmailController extends AbstractController
     }
 
     /**
-     * @Route("/resetPwd/{token}", name="resetPwd")
+     * @Route("/resetPwd/{token}/", name="resetPwd")
      * @param Request $request
      * @return mixed
      */
@@ -65,11 +68,16 @@ class EmailController extends AbstractController
         $userRepo = $this->getDoctrine()->getRepository(Participant::class);
         $user = $userRepo->findOneBy(['token' => $token]);
 
+        //Si j'arrive pour créer mon mot de passe, changer le texte au dessus du bouton
+/*        if(!$ok){
+            $textToShow = 'Réinitialisez votre mot de passe';
+        }else{
+            $textToShow = 'Créez votre mot de passe';
+        }*/
         $password = $request->request->get('_pwd');
         if($password != null)
         {
             $encodedPassword = $passwordEncoder->encodePassword($user, $password);
-
             $user->setToken(substr(str_replace('/', '',$encodedPassword),50));
             $user->setPassword($encodedPassword);
             $entityManager->persist($user);
@@ -80,7 +88,8 @@ class EmailController extends AbstractController
 
 
         return $this->render('password/resetPwd.html.twig',[
-            'token' =>$token
+            'token' =>$token,
+            //'textToShow'=>$textToShow
         ]);
     }
 }
