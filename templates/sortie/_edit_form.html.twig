@@ -1,6 +1,6 @@
 
 
-    {{ form_start(form) }}
+{{ form_start(form) }}
 <table>
     <tr>
         <div class="form-group">
@@ -16,7 +16,12 @@
                 <strong>Campus :</strong>
             </td>
             <td>
+                {% if new is not defined %}
+                    {{ sortie.campus }}
+                {% endif %}
+                {% if new is defined %}
                     {{ new.campus }}
+                {% endif %}
             </td>
         </div>
     </tr>
@@ -34,7 +39,7 @@
                 <strong>Ville :</strong>
             </td>
             <td>
-                    {{ form_widget(form.ville) }}
+                {{ form_widget(form.ville) }}
             </td>
         </div>
     </tr>
@@ -48,22 +53,13 @@
             </td>
         </div>
         <div class="form-group">
-            <td class="rowspanChange">
+            <td rowspan="5">
                 <strong>Lieu :</strong>
             </td>
-            <td class="rowspanChange">
+            <td rowspan="5">
                 <div id="form-lieu">
                     <div>
-                         {{ form_widget(form.lieu) }}
-                        <span id="remove-lieu" onclick="seelist()"><img class="click-button" src="{{ asset('asset/image/Remove-icon.png') }}" alt="ajouter un lieu"></span>
-                    </div>
-                </div>
-                <div id="list-lieu">
-                    <div>
-                        <span id="choixLieu">
-                            {{ form_widget(form.lieu_) }}
-                        </span>
-                        <span id="add-lieu" onclick=seeForm()><img class="click-button" src="{{ asset('asset/image/Add-icon.png') }}" alt="ajouter un lieu"></span>
+                        {{ form_widget(form.lieu) }}
                     </div>
                 </div>
             </td>
@@ -78,15 +74,6 @@
                 {{ form_widget(form.nbInscriptionMax) }}
             </td>
         </div>
-        <div class="form-group">
-            <td class="disparaitre">
-                <strong>Rue :</strong>
-            </td>
-            <td class="disparaitre" id ="rue">
-                TEXTE A FAIRE APPARAITRE EN AJAX
-
-            </td>
-        </div>
     </tr>
     <tr>
         <div class="form-group">
@@ -95,14 +82,6 @@
             </td>
             <td>
                 {{ form_widget(form.duree) }}
-            </td>
-        </div>
-        <div class="form-group">
-            <td class="disparaitre">
-                <strong>Code Postal:</strong>
-            </td>
-            <td id="codePostal" class="disparaitre">
-                TEXTE A FAIRE APPARAITRE EN AJAX
             </td>
         </div>
     </tr>
@@ -115,36 +94,18 @@
                 {{ form_widget(form.infosSortie) }}
             </td>
         </div>
-        <div class="form-group">
-            <td class="disparaitre">
-                <strong>Latitide :</strong>
-            </td>
-            <td class="disparaitre" id="latitude">
-                TEXTE A FAIRE APPARAITRE EN AJAX
-            </td>
-        </div>
-    </tr>
-    <tr>
-        <div class="form-group">
-            <td class="disparaitre">
-                <strong>Longitude :</strong>
-            </td>
-            <td class="disparaitre" id="longitude">
-                TEXTE A FAIRE APPARAITRE EN AJAX
-            </td>
-        </div>
     </tr>
 
 </table>
-    <div>
-        {{ form_widget(form.Enregistrer) }}
-        {{ form_widget(form.Publier) }}
-        <a href="{{ path('accueil') }}" class="btn btn-primary">Annuler</a>
+<div>
+    {{ form_widget(form.Enregistrer) }}
+    {{ form_widget(form.Publier) }}
+    <a href="{{ path('accueil') }}" class="btn btn-primary">Annuler</a>
 
-    </div>
+</div>
 
 
-    {{ form_end(form) }}
+{{ form_end(form) }}
 
 
 <style>
@@ -164,7 +125,10 @@
         $listLieu = document.querySelector('div#list-lieu');
         $listLieuChild = document.querySelector('div#list-lieu>div');
 
-        $formLieu.innerHTML="";
+        $codePostal = document.querySelector("#codePostal");
+        $rue = document.querySelector("#rue");
+        $latitude = document.querySelector("#latitude");
+        $longitude = document.querySelector("#longitude");
 
         $elemDisparaitre = document.querySelectorAll(".disparaitre");
         $rowspan = document.querySelectorAll(".rowspanChange")
