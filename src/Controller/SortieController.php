@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Data\Search;
+use App\Entity\Lieu;
 use App\Entity\Sortie;
 use App\Entity\SortieParticipant;
 use App\Form\FiltreSortieType;
@@ -44,23 +45,53 @@ class SortieController extends AbstractController
     /**
      * @Route("/sortie/new", name="sortie_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, ParticipantRepository $participantRepository, EtatRepository $etatRepository): Response
     {
         $sortie = new Sortie();
         $form = $this->createForm(SortieType::class, $sortie);
         $form->handleRequest($request);
+        $organisateur = $participantRepository->findOneBy(['email' => $this->getUser()->getUsername()]);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $sortie->setOrganisateur($organisateur);
+            $sortie->setCampus($organisateur->getCampus());
+            $sortieParticipant = new SortieParticipant();
+            $sortieParticipant->setParticipant($organisateur);
+            $sortieParticipant->setSortie($sortie);
+            $sortie->addSortieParticipant($sortieParticipant);
+
             $entityManager = $this->getDoctrine()->getManager();
+
+            if ($sortie->getLieu() == null){
+                $sortieLIeu = ($request->get("sortie"));
+                $lieu = new Lieu();
+                $lieu->setNom($sortieLIeu['lieu']['nom']);
+                $lieu->setVille($sortie->getVille());
+                $lieu->setRue($sortieLIeu['lieu']['rue']);
+                $lieu->setLongitude($sortieLIeu['lieu']['latitude']);
+                $lieu->setLatitude($sortieLIeu['lieu']['longitude']);
+
+                $entityManager->persist($lieu);
+                $sortie->setLieu($lieu);            }
+
+            if ($form->get('Enregistrer') === $form->getClickedButton() ){
+               $sortie->setEtat($etatRepository->findOneBy(['libelle' => "Créée"]));
+            }
+            if ($form->get('Publier') === $form->getClickedButton() ){
+                $sortie->setEtat($etatRepository->findOneBy(['libelle' => "Ouverte"]));
+            }
+
+            $entityManager->persist($sortieParticipant);
             $entityManager->persist($sortie);
             $entityManager->flush();
 
-            return $this->redirectToRoute('sortie_index');
+            return $this->redirectToRoute('accueil');
         }
 
         return $this->render('sortie/new.html.twig', [
             'sortie' => $sortie,
             'form' => $form->createView(),
+            'new' => $organisateur,
         ]);
     }
 
@@ -86,15 +117,32 @@ class SortieController extends AbstractController
     /**
      * @Route("/sortie/{id}/edit", name="sortie_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Sortie $sortie): Response
+    public function edit(Request $request, Sortie $sortie, EtatRepository $etatRepository): Response
     {
+        $lieu = $sortie->getLieu();
         $form = $this->createForm(SortieType::class, $sortie);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('sortie_index');
+            $entityManager = $this->getDoctrine()->getManager();
+
+            if ($sortie->getLieu() != $lieu){
+                dd($sortie);
+
+            }
+
+            if ($form->get('Enregistrer') === $form->getClickedButton() ){
+                $sortie->setEtat($etatRepository->findOneBy(['libelle' => "Créée"]));
+            }
+            if ($form->get('Publier') === $form->getClickedButton() ){
+                $sortie->setEtat($etatRepository->findOneBy(['libelle' => "Ouverte"]));
+            }
+
+            $entityManager->persist($sortie);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('accueil');
         }
 
         return $this->render('sortie/edit.html.twig', [
@@ -159,4 +207,5 @@ class SortieController extends AbstractController
         $this->getDoctrine()->getManager()->flush();
         return $this->redirectToRoute('accueil');
     }
+
 }

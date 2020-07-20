@@ -6,12 +6,10 @@
         <th>Nom</th>
     </tr>
     {% for participant in sortie.sortieParticipants %}
-    <tr>
-
+        <tr>
             <td>{{ participant.participant.pseudo }} </td>
-            <td>{{ participant.participant.nom }} </td>
-
-    </tr>
+            <td><a href="{{ path('participant_show', {'id': participant.participant.id}) }}">{{ participant.participant.nom }}</a> </td>
+        </tr>
     {%  endfor %}
 
 </table>

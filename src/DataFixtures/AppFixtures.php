@@ -126,7 +126,7 @@ class AppFixtures extends Fixture
         $manager->persist($participant);
 
         //creation user
-        for ($i = 1; $i < 20; $i++) {
+        for ($i = 1; $i < 200; $i++) {
             $participant = new Participant();
             $participant->setPseudo($faker->userName);
             $participant->setNom($faker->firstName);
@@ -231,7 +231,7 @@ class AppFixtures extends Fixture
     public function loadFixtudeSortie(\Faker\Generator $faker, array $etats, array $participants, array $campuses, array $lieux, ObjectManager $manager): array
     {
         $sorties = [];
-        for ($i = 0; $i < 20; $i++) {
+        for ($i = 0; $i < 200; $i++) {
             $sortie = new Sortie();
             $sortie->setNom($faker->name);
             $sortie->setDateHeureDebut($faker->dateTimeBetween($startDate = '+5 days', $interval = '+ 10 days', $timezone = 'Europe/Paris'));
@@ -279,7 +279,7 @@ class AppFixtures extends Fixture
     public function loadFixtureSortieParticipant(array $participants, array $sorties, ObjectManager $manager): array
     {
         $sortiParcicipants = [];
-        for ($i = 0; $i < 10; $i++){
+        for ($i = 0; $i < 1000; $i++){
             $sortiParcicipant = new SortieParticipant();
 
 
