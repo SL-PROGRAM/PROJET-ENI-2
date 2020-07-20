@@ -87,7 +87,7 @@
                         X
                     {% endif %}
                 </td>
-                <td>{{ sortie.organisateur }}</td>
+                <td><a href="{{ path('participant_show', {'id': sortie.organisateur.id}) }}">{{ sortie.organisateur }}</a></td>
                 <td>
                 <a href="{{ path('sortie_show', {'id': sortie.id}) }}" class="btn btn-primary">Afficher</a>
                 {% if p == "true" and sortie.organisateur != app.user and sortie.etat != "Passée" and sortie.etat != "Activité en cours" %}

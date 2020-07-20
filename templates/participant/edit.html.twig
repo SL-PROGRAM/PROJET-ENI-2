@@ -3,8 +3,11 @@
 {% block title %}Edit Participant{% endblock %}
 
 {% block body %}
-    <h1>Edit Participant</h1>
-
+    {% if is_granted('ROLE_ADMIN') %}
+    <h1 class="text-center">Modifier un participant</h1>
+    {% else %}
+    <h1 class="text-center">Modifier votre profil</h1>
+    {% endif %}
     {{ include('participant/_form.html.twig', {'button_label': 'Update'}) }}
 
 

@@ -213,10 +213,14 @@ class ParticipantController extends AbstractController
                     $participant->setImageUrl($newFileName);
                 }
                 $this->getDoctrine()->getManager()->flush();
-                return $this->redirectToRoute('participant_index');
+                if($ok) {
+                    return $this->redirectToRoute('participant_index');
+                }else{
+                    return $this->redirectToRoute('accueil');
+                }
             }
         }else{
-            return $this->redirectToRoute("sortie_index");
+            return $this->redirectToRoute("accueil");
         }
         return $this->render('participant/edit.html.twig', [
             'participant' => $participant,

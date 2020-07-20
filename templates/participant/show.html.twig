@@ -3,7 +3,7 @@
 {% block title %}Participant{% endblock %}
 
 {% block body %}
-    <h1>Participant</h1>
+    <h1 class="text-center">Participant</h1>
 
     <table class="table">
         <tbody>
@@ -11,14 +11,6 @@
             <tr>
                 <th>Email</th>
                 <td>{{ participant.email }}</td>
-            </tr>
-            <tr>
-                <th>Roles</th>
-                <td>{{ participant.roles ? participant.roles|json_encode : '' }}</td>
-            </tr>
-            <tr>
-                <th>Password</th>
-                <td>{{ participant.password }}</td>
             </tr>
             <tr>
                 <th>Nom</th>
@@ -36,16 +28,17 @@
                 <th>Pseudo</th>
                 <td>{{ participant.pseudo }}</td>
             </tr>
-            <tr>
-                <th>Token</th>
-                <td>{{ participant.token }}</td>
-            </tr>
+
         </tbody>
     </table>
-
-    <a class="btn btn-primary" href="{{ path('participant_index') }}">back to list</a>
-
-    <a class="btn btn-primary" href="{{ path('participant_edit', {'id': participant.id}) }}">edit</a>
-
+    {% if is_granted('ROLE_ADMIN') %}
+    <a class="btn btn-primary" href="{{ path('participant_index') }}">Retour</a>
+    {% else %}
+        <a class="btn btn-primary" href="{{ path('accueil') }}">Retour</a>
+    {% endif %}
+    {% if is_granted('ROLE_ADMIN') and app.user.username != participant.email %}
+    <a class="btn btn-primary" href="{{ path('participant_edit', {'id': participant.id}) }}">Modifier</a>
+    {% endif %}
     {{ include('participant/_delete_form.html.twig') }}
+
 {% endblock %}

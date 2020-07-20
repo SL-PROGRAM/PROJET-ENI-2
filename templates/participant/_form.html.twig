@@ -1,3 +1,10 @@
+{% if not is_granted("ROLE_ADMIN") %}
+    <style>
+        .admin{
+            display: none;
+        }
+    </style>
+{% endif %}
 {{ form_start(form) }}
 <div class="container">
     <form class="form-vertical" role="form">
@@ -7,10 +14,10 @@
                 <div class="col">
                     <div class="row">
                         <div class="col">
-                            {{ form_label(form.nom) }}
+                            {{ form_label(form.nom,"Nom :",{ 'label_attr': {'class': 'form-label'} }) }}
                         </div>
                         <div class="col">
-                            {{ form_widget(form.nom) }}
+                            {{ form_widget(form.nom,{ 'attr': {'class': 'form-control'} }) }}
                         </div>
                         <div class="col">
                             {{ form_errors(form.nom) }}
@@ -18,10 +25,10 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            {{ form_label(form.prenom) }}
+                            {{ form_label(form.prenom,"Prenom :",{ 'label_attr': {'class': 'form-label'} }) }}
                         </div>
                         <div class="col">
-                            {{ form_widget(form.prenom) }}
+                            {{ form_widget(form.prenom,{ 'attr': {'class': 'form-control'} }) }}
                         </div>
                         <div class="col">
                             {{ form_errors(form.prenom) }}
@@ -29,10 +36,10 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            {{ form_label(form.email) }}
+                            {{ form_label(form.email,"Email :",{ 'label_attr': {'class': 'form-label'} }) }}
                         </div>
                         <div class="col">
-                            {{ form_widget(form.email) }}
+                            {{ form_widget(form.email,{ 'attr': {'class': 'form-control'} }) }}
                         </div>
                         <div class="col">
                             {{ form_errors(form.email) }}
@@ -40,10 +47,10 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            {{ form_label(form.pseudo) }}
+                            {{ form_label(form.pseudo,"Pseudo :",{ 'label_attr': {'class': 'form-label'} }) }}
                         </div>
                         <div class="col">
-                            {{ form_widget(form.pseudo) }}
+                            {{ form_widget(form.pseudo,{ 'attr': {'class': 'form-control'} }) }}
                         </div>
                         <div class="col">
                             {{ form_errors(form.pseudo) }}
@@ -51,10 +58,10 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            {{ form_label(form.telephone) }}
+                            {{ form_label(form.telephone,"Téléphone :",{ 'label_attr': {'class': 'form-label'} }) }}
                         </div>
                         <div class="col">
-                            {{ form_widget(form.telephone) }}
+                            {{ form_widget(form.telephone,{ 'attr': {'class': 'form-control'} }) }}
                         </div>
                         <div class="col">
                             {{ form_errors(form.telephone) }}
@@ -62,10 +69,10 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            {{ form_label(form.campus) }}
+                            {{ form_label(form.campus,"Campus :",{ 'label_attr': {'class': 'form-label'} }) }}
                         </div>
                         <div class="col">
-                            {{ form_widget(form.campus) }}
+                            {{ form_widget(form.campus,{ 'attr': {'class': 'form-control'} }) }}
                         </div>
                         <div class="col">
                             {{ form_errors(form.campus) }}
@@ -73,48 +80,47 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            {{ form_label(form.imageFile) }}
+                            {{ form_label(form.imageFile,"Image :",{ 'label_attr': {'class': 'form-label'} }) }}
                         </div>
                         <div class="col">
-                            {{ form_widget(form.imageFile) }}
+                            {{ form_widget(form.imageFile,{ 'attr': {'class': 'form-control-file'} }) }}
                         </div>
                         <div class="col">
                             {{ form_errors(form.imageFile) }}
                         </div>
                     </div>
+
                     <div class="row">
                         <div class="col">
-                            {{ form_label(form.actif) }}
+                            {{ form_label(form.actif,"Actif :",{ 'label_attr': {'class': 'form-label admin'} }) }}
                         </div>
                         <div class="col">
-                            {{ form_widget(form.actif) }}
+                            {{ form_widget(form.actif,{ 'attr': {'class': 'admin'} }) }}
                         </div>
-                        <div class="col">
-                            {{ form_errors(form.actif) }}
-                        </div>
+
                     </div>
                     <div class="row">
                         <div class="col">
-                            {{ form_label(form.roles) }}
+                            {{ form_label(form.roles,"Role(s) :",{ 'label_attr': {'class': 'form-label admin'} }) }}
                         </div>
                         <div class="col">
-                            {{ form_widget(form.roles) }}
+                            {{ form_widget(form.roles,{ 'attr': {'class': 'admin'} }) }}
                         </div>
-                        <div class="col">
-                            {{ form_errors(form.roles) }}
-                        </div>
+
                     </div>
+
                 </div>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary">{{ button_label|default('Save') }}</button>
+        <input type="submit" value="Valider" class="btn btn-primary"/>
     </form>
 
 
     {{ form_end(form) }}
-    <a class="btn btn-primary" href="{{ path('participant_index') }}">back to list</a>
+    {% if is_granted('ROLE_ADMIN') %}
+        <a class="btn btn-primary" href="{{ path('participant_index') }}">Retour</a>
+    {% else %}
+        <a class="btn btn-primary" href="{{ path('accueil') }}">Retour</a>
+    {% endif %}
 
 </div>
-
-
-
