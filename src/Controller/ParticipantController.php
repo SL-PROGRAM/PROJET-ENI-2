@@ -103,8 +103,6 @@ class ParticipantController extends AbstractController
 
             //Lit toutes les lignes du csv et rempli le tableau 2D $csv
             while(($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
-                //Vérifier ici que le nombre de colonnes est correct (12)
-                //Que tout les titres des champs soient correctement nommés
                 $csv[$row]['users'] = $data[0];
                 $row++;
             }
