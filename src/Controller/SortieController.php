@@ -50,9 +50,9 @@ class SortieController extends AbstractController
         $sortie = new Sortie();
         $form = $this->createForm(SortieType::class, $sortie);
         $form->handleRequest($request);
+        $organisateur = $participantRepository->findOneBy(['email' => $this->getUser()->getUsername()]);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $organisateur = $participantRepository->findOneBy(['email' => $this->getUser()->getUsername()]);
             $sortie->setOrganisateur($organisateur);
             $sortie->setCampus($organisateur->getCampus());
             $sortieParticipant = new SortieParticipant();
@@ -72,8 +72,7 @@ class SortieController extends AbstractController
                 $lieu->setLatitude($sortieLIeu['lieu']['longitude']);
 
                 $entityManager->persist($lieu);
-                $sortie->setLieu($lieu);
-            }
+                $sortie->setLieu($lieu);            }
 
             if ($form->get('Enregistrer') === $form->getClickedButton() ){
                $sortie->setEtat($etatRepository->findOneBy(['libelle' => "Créée"]));
@@ -81,9 +80,6 @@ class SortieController extends AbstractController
             if ($form->get('Publier') === $form->getClickedButton() ){
                 $sortie->setEtat($etatRepository->findOneBy(['libelle' => "Ouverte"]));
             }
-
-
-
 
             $entityManager->persist($sortieParticipant);
             $entityManager->persist($sortie);
@@ -95,6 +91,7 @@ class SortieController extends AbstractController
         return $this->render('sortie/new.html.twig', [
             'sortie' => $sortie,
             'form' => $form->createView(),
+            'new' => $organisateur,
         ]);
     }
 
@@ -120,15 +117,28 @@ class SortieController extends AbstractController
     /**
      * @Route("/sortie/{id}/edit", name="sortie_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Sortie $sortie): Response
+    public function edit(Request $request, Sortie $sortie, EtatRepository $etatRepository): Response
     {
+        $lieu = $sortie->getLieu();
         $form = $this->createForm(SortieType::class, $sortie);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $sortie->getLieu()->setVille($sortie->getVille());
             $entityManager = $this->getDoctrine()->getManager();
+
+            if ($sortie->getLieu() != $lieu){
+                dd($sortie);
+
+            }
+
+            if ($form->get('Enregistrer') === $form->getClickedButton() ){
+                $sortie->setEtat($etatRepository->findOneBy(['libelle' => "Créée"]));
+            }
+            if ($form->get('Publier') === $form->getClickedButton() ){
+                $sortie->setEtat($etatRepository->findOneBy(['libelle' => "Ouverte"]));
+            }
+
             $entityManager->persist($sortie);
             $entityManager->flush();
 
@@ -197,4 +207,5 @@ class SortieController extends AbstractController
         $this->getDoctrine()->getManager()->flush();
         return $this->redirectToRoute('accueil');
     }
+
 }
