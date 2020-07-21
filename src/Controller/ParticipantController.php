@@ -195,31 +195,31 @@ class ParticipantController extends AbstractController
     public function edit(Request $request, Participant $participant): Response
     {
         $ok = false;
-        foreach ( $this->getUser()->getRoles() as $role){
-            if ($role == "ROLE_ADMIN"){
+        foreach ($this->getUser()->getRoles() as $role) {
+            if ($role == "ROLE_ADMIN") {
                 $ok = true;
             }
         }
-        if($participant->getEmail() == $this->getUser()->getUsername() || $ok) {
+        if ($participant->getEmail() == $this->getUser()->getUsername() || $ok) {
             $form = $this->createForm(ParticipantType::class, $participant);
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                //Récupérer l'image depuis le formulaire
-                $imageFile = $participant->getImageFile();
-                if ($imageFile) {
+                //Récupérer le fichier image depuis le formulaire
+                $imageFile = $form['imageFile']->getData();
+                if($imageFile){
                     $safeFileName = uniqid();
-                    $newFileName = $safeFileName . "." . $imageFile->guessExtension();
-                    $imageFile->move($this->getParameter('upload_dir'), $newFileName);
+                    $newFileName = $safeFileName.".".$imageFile->guessExtension();
+                    $imageFile->move($this->getParameter('upload_dir'),$newFileName);
                     $participant->setImageUrl($newFileName);
                 }
-                $this->getDoctrine()->getManager()->flush();
-                if($ok) {
-                    return $this->redirectToRoute('participant_index');
-                }else{
+                    $this->getDoctrine()->getManager()->flush();
+                 if($ok){
+                     return $this->redirectToRoute('participant_index');
+                 }else{
                     return $this->redirectToRoute('accueil');
-                }
+                 }
             }
-        }else{
+        } else {
             return $this->redirectToRoute("accueil");
         }
         return $this->render('participant/edit.html.twig', [
