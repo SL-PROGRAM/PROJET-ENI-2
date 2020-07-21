@@ -74,10 +74,42 @@ class ParticipantController extends AbstractController
     {
         if($_FILES){
             if($_FILES['csv']['error'] == 0) {
-                $this->CheckAndRegisterCsvFile();
+                $csv = array();
+
+                $csvFilename = $_FILES['csv']['name'];
+                //Récupère les 3 derniers caractères du nom du fichier et vérifie que ça soit bien un fichier CSV
+                $csvExtension = substr($csvFilename, -3);
+                if($csvExtension !== 'csv'){
+                    $this->addFlash('danger','Extension de fichier non prise en charge');
+                    return $this->redirectToRoute('participant_index');
+                }
+                $csvFilename = $_FILES['csv']['tmp_name'];
+                if(($handle = fopen($csvFilename, 'r')) !== FALSE) {
+                    //Définit une limite de temps pour lire le csv et effectuer les actions
+                    set_time_limit(0);
+
+                    //Initialise les lignes à 0;
+                    $row = 0;
+
+                    //Lit toutes les lignes du csv et rempli le tableau 2D $csv
+                    while(($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
+                        $csv[$row]['users'] = $data[0];
+                        $row++;
+                    }
+
+                    //Vérification et insertion des données en BDD
+                    for($i = 1; $i < $row; $i++){
+                        $entry = $csv[$i]['users'];
+                        $this->insertNewUser($entry);
+                    }
+                    fclose($handle);
+                }
+                //Affiche un message flash pour informer de l'état de la requête
+                $this->addFlash('success', 'Intégration du fichier CSV réussie');
+                return $this->redirectToRoute('participant_index');
             }
         }
-        return $this->render('participant/uploadCsvFile.html.twig');
+        return $this->redirectToRoute('participant_index');
     }
 
     public function CheckAndRegisterCsvFile()
@@ -88,7 +120,8 @@ class ParticipantController extends AbstractController
         //Récupère les 3 derniers caractères du nom du fichier et vérifie que ça soit bien un fichier CSV
         $csvExtension = substr($csvFilename, -3);
         if($csvExtension !== 'csv'){
-            dd('Extension de fichier non prise en charge');
+            $this->addFlash('danger','Extension de fichier non prise en charge');
+            return $this->redirectToRoute('participant_index');
         }
         $csvFilename = $_FILES['csv']['tmp_name'];
         if(($handle = fopen($csvFilename, 'r')) !== FALSE) {

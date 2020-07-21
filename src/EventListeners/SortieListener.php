@@ -25,11 +25,14 @@ class SortieListener
                 ->getQuery()
                 ->getSingleScalarResult();
             $repoSortie = $entityManager->getRepository('App:Sortie');
-            $sortie = $repoSortie->find($entity->getSortie()->getId());
-            $nbInscriptionsMax = $sortie->getNbInscriptionMax();
-            if ($nbInscrit >= $nbInscriptionsMax) {
-                $entityManager->clear($entity);
-                $this->addFlash('danger', 'Vous ne pouvez pas vous inscrire car il n\'y a pas de place disponible');
+            $idSortie = $entity->getSortie()->getId();
+            if($idSortie!=null) {
+                $sortie = $repoSortie->find();
+                $nbInscriptionsMax = $sortie->getNbInscriptionMax();
+                if ($nbInscrit >= $nbInscriptionsMax) {
+                    $entityManager->remove($entity);
+
+                }
             }
             $entityManager->flush();
         }
