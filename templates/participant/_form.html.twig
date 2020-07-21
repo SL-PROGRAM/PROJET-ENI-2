@@ -114,8 +114,6 @@
         </div>
         <input type="submit" value="Valider" class="btn btn-primary"/>
     </form>
-
-
     {{ form_end(form) }}
     {% if is_granted('ROLE_ADMIN') %}
         <a class="btn btn-primary" href="{{ path('participant_index') }}">Retour</a>

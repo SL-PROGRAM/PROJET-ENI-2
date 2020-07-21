@@ -204,22 +204,25 @@ class ParticipantController extends AbstractController
             $form = $this->createForm(ParticipantType::class, $participant);
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                //Récupérer l'image depuis le formulaire
+                //Récupérer le fichier image depuis le formulaire
+
                 $imageFile = $participant->getImageFile();
-                if ($imageFile) {
+                if($imageFile){
                     $safeFileName = uniqid();
-                    $newFileName = $safeFileName . "." . $imageFile->guessExtension();
-                    $imageFile->move($this->getParameter('upload_dir'), $newFileName);
+                    $newFileName = $safeFileName.".".$imageFile->guessExtension();
+                    $imageFile->move($this->getParameter('upload_dir'),$newFileName);
                     $participant->setImageUrl($newFileName);
                 }
                 $this->getDoctrine()->getManager()->flush();
                 if($ok) {
                     return $this->redirectToRoute('participant_index');
                 }else{
-                    return $this->redirectToRoute('accueil');
+                    //Probleme quand je redirige vers l'accueil
+                    dd($newFileName);
+                    return $this->redirectToRoute('participant_index');
                 }
             }
-        }else{
+        } else {
             return $this->redirectToRoute("accueil");
         }
         return $this->render('participant/edit.html.twig', [
