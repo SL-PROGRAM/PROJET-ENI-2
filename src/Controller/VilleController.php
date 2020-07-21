@@ -16,6 +16,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class VilleController extends AbstractController
 {
     /**
+     * @param VilleRepository $villeRepository
+     * @param Request $request
+     * @return Response
      * @Route("/", name="ville_index", methods={"GET","POST"})
      */
     public function index(VilleRepository $villeRepository, Request $request): Response
@@ -39,6 +42,10 @@ class VilleController extends AbstractController
     }
 
     /**
+     * @param VilleRepository $villeRepository
+     * @param Request $request
+     * @param Ville $ville
+     * @return Response
      * @Route("/{id}/edit", name="ville_edit", methods={"GET","POST"})
      */
     public function edit(VilleRepository $villeRepository, Request $request, Ville $ville): Response
@@ -60,6 +67,9 @@ class VilleController extends AbstractController
     }
 
     /**
+     * @param Request $request
+     * @param Ville $ville
+     * @return Response
      * @Route("/{id}", name="ville_delete", methods={"DELETE"})
      */
     public function delete(Request $request, Ville $ville): Response

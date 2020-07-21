@@ -14,12 +14,14 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * Class EmailController
+ * Gestion de l'envoi des emails pour mdp oublié
  * @package App\Controller
  * @Route("/mdp")
  */
 class EmailController extends AbstractController
 {
     /**
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @Route("/mdp_oublie", name="mdp_oublie")
      */
     public function index()

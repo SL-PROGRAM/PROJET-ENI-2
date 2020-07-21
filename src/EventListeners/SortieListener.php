@@ -7,8 +7,17 @@ use App\Entity\SortieParticipant;
 use App\Entity\Sortie;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 
+/**
+ * Class SortieListener
+ * Listener d'ajout de participant sur une sortie,
+ * vérifie si le nombre max de participants n'est pas dépassé
+ * @package App\EventListeners
+ */
 class SortieListener
 {
+    /**
+     * @param LifecycleEventArgs $args
+     */
     public function prePersist(LifecycleEventArgs $args)
     {
         $entity = $args->getObject();
@@ -25,11 +34,14 @@ class SortieListener
                 ->getQuery()
                 ->getSingleScalarResult();
             $repoSortie = $entityManager->getRepository('App:Sortie');
-            $sortie = $repoSortie->find($entity->getSortie()->getId());
-            $nbInscriptionsMax = $sortie->getNbInscriptionMax();
-            if ($nbInscrit >= $nbInscriptionsMax) {
-                $entityManager->remove($entity);
-                $this->addFlash('danger', 'Vous ne pouvez pas vous inscrire car il n\'y a pas de place disponible');
+            $idSortie = $entity->getSortie()->getId();
+            if($idSortie!=null) {
+                $sortie = $repoSortie->find();
+                $nbInscriptionsMax = $sortie->getNbInscriptionMax();
+                if ($nbInscrit >= $nbInscriptionsMax) {
+                    $entityManager->remove($entity);
+
+                }
             }
             $entityManager->flush();
         }

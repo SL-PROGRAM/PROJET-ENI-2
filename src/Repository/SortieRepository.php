@@ -16,11 +16,20 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class SortieRepository extends ServiceEntityRepository
 {
+    /**
+     * SortieRepository constructor.
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Sortie::class);
     }
 
+    /**
+     * @param Search $search
+     * @param Participant $participant
+     * @return int|mixed|string
+     */
     public function findSearch(Search $search, Participant $participant)
     {
 

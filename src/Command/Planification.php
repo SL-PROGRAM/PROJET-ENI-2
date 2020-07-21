@@ -10,27 +10,42 @@ use \Datetime;
 use Symfony\Component\Console\Output\OutputInterface;
 
 
-/*
+/**
  .symfony.cloud.yaml
 
 timezone: Europe/Paris
 
 crons:
     update_base:
-        # every day at 3h45 AM */
-// spec: */5 * * * *
+        #Toutes les 5 minutes
+// spec: *\/5 * * * *
 // cmd: php bin/console app:planification
 
-
+ *
+ * Cette classe crée une commande symfony, elle peut être mise en fonctionnement via les Cron Jobs SymfonyCloud
+*/
 
 class Planification extends Command
 {
+
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
+     * Planification constructor.
+     * @param ContainerInterface $container
+     */
     public function __construct(ContainerInterface $container)
     {
         parent::__construct();
         $this->container = $container;
     }
 
+    /**
+     * Configuration de la commande
+     */
     protected function configure () {
 
         $this->setName('app:planification');
@@ -38,6 +53,12 @@ class Planification extends Command
 
     }
 
+    /**
+     * Exécution de la commande
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int
+     */
     public function execute (InputInterface $input, OutputInterface $output) {
         $em= $this->getContainer()->get('doctrine')->getManager();
         $repoSortie =$em->getRepository('App:Sortie');

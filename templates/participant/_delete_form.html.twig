@@ -1,9 +1,10 @@
 {% if is_granted('ROLE_ADMIN') and app.user.username != participant.email %}
+    <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4">
 <form method="post" action="{{ path('participant_delete', {'id': participant.id}) }}"
-      onsubmit="return confirm('Etes-vous sûr(e)?');">
+      onsubmit="return confirm('Etes-vous sûr(e)?');" class="justify-content-center">
     <input type="hidden" name="_method" value="DELETE">
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ participant.id) }}">
-    <button class="btn btn btn-danger">Delete</button>
+    <button class="btn btn-danger center-block">Delete</button>
 </form>
-
+    </div>
 {% endif %}
