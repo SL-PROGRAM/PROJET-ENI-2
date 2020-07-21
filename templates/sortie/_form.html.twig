@@ -143,6 +143,7 @@
 
     </div>
 
+    <a href="{{ path('get_lieux_ajax') }}" onclick="ajax(251)">test Ajax</a>
 
     {{ form_end(form) }}
 
@@ -155,7 +156,9 @@
 </style>
 
 {% block javascripts %}
+
     <script type="text/javascript">
+
 
         $addLieu = document.querySelector('div#add-lieu');
         $removeLieu = document.querySelector('div#remove-lieu');
@@ -195,6 +198,7 @@
                 $elem.rowSpan = "1";
             })
         }
+
 
 
     </script>

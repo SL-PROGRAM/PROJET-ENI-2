@@ -8,3 +8,67 @@
     {{ include('sortie/_form.html.twig') }}
 
 {% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('asset/js/jquery.js') }}"></script>
+    <script type="text/javascript">
+        function modificationListLieu(data) {
+            $newChoiceList = [];
+            console.log($choiceLieux);
+            for (let k = 0; k < $choiceLieux.length; k++) {
+                for (let i = 0; i < data.length; i++) {
+                    if (data[i]['id'] == $choiceLieux[k].value) {
+                        $newChoiceList.push($choiceLieux[k])
+                        break;
+                    }
+                }
+            }
+            console.log($newChoiceList);
+            let $listLieu = document.querySelector('#sortie_lieu_');
+            $listLieu.innerHTML = "";
+            $newChoiceList.forEach($elem => {
+                $listLieu.appendChild($elem);
+            })
+        }
+
+        function modificationTextLieu(data) {
+            selectedLieux = document.querySelector('#sortie_lieu_').value;
+            console.log(selectedLieux);
+            for (let i = 0; i < data.length; i++) {
+                if (data[i]['id'] == selectedLieux) {
+                    document.querySelector('#rue').textContent = data[i]["rue"];
+                    document.querySelector('#codePostal').textContent = data[i]['code_postal'];
+                    document.querySelector('#latitude').textContent = data[i]['latitude'];
+                    document.querySelector('#longitude').textContent = data[i]['longitude'];
+                }
+            }
+        }
+
+        $(document).ready(function(){
+            $choiceLieux = document.querySelectorAll('#sortie_lieu_>option');
+            $("#sortie_ville").on("click", function(event) {
+                selectedVille = document.querySelector("#sortie_ville").value;
+                $.ajax({
+                    url: '{{ path('get_lieux_ajax') }}',
+                    type:       'POST',
+                    dataType:   'json',
+                    data:       'id_ville='+selectedVille,
+                    async:      true,
+
+                    success: function (data, status) {
+                        // console.log(data)
+
+                        modificationListLieu(data);
+                        modificationTextLieu(data);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        alert('Ajax request failed.');
+                    }
+                });
+            });
+        });
+
+    </script>
+{% endblock %}

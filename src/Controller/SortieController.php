@@ -14,7 +14,9 @@ use App\Repository\LieuRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\SortieParticipantRepository;
 use App\Repository\SortieRepository;
+use App\Repository\VilleRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -68,10 +70,7 @@ class SortieController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $sortie->setOrganisateur($organisateur);
             $sortie->setCampus($organisateur->getCampus());
-            $sortieParticipant = new SortieParticipant();
-            $sortieParticipant->setParticipant($organisateur);
-            $sortieParticipant->setSortie($sortie);
-            $sortie->addSortieParticipant($sortieParticipant);
+
 
             $entityManager = $this->getDoctrine()->getManager();
 
@@ -94,9 +93,15 @@ class SortieController extends AbstractController
                 $sortie->setEtat($etatRepository->findOneBy(['libelle' => "Ouverte"]));
             }
 
-            $entityManager->persist($sortieParticipant);
             $entityManager->persist($sortie);
             $entityManager->flush();
+            $sortieParticipant = new SortieParticipant();
+            $sortieParticipant->setParticipant($organisateur);
+            $sortieParticipant->setSortie($sortie);
+            $sortie->addSortieParticipant($sortieParticipant);
+            $entityManager->persist($sortieParticipant);
+            $entityManager->flush();
+
 
             return $this->redirectToRoute('accueil');
         }
@@ -104,7 +109,7 @@ class SortieController extends AbstractController
         return $this->render('sortie/new.html.twig', [
             'sortie' => $sortie,
             'form' => $form->createView(),
-            'new' => $organisateur,
+            'new' => $organisateur
         ]);
     }
 
@@ -162,11 +167,8 @@ class SortieController extends AbstractController
 
                 $entityManager->persist($lieu);
                 $sortie->setLieu($lieu);
-            $sortie->setLieu($lieu);
-        } else{
-            dump($request);
-            $sortie->getLieu();
-        }
+                $sortie->setLieu($lieu);
+            }
 
 
             if ($form->get('Enregistrer') === $form->getClickedButton() ){
@@ -267,6 +269,33 @@ class SortieController extends AbstractController
         $sortie->setEtat($er->findOneBy(['libelle'=>'Ouverte']));
         $this->getDoctrine()->getManager()->flush();
         return $this->redirectToRoute('accueil');
+    }
+
+    /**
+     * @Route("/sortie/getLieu/", name="get_lieux_ajax", methods={"POST"})
+     */
+    public function getLieuByVilleInAjax(Request $request,
+                                         LieuRepository $lieuRepository,
+                                         VilleRepository $villeRepository):Response
+    {
+        $id = $request->get('id_ville');
+        $ville = $villeRepository->findOneBy(['id' => $id]);
+        $lieux = $lieuRepository->findBy(['ville' => $ville]);
+
+            $jsonData = array();
+            $idx = 0;
+            foreach($lieux as $lieu) {
+                $temp = array(
+                    'id' => $lieu->getId(),
+                    'rue' => $lieu->getRue(),
+                    'code_postal' => $lieu->getVille()->getCodePostal(),
+                    'latitude' => $lieu->getLatitude(),
+                    'longitude' => $lieu->getLongitude(),
+                );
+                $jsonData[$idx++] = $temp;
+            }
+            return new JsonResponse($jsonData);
+
     }
 
 }
