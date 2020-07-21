@@ -87,22 +87,22 @@
                 </td>
                 <td>{{ sortie.organisateur }}</td>
                 <td>
-                <a href="{{ path('sortie_show', {'id': sortie.id}) }}" class="btn btn-primary">Afficher</a>
+                <a href="{{ path('sortie_show', {'id': sortie.id}) }}" class="btn btn-block btn-primary">Afficher</a>
                 {% if p == "true" and sortie.organisateur != app.user and sortie.etat != "Passée" and sortie.etat != "Activité en cours" %}
-                    <a href="{{ path('sortie_desinscrire', {'id': sortie.id}) }}" class="btn btn-primary">Se
+                    <a href="{{ path('sortie_desinscrire', {'id': sortie.id}) }}" class="btn btn-block btn-primary">Se
                         désister</a>
                 {% elseif p!="true" and sortie.organisateur != app.user and sortie.etat == "Ouverte" %}
-                    <a href="{{ path('sortie_inscrire', {'id': sortie.id}) }}" class="btn btn-primary">S'inscrire</a>
+                    <a href="{{ path('sortie_inscrire', {'id': sortie.id}) }}" class="btn btn-block btn-primary">S'inscrire</a>
                 {% endif %}
                 {% if app.user == sortie.organisateur or is_granted('ROLE_ADMIN') %}
                     {% if sortie.etat == "Créée" %}
-                        <a href="{{ path('sortie_publier', {'id': sortie.id}) }}" class="btn btn-primary">Publier</a>
+                        <a href="{{ path('sortie_publier', {'id': sortie.id}) }}" class="btn btn-block btn-primary">Publier</a>
                     {% endif %}
                     {% if sortie.etat == "Ouverte" or sortie.etat == "Clôturée" or is_granted("ROLE_ADMIN") %}
-                        <a href="{{ path('sortie_edit', {'id': sortie.id}) }}" class="btn btn-primary">Modifier</a>
+                        <a href="{{ path('sortie_edit', {'id': sortie.id}) }}" class="btn btn-block btn-primary">Modifier</a>
                     {% endif %}
                     {% if sortie.etat == "Ouverte" or sortie.etat == "Créée" or sortie.etat == "Clôturée" %}
-                        <a href="{{ path('sortie_delete', {'id': sortie.id}) }}" class="btn btn-primary">Annuler</a>
+                        <a href="{{ path('sortie_delete', {'id': sortie.id}) }}" class="btn btn-block btn-primary">Annuler</a>
                     {% endif %}
                 {% endif %}
 
