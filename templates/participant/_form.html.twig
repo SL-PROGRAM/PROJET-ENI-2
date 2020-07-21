@@ -83,6 +83,7 @@
                             {{ form_label(form.imageFile,"Image :",{ 'label_attr': {'class': 'form-label'} }) }}
                         </div>
                         <div class="col">
+                            <img src="{{ asset('asset/profileImages/') }}{{ participant.imageUrl }}" width="135" height="135">
                             {{ form_widget(form.imageFile,{ 'attr': {'class': 'form-control-file'} }) }}
                         </div>
                         <div class="col">

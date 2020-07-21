@@ -212,13 +212,8 @@ class ParticipantController extends AbstractController
                     $imageFile->move($this->getParameter('upload_dir'),$newFileName);
                     $participant->setImageUrl($newFileName);
                 }
-                $this->getDoctrine()->getManager()->flush();
-                if($ok) {
+                    $this->getDoctrine()->getManager()->flush();
                     return $this->redirectToRoute('accueil');
-                }else{
-                    //Probleme quand je redirige vers l'accueil
-                    return $this->render('accueil');
-                }
             }
         } else {
             return $this->redirectToRoute("accueil");
