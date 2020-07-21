@@ -15,6 +15,10 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
+/**
+ * Class ParticipantController, Gestion des utilisateurs
+ * @package App\Controller
+ */
 class ParticipantController extends AbstractController
 {
     private $passwordEncoder;
@@ -24,6 +28,8 @@ class ParticipantController extends AbstractController
     }
 
     /**
+     * @param ParticipantRepository $participantRepository
+     * @return Response
      * @Route("/admin/participant/", name="participant_index", methods={"GET"})
      */
     public function index(ParticipantRepository $participantRepository): Response
@@ -34,6 +40,10 @@ class ParticipantController extends AbstractController
     }
 
     /**
+     * @param Request $request
+     * @param MailerInterface $mailer
+     * @return Response
+     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
      * @Route("/admin/participant/new", name="participant_new", methods={"GET","POST"})
      */
     public function new(Request $request, MailerInterface $mailer): Response
@@ -67,7 +77,10 @@ class ParticipantController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
     /**
+     * Intégration de fichier csv pour l'ajout des users
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @Route ("/importCsvFile", name="app_importCsvFile", methods={"GET","POST","DELETE"})
      */
     public function csv()
@@ -112,49 +125,18 @@ class ParticipantController extends AbstractController
         return $this->redirectToRoute('participant_index');
     }
 
-    public function CheckAndRegisterCsvFile()
-    {
-        $csv = array();
-
-        $csvFilename = $_FILES['csv']['name'];
-        //Récupère les 3 derniers caractères du nom du fichier et vérifie que ça soit bien un fichier CSV
-        $csvExtension = substr($csvFilename, -3);
-        if($csvExtension !== 'csv'){
-            $this->addFlash('danger','Extension de fichier non prise en charge');
-            return $this->redirectToRoute('participant_index');
-        }
-        $csvFilename = $_FILES['csv']['tmp_name'];
-        if(($handle = fopen($csvFilename, 'r')) !== FALSE) {
-            //Définit une limite de temps pour lire le csv et effectuer les actions
-            set_time_limit(0);
-
-            //Initialise les lignes à 0;
-            $row = 0;
-
-            //Lit toutes les lignes du csv et rempli le tableau 2D $csv
-            while(($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
-                $csv[$row]['users'] = $data[0];
-                $row++;
-            }
-
-            //Vérification et insertion des données en BDD
-            for($i = 1; $i < $row; $i++){
-                $entry = $csv[$i]['users'];
-                $this->insertNewUser($entry);
-            }
-            fclose($handle);
-        }
-        //Affiche un message flash pour informer de l'état de la requête
-        $this->addFlash('success', 'Intégration du fichier CSV réussie');
-        return $this->redirectToRoute('participant_index');
-    }
-
+    /**
+     * @param $raw
+     */
     private function insertNewUser($raw){
         $rawParticipant = explode(",", $raw);
 
         $this->createNewParticipant($rawParticipant);
     }
 
+    /**
+     * @param array $rawParticipant
+     */
     private function createNewParticipant(array $rawParticipant){
         $em = $this->getDoctrine()->getManager();
         $campus = $this->getDoctrine()
@@ -213,6 +195,8 @@ class ParticipantController extends AbstractController
     }
 
     /**
+     * @param Participant $participant
+     * @return Response
      * @Route("participant/{id}/show", name="participant_show", methods={"GET"})
      */
     public function show(Participant $participant): Response
@@ -223,6 +207,9 @@ class ParticipantController extends AbstractController
     }
 
     /**
+     * @param Request $request
+     * @param Participant $participant
+     * @return Response
      * @Route("participant/{id}/edit", name="participant_edit", methods={"GET","POST"})
      */
     public function edit(Request $request, Participant $participant): Response
@@ -262,6 +249,9 @@ class ParticipantController extends AbstractController
     }
 
     /**
+     * @param Request $request
+     * @param Participant $participant
+     * @return Response
      * @Route("/admin/participant/{id}", name="participant_delete", methods={"DELETE"})
      */
     public function delete(Request $request, Participant $participant): Response

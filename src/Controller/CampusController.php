@@ -11,11 +11,15 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
+ * Gestion des campus
  * @Route("/admin/campus")
  */
 class CampusController extends AbstractController
 {
     /**
+     * @param CampusRepository $campusRepository
+     * @param Request $request
+     * @return Response
      * @Route("/", name="campus_index", methods={"GET", "POST"})
      */
     public function index(CampusRepository $campusRepository, Request $request): Response
@@ -39,6 +43,10 @@ class CampusController extends AbstractController
     }
 
     /**
+     * @param CampusRepository $campusRepository
+     * @param Request $request
+     * @param Campus $campus
+     * @return Response
      * @Route("/{id}/edit", name="campus_edit", methods={"GET","POST"})
      */
     public function edit(CampusRepository $campusRepository, Request $request, Campus $campus): Response
@@ -60,6 +68,9 @@ class CampusController extends AbstractController
     }
 
     /**
+     * @param Request $request
+     * @param Campus $campus
+     * @return Response
      * @Route("/{id}", name="campus_delete", methods={"DELETE"})
      */
     public function delete(Request $request, Campus $campus): Response

@@ -14,6 +14,10 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class LieuRepository extends ServiceEntityRepository
 {
+    /**
+     * LieuRepository constructor.
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Lieu::class);

@@ -7,8 +7,17 @@ use App\Entity\SortieParticipant;
 use App\Entity\Sortie;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 
+/**
+ * Class SortieListener
+ * Listener d'ajout de participant sur une sortie,
+ * vérifie si le nombre max de participants n'est pas dépassé
+ * @package App\EventListeners
+ */
 class SortieListener
 {
+    /**
+     * @param LifecycleEventArgs $args
+     */
     public function prePersist(LifecycleEventArgs $args)
     {
         $entity = $args->getObject();
