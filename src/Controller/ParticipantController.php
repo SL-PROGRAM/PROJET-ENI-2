@@ -213,7 +213,11 @@ class ParticipantController extends AbstractController
                     $participant->setImageUrl($newFileName);
                 }
                     $this->getDoctrine()->getManager()->flush();
+                 if($ok){
+                     return $this->redirectToRoute('participant_index');
+                 }else{
                     return $this->redirectToRoute('accueil');
+                 }
             }
         } else {
             return $this->redirectToRoute("accueil");
