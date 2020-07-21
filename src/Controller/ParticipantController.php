@@ -195,17 +195,16 @@ class ParticipantController extends AbstractController
     public function edit(Request $request, Participant $participant): Response
     {
         $ok = false;
-        foreach ( $this->getUser()->getRoles() as $role){
-            if ($role == "ROLE_ADMIN"){
+        foreach ($this->getUser()->getRoles() as $role) {
+            if ($role == "ROLE_ADMIN") {
                 $ok = true;
             }
         }
-        if($participant->getEmail() == $this->getUser()->getUsername() || $ok) {
+        if ($participant->getEmail() == $this->getUser()->getUsername() || $ok) {
             $form = $this->createForm(ParticipantType::class, $participant);
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
                 //Récupérer le fichier image depuis le formulaire
-
                 $imageFile = $participant->getImageFile();
                 if($imageFile){
                     $safeFileName = uniqid();
@@ -215,11 +214,10 @@ class ParticipantController extends AbstractController
                 }
                 $this->getDoctrine()->getManager()->flush();
                 if($ok) {
-                    return $this->redirectToRoute('participant_index');
+                    return $this->redirectToRoute('accueil');
                 }else{
                     //Probleme quand je redirige vers l'accueil
-                    dd($newFileName);
-                    return $this->redirectToRoute('participant_index');
+                    return $this->render('accueil');
                 }
             }
         } else {
