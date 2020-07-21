@@ -11,3 +11,9 @@
 
 
 {% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('asset/js/jquery.js') }}"></script>
+
+{% endblock %}

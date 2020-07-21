@@ -28,7 +28,7 @@ class SortieListener
             $sortie = $repoSortie->find($entity->getSortie()->getId());
             $nbInscriptionsMax = $sortie->getNbInscriptionMax();
             if ($nbInscrit >= $nbInscriptionsMax) {
-                $entityManager->clear($entity);
+                $entityManager->remove($entity);
                 $this->addFlash('danger', 'Vous ne pouvez pas vous inscrire car il n\'y a pas de place disponible');
             }
             $entityManager->flush();
