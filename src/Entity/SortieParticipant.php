@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
+ * Nous n'avons pas voulu faire de ManyToMany pour cette entité pour faciliter la manipulation des objets
  * @ORM\Entity(repositoryClass=SortieParticipantRepository::class)
  * @UniqueEntity(
  *     fields={"sortie", "participant"},

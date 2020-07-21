@@ -14,6 +14,10 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class EtatRepository extends ServiceEntityRepository
 {
+    /**
+     * EtatRepository constructor.
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Etat::class);

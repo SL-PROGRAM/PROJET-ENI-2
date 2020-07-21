@@ -17,10 +17,17 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-
+/**
+ * Class SortieController, Gestion des sorties, y compris de la page d'accueil
+ * @package App\Controller
+ */
 class SortieController extends AbstractController
 {
     /**
+     * @param SortieRepository $sortieRepository
+     * @param Request $request
+     * @param ParticipantRepository $participantRepository
+     * @return Response
      * @Route("/", name="accueil", methods={"GET","POST"})
      */
     public function index(SortieRepository $sortieRepository, Request $request, ParticipantRepository $participantRepository): Response
@@ -43,6 +50,10 @@ class SortieController extends AbstractController
     }
 
     /**
+     * @param Request $request
+     * @param ParticipantRepository $participantRepository
+     * @param EtatRepository $etatRepository
+     * @return Response
      * @Route("/sortie/new", name="sortie_new", methods={"GET","POST"})
      */
     public function new(Request $request, ParticipantRepository $participantRepository, EtatRepository $etatRepository): Response
@@ -96,6 +107,8 @@ class SortieController extends AbstractController
     }
 
     /**
+     * @param Sortie $sortie
+     * @return Response
      * @Route("/sortie/{id}", name="sortie_show", methods={"GET"})
      */
     public function show(Sortie $sortie): Response
@@ -115,6 +128,10 @@ class SortieController extends AbstractController
     }
 
     /**
+     * @param Request $request
+     * @param Sortie $sortie
+     * @param EtatRepository $etatRepository
+     * @return Response
      * @Route("/sortie/{id}/edit", name="sortie_edit", methods={"GET","POST"})
      */
     public function edit(Request $request, Sortie $sortie, EtatRepository $etatRepository): Response
@@ -152,6 +169,10 @@ class SortieController extends AbstractController
     }
 
     /**
+     * @param Request $request
+     * @param Sortie $sortie
+     * @param EtatRepository $er
+     * @return Response
      * @Route("/sortie/{id}/delete", name="sortie_delete", methods={"GET", "POST"})
      */
     public function delete(Request $request, Sortie $sortie, EtatRepository $er): Response
@@ -173,6 +194,12 @@ class SortieController extends AbstractController
     }
 
     /**
+     * Inscription de l'utilisateur à une sortie
+     * @param Request $request
+     * @param Sortie $sortie
+     * @param SortieRepository $sr
+     * @param int $id
+     * @return Response
      * @Route("/sortie/inscrire/{id}", name="sortie_inscrire", methods={"GET"})
      */
     public function inscrire(Request $request, Sortie $sortie, SortieRepository $sr, int $id): Response
@@ -187,6 +214,12 @@ class SortieController extends AbstractController
     }
 
     /**
+     * Désistement
+     * @param Request $request
+     * @param Sortie $sortie
+     * @param SortieParticipantRepository $sr
+     * @param int $id
+     * @return Response
      * @Route("/sortie/desinscrire/{id}", name="sortie_desinscrire", methods={"GET"})
      */
     public function desinscrire(Request $request, Sortie $sortie,SortieParticipantRepository $sr, int $id): Response
@@ -197,7 +230,15 @@ class SortieController extends AbstractController
         $entityManager->flush();
         return $this->redirectToRoute('accueil');
     }
+
     /**
+     * Publier sa sortie
+     * @param Request $request
+     * @param Sortie $sortie
+     * @param SortieRepository $sr
+     * @param EtatRepository $er
+     * @param int $id
+     * @return Response
      * @Route("/sortie/publier/{id}", name="sortie_publier", methods={"GET"})
      */
     public function publier(Request $request, Sortie $sortie,SortieRepository $sr, EtatRepository $er, int $id): Response
