@@ -14,6 +14,16 @@
     {{ parent() }}
     <script src="{{ asset('asset/js/jquery.js') }}"></script>
     <script type="text/javascript">
+        document.querySelector('#rue').textContent = "";
+        document.querySelector('#codePostal').textContent = "";
+        document.querySelector('#latitude').textContent = "";
+        document.querySelector('#longitude').textContent = "";
+        $listLieu = document.querySelector('#sortie_lieu_');
+        $addLieu = document.querySelector('.click-button');
+        $listLieu.style.display = "none"
+        $addLieu.style.display = "none"
+
+
         function modificationListLieu(data) {
             $newChoiceList = [];
             console.log($choiceLieux);
@@ -26,7 +36,6 @@
                 }
             }
             console.log($newChoiceList);
-            let $listLieu = document.querySelector('#sortie_lieu_');
             $listLieu.innerHTML = "";
             $newChoiceList.forEach($elem => {
                 $listLieu.appendChild($elem);
@@ -49,6 +58,8 @@
         $(document).ready(function(){
             $choiceLieux = document.querySelectorAll('#sortie_lieu_>option');
             $("#sortie_ville").on("click", function(event) {
+                $listLieu.style.display = ""
+                $addLieu.style.display = ""
                 selectedVille = document.querySelector("#sortie_ville").value;
                 $.ajax({
                     url: '{{ path('get_lieux_ajax') }}',
