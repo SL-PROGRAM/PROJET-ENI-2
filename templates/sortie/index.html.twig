@@ -100,7 +100,7 @@
                     {% if sortie.etat == "Créée" %}
                         <a href="{{ path('sortie_publier', {'id': sortie.id}) }}" class="btn btn-primary">Publier</a>
                     {% endif %}
-                    {% if sortie.etat == "Ouverte" or sortie.etat == "Clôturée" or is_granted("ROLE_ADMIN") %}
+                    {% if sortie.etat == "Ouverte" or sortie.etat == "Clôturée" or sortie.etat == "Créée" or is_granted("ROLE_ADMIN") %}
                         <a href="{{ path('sortie_edit', {'id': sortie.id}) }}" class="btn btn-primary">Modifier</a>
                     {% endif %}
                     {% if sortie.etat == "Ouverte" or sortie.etat == "Créée" or sortie.etat == "Clôturée" %}
