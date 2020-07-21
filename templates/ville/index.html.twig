@@ -12,7 +12,9 @@
             <tr>
                 <th scope="col">Nom de la ville</th>
                 <th scope="col">Code postal</th>
-                <th scope="col">Actions</th>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <th scope="col">Actions</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody id="tbody">
