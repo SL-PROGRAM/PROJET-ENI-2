@@ -205,7 +205,7 @@ class ParticipantController extends AbstractController
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
                 //Récupérer le fichier image depuis le formulaire
-                $imageFile = $participant->getImageFile();
+                $imageFile = $form['imageFile']->getData();
                 if($imageFile){
                     $safeFileName = uniqid();
                     $newFileName = $safeFileName.".".$imageFile->guessExtension();
