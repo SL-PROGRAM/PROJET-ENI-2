@@ -10,6 +10,8 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\All;
+use Symfony\Component\Validator\Constraints\File;
 
 /**
  * Class ParticipantType
@@ -24,8 +26,7 @@ class ParticipantType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('email', EmailType::class
-            )
+            ->add('email', EmailType::class)
             ->add('roles', CollectionType::class, [
                 'entry_type' => ChoiceType::class,
                 'entry_options' => [
@@ -42,6 +43,7 @@ class ParticipantType extends AbstractType
             ->add('pseudo')
             ->add('campus')
             ->add('imageFile', FileType::class, [
+                'mapped'=>false,
                 'required'=>false,
                 'label' => 'image'
             ])

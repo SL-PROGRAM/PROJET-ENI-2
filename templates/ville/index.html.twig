@@ -3,7 +3,7 @@
 {% block title %}Ville{% endblock %}
 
 {% block body %}
-    <h1 class="text-center">Gérer les villes</h1>
+    <h1 class="text-center">Gestion des villes</h1>
     {% if editForm is not defined %}
         <input type="text" class="form-control" id="search" onkeyup="search()" placeholder="Le nom contient..."/>
     {% endif %}
@@ -12,7 +12,9 @@
             <tr>
                 <th scope="col">Nom de la ville</th>
                 <th scope="col">Code postal</th>
-                <th scope="col">Actions</th>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <th scope="col">Actions</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody id="tbody">

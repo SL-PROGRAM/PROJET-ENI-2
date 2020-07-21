@@ -1,9 +1,8 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Campus{% endblock %}
-
 {% block body %}
-    <h1 class="text-center">Gérer les campus</h1>
+    <h1 class="text-center">Gestion des campus</h1>
     {% if editForm is not defined %}
         <input type="text" class="form-control" id="search" onkeyup="search()" placeholder="Le nom contient..."/>
     {% endif %}
@@ -26,10 +25,10 @@
             {% else %}
         <tr>
             <td>{{ c.nom }}</td>
-            <td class="form-inline">
-                <a href="{{ path('campus_edit', {'id': c.id}) }}" class="btn btn-primary">Modifier</a>&nbsp;
-                {%  include 'campus/_delete_form.html.twig' %}
-            </td>
+                <td class="form-inline">
+                    <a href="{{ path('campus_edit', {'id': c.id}) }}" class="btn btn-primary">Modifier</a>&nbsp;
+                    {%  include 'campus/_delete_form.html.twig' %}
+                </td>
         </tr>
             {% endif %}
         {% else %}
@@ -40,8 +39,8 @@
         {% if addForm is defined %}
         <tr>
             {{ form_start(addForm) }}
-            <td>{{ form_widget(addForm.nom,{ 'attr': {'class': 'form-control'} }) }}</td>
-            <td><input type="submit" class="btn btn-primary"></td>
+                <td>{{ form_widget(addForm.nom,{ 'attr': {'class': 'form-control'} }) }}</td>
+                <td><input type="submit" class="btn btn-primary"></td>
             {{ form_end(addForm) }}
         </tr>
         {% endif %}

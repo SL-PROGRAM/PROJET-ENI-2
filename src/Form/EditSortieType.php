@@ -2,9 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Lieu;
 use App\Entity\Sortie;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -15,16 +13,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/**
- * Class SortieType
- * @package App\Form
- */
-class SortieType extends AbstractType
+class EditSortieType extends AbstractType
 {
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array $options
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -48,9 +38,6 @@ class SortieType extends AbstractType
             ->add('lieu', LieuType::class, [
                 'by_reference' => true
             ])
-            ->add('lieu_', EntityType::class, [
-                'class' => Lieu::class,
-            ])
             ->add('Enregistrer', SubmitType::class, [
                 'label' => 'Enregistrer',
                 'attr' => [
@@ -64,12 +51,8 @@ class SortieType extends AbstractType
                 ]
             ])
         ;
-
     }
 
-    /**
-     * @param OptionsResolver $resolver
-     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([

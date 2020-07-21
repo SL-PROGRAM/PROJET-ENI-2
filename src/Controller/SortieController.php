@@ -6,9 +6,11 @@ use App\Data\Search;
 use App\Entity\Lieu;
 use App\Entity\Sortie;
 use App\Entity\SortieParticipant;
+use App\Form\EditSortieType;
 use App\Form\FiltreSortieType;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
+use App\Repository\LieuRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\SortieParticipantRepository;
 use App\Repository\SortieRepository;
@@ -134,20 +136,38 @@ class SortieController extends AbstractController
      * @return Response
      * @Route("/sortie/{id}/edit", name="sortie_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Sortie $sortie, EtatRepository $etatRepository): Response
+    public function edit(Request $request, Sortie $sortie,
+                         EtatRepository $etatRepository,
+                         LieuRepository $lieuRepository): Response
     {
+
         $lieu = $sortie->getLieu();
-        $form = $this->createForm(SortieType::class, $sortie);
+        $sortie->setVille($lieu->getVille());
+        $form = $this->createForm(EditSortieType::class, $sortie);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
             $entityManager = $this->getDoctrine()->getManager();
 
-            if ($sortie->getLieu() != $lieu){
-                dd($sortie);
+            if ($sortie->getLieu() !== $lieu){
+                $sortieLIeu = ($request->get("sortie"));
+                $newLieu = new Lieu();
+                $newLieu->setNom($sortieLIeu['lieu']['nom']);
+                $newLieu->setVille($sortie->getVille());
+                $newLieu->setRue($sortieLIeu['lieu']['rue']);
+                $newLieu->setLongitude($sortieLIeu['lieu']['latitude']);
+                $newLieu->setLatitude($sortieLIeu['lieu']['longitude']);
 
-            }
+                $entityManager->persist($lieu);
+                $sortie->setLieu($lieu);
+            $sortie->setLieu($lieu);
+        } else{
+            dump($request);
+            $sortie->getLieu();
+        }
+
 
             if ($form->get('Enregistrer') === $form->getClickedButton() ){
                 $sortie->setEtat($etatRepository->findOneBy(['libelle' => "Créée"]));
