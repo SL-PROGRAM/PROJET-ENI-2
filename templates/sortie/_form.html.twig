@@ -9,6 +9,7 @@
             </td>
             <td>
                 {{ form_widget(form.nom) }}
+                {{ form_errors(form.nom) }}
             </td>
         </div>
         <div class="form-group">
@@ -27,6 +28,7 @@
             </td>
             <td>
                 {{ form_widget(form.dateHeureDebut) }}
+                {{ form_errors(form.dateHeureDebut) }}
             </td>
         </div>
         <div class="form-group">
@@ -35,6 +37,7 @@
             </td>
             <td>
                     {{ form_widget(form.ville) }}
+                    {{ form_errors(form.ville) }}
             </td>
         </div>
     </tr>
@@ -45,6 +48,7 @@
             </td>
             <td>
                 {{ form_widget(form.dateLimiteInscription) }}
+                {{ form_errors(form.dateLimiteInscription) }}
             </td>
         </div>
         <div class="form-group">
@@ -55,6 +59,7 @@
                 <div id="form-lieu">
                     <div>
                          {{ form_widget(form.lieu) }}
+                         {{ form_errors(form.lieu) }}
                         <span id="remove-lieu" onclick="seelist()"><img class="click-button" src="{{ asset('asset/image/Remove-icon.png') }}" alt="ajouter un lieu"></span>
                     </div>
                 </div>
@@ -62,6 +67,7 @@
                     <div>
                         <span id="choixLieu">
                             {{ form_widget(form.lieu_) }}
+                            {{ form_errors(form.lieu_) }}
                         </span>
                         <span id="add-lieu" onclick=seeForm()><img class="click-button" src="{{ asset('asset/image/Add-icon.png') }}" alt="ajouter un lieu"></span>
                     </div>
@@ -76,6 +82,7 @@
             </td>
             <td>
                 {{ form_widget(form.nbInscriptionMax) }}
+                {{ form_errors(form.nbInscriptionMax) }}
             </td>
         </div>
         <div class="form-group">
@@ -95,6 +102,7 @@
             </td>
             <td>
                 {{ form_widget(form.duree) }}
+                {{ form_errors(form.duree) }}
             </td>
         </div>
         <div class="form-group">
@@ -113,6 +121,7 @@
             </td>
             <td rowspan="2">
                 {{ form_widget(form.infosSortie) }}
+                {{ form_errors(form.infosSortie) }}
             </td>
         </div>
         <div class="form-group">
