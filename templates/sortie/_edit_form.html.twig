@@ -8,7 +8,7 @@
                 <strong>Nom de la sortie :</strong>
             </td>
             <td>
-                {{ form_widget(form.nom) }}
+                {{ form_widget(form.nom, {'attr':{'class':'form-control'}}) }}
                 {{ form_errors(form.nom) }}
             </td>
         </div>
@@ -36,7 +36,7 @@
                 <strong>Ville :</strong>
             </td>
             <td>
-                {{ form_widget(form.ville) }}
+                {{ form_widget(form.ville, {'attr':{'class':'form-control'}}) }}
                 {{ form_errors(form.ville) }}
             </td>
         </div>
@@ -47,7 +47,7 @@
                 <strong>Date limite d'inscription :</strong>
             </td>
             <td>
-                {{ form_widget(form.dateLimiteInscription) }}
+                {{ form_widget(form.dateLimiteInscription, {'attr':{'class':'form-control'}}) }}
                 {{ form_errors(form.dateLimiteInscription) }}
             </td>
         </div>
@@ -68,10 +68,10 @@
     <tr>
         <div class="form-group">
             <td>
-                <strong>Nombre de place :</strong>
+                <strong>Nombre de places :</strong>
             </td>
             <td>
-                {{ form_widget(form.nbInscriptionMax) }}
+                {{ form_widget(form.nbInscriptionMax, {'attr':{'class':'form-control'}}) }}
                 {{ form_errors(form.nbInscriptionMax) }}
             </td>
         </div>
@@ -79,10 +79,10 @@
     <tr>
         <div class="form-group">
             <td>
-                <strong>Durée (en heure) :</strong>
+                <strong>Durée (en heures) :</strong>
             </td>
             <td>
-                {{ form_widget(form.duree) }}
+                {{ form_widget(form.duree, {'attr':{'class':'form-control'}}) }}
                 {{ form_errors(form.duree) }}
             </td>
         </div>
@@ -93,7 +93,7 @@
                 <strong>Description et information :</strong>
             </td>
             <td rowspan="2">
-                {{ form_widget(form.infosSortie) }}
+                {{ form_widget(form.infosSortie, {'attr':{'class':'form-control'}}) }}
                 {{ form_errors(form.infosSortie) }}
             </td>
         </div>
