@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Votre compte a été suspendu.{% endblock %}
+
+{% block body %}
+<div class="text-center">
+    <p>Vous pouvez également essayer de vous reconnecter : </p>
+    <a class="btn btn-primary" href="{{ path('app_logout') }}">Reconnecter</a>
+<div>
+{% endblock %}
