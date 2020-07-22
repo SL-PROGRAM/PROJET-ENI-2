@@ -3,7 +3,7 @@
 {% block title %}New Sortie{% endblock %}
 
 {% block body %}
-    <h1>Create new Sortie</h1>
+    <h1>Créer votre sortie</h1>
 
     {{ include('sortie/_form.html.twig') }}
 
@@ -14,10 +14,12 @@
     {{ parent() }}
     <script src="{{ asset('asset/js/jquery.js') }}"></script>
     <script type="text/javascript">
+        let dataLieu;
         document.querySelector('#rue').textContent = "";
         document.querySelector('#codePostal').textContent = "";
         document.querySelector('#latitude').textContent = "";
         document.querySelector('#longitude').textContent = "";
+
         $listLieu = document.querySelector('#sortie_lieu_');
         $addLieu = document.querySelector('.click-button');
         $listLieu.style.display = "none"
@@ -55,6 +57,8 @@
             }
         }
 
+
+
         $(document).ready(function(){
             $choiceLieux = document.querySelectorAll('#sortie_lieu_>option');
             $("#sortie_ville").on("click", function(event) {
@@ -70,9 +74,12 @@
 
                     success: function (data, status) {
                         // console.log(data)
-
+                        dataLieu = data;
                         modificationListLieu(data);
                         modificationTextLieu(data);
+                        $listLieu.addEventListener('click', evt => {
+                            modificationTextLieu(dataLieu)
+                        });
                     },
                     error: function (xhr, textStatus, errorThrown) {
                         alert('Ajax request failed.');
@@ -80,6 +87,9 @@
                 });
             });
         });
+
+
+
 
     </script>
 {% endblock %}

@@ -91,7 +91,7 @@
     <tr>
         <div class="form-group">
             <td>
-                <strong>Durée :</strong>
+                <strong>Durée (en heure):</strong>
             </td>
             <td>
                 {{ form_widget(form.duree) }}
@@ -143,8 +143,6 @@
 
     </div>
 
-    <a href="{{ path('get_lieux_ajax') }}" onclick="ajax(251)">test Ajax</a>
-
     {{ form_end(form) }}
 
 
@@ -159,13 +157,12 @@
 
     <script type="text/javascript">
 
-
         $addLieu = document.querySelector('div#add-lieu');
         $removeLieu = document.querySelector('div#remove-lieu');
         $formLieu = document.querySelector('div#form-lieu');
         $formLieuChild = document.querySelector('div#form-lieu>div');
-        $listLieu = document.querySelector('div#list-lieu');
-        $listLieuChild = document.querySelector('div#list-lieu>div');
+        $divLieu = document.querySelector('div#list-lieu');
+        $divLieuChild = document.querySelector('div#list-lieu>div');
 
         $formLieu.innerHTML="";
 
@@ -176,7 +173,7 @@
 
         function seeForm() {
             $formLieu.appendChild($formLieuChild)
-            $listLieu.innerHTML = "";
+            $divLieu.innerHTML = "";
 
             $elemDisparaitre.forEach($elem => {
                 $elem.style.display = "none";
@@ -190,13 +187,14 @@
         function seelist() {
 
             $formLieu.innerHTML = "";
-            $listLieu.appendChild($listLieuChild);
+            $divLieu.appendChild($divLieuChild);
             $elemDisparaitre.forEach($elem => {
                 $elem.style.display = "";
             });
             $rowspan.forEach($elem => {
                 $elem.rowSpan = "1";
             })
+            modificationListLieu(dataLieu)
         }
 
 

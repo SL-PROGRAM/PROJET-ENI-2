@@ -73,7 +73,6 @@ class SortieController extends AbstractController
 
 
             $entityManager = $this->getDoctrine()->getManager();
-
             if ($sortie->getLieu() == null){
                 $sortieLIeu = ($request->get("sortie"));
                 $lieu = new Lieu();
