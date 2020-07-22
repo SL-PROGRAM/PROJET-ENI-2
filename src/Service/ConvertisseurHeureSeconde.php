@@ -18,7 +18,10 @@ class ConvertisseurHeureSeconde
         return $time*3600;
     }
 
-
+    /**
+     * @param int $time
+     * @return array
+     */
     public function timeInDay(int $time):array
     {
         $duree =[];
