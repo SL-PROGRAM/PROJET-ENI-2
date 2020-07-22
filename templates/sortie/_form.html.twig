@@ -8,7 +8,7 @@
                 <strong>Nom de la sortie :</strong>
             </td>
             <td>
-                {{ form_widget(form.nom) }}
+                {{ form_widget(form.nom, {'attr':{'class':'form-control'}}) }}
                 {{ form_errors(form.nom) }}
             </td>
         </div>
@@ -36,7 +36,7 @@
                 <strong>Ville :</strong>
             </td>
             <td>
-                    {{ form_widget(form.ville) }}
+                    {{ form_widget(form.ville, {'attr':{'class':'form-control'}}) }}
                     {{ form_errors(form.ville) }}
             </td>
         </div>
@@ -47,7 +47,7 @@
                 <strong>Date limite d'inscription :</strong>
             </td>
             <td>
-                {{ form_widget(form.dateLimiteInscription) }}
+                {{ form_widget(form.dateLimiteInscription, {'attr':{'class':'form-control'}}) }}
                 {{ form_errors(form.dateLimiteInscription) }}
             </td>
         </div>
@@ -66,7 +66,7 @@
                 <div id="list-lieu">
                     <div>
                         <span id="choixLieu">
-                            {{ form_widget(form.lieu_) }}
+                            {{ form_widget(form.lieu_, {'attr':{'class':'form-control'}}) }}
                             {{ form_errors(form.lieu_) }}
                         </span>
                         <span id="add-lieu" onclick=seeForm()><img class="click-button" src="{{ asset('asset/image/Add-icon.png') }}" alt="ajouter un lieu"></span>
@@ -81,7 +81,7 @@
                 <strong>Nombre de place :</strong>
             </td>
             <td>
-                {{ form_widget(form.nbInscriptionMax) }}
+                {{ form_widget(form.nbInscriptionMax, {'attr':{'class':'form-control'}}) }}
                 {{ form_errors(form.nbInscriptionMax) }}
             </td>
         </div>
@@ -101,7 +101,7 @@
                 <strong>Durée (en heure):</strong>
             </td>
             <td>
-                {{ form_widget(form.duree) }}
+                {{ form_widget(form.duree, {'attr':{'class':'form-control'}}) }}
                 {{ form_errors(form.duree) }}
             </td>
         </div>
@@ -120,7 +120,7 @@
                 <strong>Description et information :</strong>
             </td>
             <td rowspan="2">
-                {{ form_widget(form.infosSortie) }}
+                {{ form_widget(form.infosSortie, {'attr':{'class':'form-control'}}) }}
                 {{ form_errors(form.infosSortie) }}
             </td>
         </div>
@@ -146,8 +146,8 @@
 
 </table>
     <div>
-        {{ form_widget(form.Enregistrer) }}
-        {{ form_widget(form.Publier) }}
+        {{ form_widget(form.Enregistrer, {'attr':{'class':'btn btn-primary'}}) }}
+        {{ form_widget(form.Publier, {'attr':{'class':'btn btn-primary'}}) }}
         <a href="{{ path('accueil') }}" class="btn btn-primary">Annuler</a>
 
     </div>
