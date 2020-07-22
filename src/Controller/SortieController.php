@@ -15,6 +15,7 @@ use App\Repository\ParticipantRepository;
 use App\Repository\SortieParticipantRepository;
 use App\Repository\SortieRepository;
 use App\Repository\VilleRepository;
+use App\Service\ConvertisseurHeureSeconde;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -60,7 +61,10 @@ class SortieController extends AbstractController
      * @return Response
      * @Route("/sortie/new", name="sortie_new", methods={"GET","POST"})
      */
-    public function new(Request $request, ParticipantRepository $participantRepository, EtatRepository $etatRepository): Response
+    public function new(Request $request,
+                        ParticipantRepository $participantRepository,
+                        EtatRepository $etatRepository,
+                        ConvertisseurHeureSeconde $convertisseurHeureSeconde): Response
     {
         $sortie = new Sortie();
         $form = $this->createForm(SortieType::class, $sortie);
@@ -71,6 +75,7 @@ class SortieController extends AbstractController
             $sortie->setOrganisateur($organisateur);
             $sortie->setCampus($organisateur->getCampus());
 
+            $sortie->setDuree($convertisseurHeureSeconde->heureVersSeconde($sortie->getDuree()));
 
             $entityManager = $this->getDoctrine()->getManager();
             if ($sortie->getLieu() == null){
@@ -117,18 +122,16 @@ class SortieController extends AbstractController
      * @return Response
      * @Route("/sortie/{id}", name="sortie_show", methods={"GET"})
      */
-    public function show(Sortie $sortie): Response
+    public function show(Sortie $sortie, ConvertisseurHeureSeconde $convertisseurHeureSeconde): Response
     {
         //calculer de durée en jour et heur
         $dureeSeconde = $sortie->getDuree();
-        $dureeJour = $dureeSeconde / (3600*24);
-        $dureeSeconde = $dureeSeconde % (3600*24);
-        $dureeHour = $dureeSeconde / (3600);
 
+        $duree = $convertisseurHeureSeconde->timeInDay($dureeSeconde);
 
         return $this->render('sortie/show.html.twig', [
-            'dureeJour' => $dureeJour,
-            'dureeHour' => $dureeHour,
+            'dureeJour' => $duree['jour'],
+            'dureeHour' => $duree['heure'],
             'sortie' => $sortie,
         ]);
     }
@@ -142,18 +145,21 @@ class SortieController extends AbstractController
      */
     public function edit(Request $request, Sortie $sortie,
                          EtatRepository $etatRepository,
-                         LieuRepository $lieuRepository): Response
+                         ConvertisseurHeureSeconde $convertisseurHeureSeconde): Response
     {
 
         $lieu = $sortie->getLieu();
         $sortie->setVille($lieu->getVille());
+        $sortie->setDuree($convertisseurHeureSeconde->secondeVersHeure($sortie->getDuree()));
         $form = $this->createForm(EditSortieType::class, $sortie);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+            $sortie->setDuree($convertisseurHeureSeconde->heureVersSeconde($sortie->getDuree()));
             $entityManager = $this->getDoctrine()->getManager();
+
 
             if ($sortie->getLieu() !== $lieu){
                 $sortieLIeu = ($request->get("sortie"));

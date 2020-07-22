@@ -18,6 +18,24 @@ class ConvertisseurHeureSeconde
         return $time*3600;
     }
 
+
+    public function timeInDay(int $time):array
+    {
+        $duree =[];
+        $jour = 0;
+        $dureeHeure = $this->secondeVersHeure($time);
+        while ($dureeHeure >= 24) {
+            $jour++;
+            $dureeHeure = $dureeHeure-24;
+        }
+        $duree['jour'] = $jour;
+        $duree['heure'] = $dureeHeure;
+
+        return $duree;
+    }
+
+
+
     /**
      * @param int $time
      * @return int
