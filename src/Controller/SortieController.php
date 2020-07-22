@@ -35,7 +35,8 @@ class SortieController extends AbstractController
      * @return Response
      * @Route("/", name="accueil", methods={"GET","POST"})
      */
-    public function index(SortieRepository $sortieRepository, Request $request, ParticipantRepository $participantRepository): Response
+    public function index(SortieRepository $sortieRepository, Request $request,
+                          ParticipantRepository $participantRepository): Response
     {
         if(!$this->getUser()->getActif()){
             $msg = "Vous ne pouvez plus vous connecter car un administrateur a bloqué votre compte. Un mail a été transmis à nos équipes pour examiner votre compte.";
@@ -121,9 +122,8 @@ class SortieController extends AbstractController
      */
     public function show(Sortie $sortie, ConvertisseurHeureSeconde $convertisseurHeureSeconde): Response
     {
-        //calculer de durée en jour et heur
         $dureeSeconde = $sortie->getDuree();
-
+        //calculer de durée en jour et heure
         $duree = $convertisseurHeureSeconde->timeInDay($dureeSeconde);
 
         return $this->render('sortie/show.html.twig', [
@@ -210,13 +210,11 @@ class SortieController extends AbstractController
     /**
      * Inscription de l'utilisateur à une sortie
      * @param Request $request
-     * @param Sortie $sortie
      * @param SortieRepository $sr
-     * @param int $id
      * @return Response
      * @Route("/sortie/inscrire/{id}", name="sortie_inscrire", methods={"GET"})
      */
-    public function inscrire(Request $request, Sortie $sortie, SortieRepository $sr, int $id): Response
+    public function inscrire(Request $request, SortieRepository $sr): Response
     {
         $sortieParticipant= new SortieParticipant();
         $sortieParticipant->setSortie($sr->find($request->get('id')));
@@ -229,14 +227,12 @@ class SortieController extends AbstractController
 
     /**
      * Désistement
-     * @param Request $request
-     * @param Sortie $sortie
      * @param SortieParticipantRepository $sr
      * @param int $id
      * @return Response
      * @Route("/sortie/desinscrire/{id}", name="sortie_desinscrire", methods={"GET"})
      */
-    public function desinscrire(Request $request, Sortie $sortie,SortieParticipantRepository $sr, int $id): Response
+    public function desinscrire(SortieParticipantRepository $sr, int $id): Response
     {
         $sortieParticipant=$sr->findOneBy(['sortie'=>$id, 'participant'=>$this->getUser()]);
         $entityManager = $this->getDoctrine()->getManager();
@@ -247,15 +243,13 @@ class SortieController extends AbstractController
 
     /**
      * Publier sa sortie
-     * @param Request $request
-     * @param Sortie $sortie
      * @param SortieRepository $sr
      * @param EtatRepository $er
      * @param int $id
      * @return Response
      * @Route("/sortie/publier/{id}", name="sortie_publier", methods={"GET"})
      */
-    public function publier(Request $request, Sortie $sortie,SortieRepository $sr, EtatRepository $er, int $id): Response
+    public function publier(SortieRepository $sr, EtatRepository $er, int $id): Response
     {
         $sortie=$sr->find($id);
         $sortie->setEtat($er->findOneBy(['libelle'=>'Ouverte']));

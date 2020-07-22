@@ -70,12 +70,7 @@ class EmailController extends AbstractController
         $userRepo = $this->getDoctrine()->getRepository(Participant::class);
         $user = $userRepo->findOneBy(['token' => $token]);
 
-        //Si j'arrive pour créer mon mot de passe, changer le texte au dessus du bouton
-/*        if(!$ok){
-            $textToShow = 'Réinitialisez votre mot de passe';
-        }else{
-            $textToShow = 'Créez votre mot de passe';
-        }*/
+
         $password = $request->request->get('_pwd');
         if($password != null)
         {
@@ -91,7 +86,6 @@ class EmailController extends AbstractController
 
         return $this->render('password/resetPwd.html.twig',[
             'token' =>$token,
-            //'textToShow'=>$textToShow
         ]);
     }
 }
