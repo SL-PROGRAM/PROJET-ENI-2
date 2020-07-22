@@ -84,16 +84,8 @@ class SortieController extends AbstractController
 
             $entityManager = $this->getDoctrine()->getManager();
             if ($sortie->getLieu() == null){
-                $sortieLIeu = ($request->get("sortie"));
-                $lieu = new Lieu();
-                $lieu->setNom($sortieLIeu['lieu']['nom']);
-                $lieu->setVille($sortie->getVille());
-                $lieu->setRue($sortieLIeu['lieu']['rue']);
-                $lieu->setLongitude($sortieLIeu['lieu']['latitude']);
-                $lieu->setLatitude($sortieLIeu['lieu']['longitude']);
-
-                $entityManager->persist($lieu);
-                $sortie->setLieu($lieu);            }
+                $this->createLieu($request, $sortie, $entityManager);
+            }
 
             if ($form->get('Enregistrer') === $form->getClickedButton() ){
                $sortie->setEtat($etatRepository->findOneBy(['libelle' => "Créée"]));
@@ -167,17 +159,7 @@ class SortieController extends AbstractController
 
 
             if ($sortie->getLieu() !== $lieu){
-                $sortieLIeu = ($request->get("sortie"));
-                $newLieu = new Lieu();
-                $newLieu->setNom($sortieLIeu['lieu']['nom']);
-                $newLieu->setVille($sortie->getVille());
-                $newLieu->setRue($sortieLIeu['lieu']['rue']);
-                $newLieu->setLongitude($sortieLIeu['lieu']['latitude']);
-                $newLieu->setLatitude($sortieLIeu['lieu']['longitude']);
-
-                $entityManager->persist($lieu);
-                $sortie->setLieu($lieu);
-                $sortie->setLieu($lieu);
+                $this->createLieu($request, $sortie, $entityManager);
             }
 
 
@@ -306,6 +288,24 @@ class SortieController extends AbstractController
             }
             return new JsonResponse($jsonData);
 
+    }
+
+    /**
+     * @param Request $request
+     * @param Sortie $sortie
+     * @param \Doctrine\Persistence\ObjectManager $entityManager
+     */
+    public function createLieu(Request $request, Sortie $sortie, \Doctrine\Persistence\ObjectManager $entityManager): void
+    {
+        $sortieLIeu = ($request->get("sortie"));
+        $lieu = new Lieu();
+        $lieu->setNom($sortieLIeu['lieu']['nom']);
+        $lieu->setVille($sortie->getVille());
+        $lieu->setRue($sortieLIeu['lieu']['rue']);
+        $lieu->setLongitude($sortieLIeu['lieu']['latitude']);
+        $lieu->setLatitude($sortieLIeu['lieu']['longitude']);
+        $entityManager->persist($lieu);
+        $sortie->setLieu($lieu);
     }
 
 }
