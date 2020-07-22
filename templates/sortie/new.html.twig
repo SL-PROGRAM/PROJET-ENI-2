@@ -15,10 +15,15 @@
     <script src="{{ asset('asset/js/jquery.js') }}"></script>
     <script type="text/javascript">
         let dataLieu;
-        document.querySelector('#rue').textContent = "";
-        document.querySelector('#codePostal').textContent = "";
-        document.querySelector('#latitude').textContent = "";
-        document.querySelector('#longitude').textContent = "";
+
+        function clearInformationLieu() {
+            document.querySelector('#rue').textContent = "";
+            document.querySelector('#codePostal').textContent = "";
+            document.querySelector('#latitude').textContent = "";
+            document.querySelector('#longitude').textContent = "";
+        }
+
+        clearInformationLieu();
 
         $listLieu = document.querySelector('#sortie_lieu_');
         $addLieu = document.querySelector('.click-button');
@@ -73,8 +78,8 @@
                     async:      true,
 
                     success: function (data, status) {
-                        // console.log(data)
                         dataLieu = data;
+                        clearInformationLieu();
                         modificationListLieu(data);
                         modificationTextLieu(data);
                         $listLieu.addEventListener('click', evt => {
