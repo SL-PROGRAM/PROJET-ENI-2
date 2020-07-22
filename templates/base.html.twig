@@ -13,9 +13,9 @@
     </header>
     <main>
         <div class="container-fluid sideGradients">
-            <div class="row bg-light">
-                <div class="col-xl-2"></div>
-                <div class="col-xl-8">{% for label, messages in app.flashes(['success', 'warning','danger']) %}
+            <div class="row bg-light" style="min-height: 90vh; padding-top: 2%">
+                <div class="col-xl-1"></div>
+                <div class="col-xl-10">{% for label, messages in app.flashes(['success', 'warning','danger']) %}
                         {% for message in messages %}
                             <div class="alert-{{ label }}">
                                 {{ message }}
@@ -23,7 +23,7 @@
                         {% endfor %}
                     {% endfor %}
                     {% block body %}{% endblock %}</div>
-                <div class="col-xl-2"></div>
+                <div class="col-xl-1"></div>
             </div>
         </div>
     </main>
