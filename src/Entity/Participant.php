@@ -60,6 +60,7 @@ class Participant implements UserInterface
      *     message="Your surname cannot contain a number"
      * )
      * @ORM\Column(type="string", length=50)
+     *
      */
     private $prenom;
 
