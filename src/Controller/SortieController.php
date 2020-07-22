@@ -36,6 +36,11 @@ class SortieController extends AbstractController
      */
     public function index(SortieRepository $sortieRepository, Request $request, ParticipantRepository $participantRepository): Response
     {
+        if(!$this->getUser()->getActif()){
+            $msg = "Vous ne pouvez plus vous connecter car un administrateur a bloqué votre compte. Un mail a été transmis à nos équipes pour examiner votre compte.";
+            $this->addFlash('danger',$msg);
+            return $this->render('security/logout.html.twig');
+        }
         $data = new Search();
         $form = $this->createForm(FiltreSortieType::class, $data);
         $participant= $participantRepository->findOneBy(['email' => $this->getUser()->getUsername()]);
