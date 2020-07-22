@@ -26,24 +26,24 @@ class SortieListener
         if ($entity instanceof SortieParticipant) {
             $entityManager = $args->getObjectManager();
             $repo = $entityManager->getRepository('App:SortieParticipant');
-            $nbInscrit = $repo->createQueryBuilder('s')
+            $nbInscrit = intval($repo->createQueryBuilder('s')
                 ->select("count(s.id)")
                 ->leftJoin('s.sortie', 'sortie')
                 ->where("sortie.id = :sortie")
                 ->setParameter('sortie', $entity->getSortie()->getId())
                 ->getQuery()
-                ->getSingleScalarResult();
+                ->getSingleScalarResult());
             $repoSortie = $entityManager->getRepository('App:Sortie');
+
             $idSortie = $entity->getSortie()->getId();
-            if($idSortie!=null) {
-                $sortie = $repoSortie->find();
+            if (isset($idSortie)) {
+                $sortie = $repoSortie->find($idSortie);
                 $nbInscriptionsMax = $sortie->getNbInscriptionMax();
                 if ($nbInscrit >= $nbInscriptionsMax) {
                     $entityManager->remove($entity);
-
                 }
             }
-            $entityManager->flush();
+            
         }
     }
 }
