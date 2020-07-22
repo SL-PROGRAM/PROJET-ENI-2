@@ -43,7 +43,7 @@ class SortieListener
                     $entityManager->remove($entity);
                 }
             }
-            
+
         }
     }
 }

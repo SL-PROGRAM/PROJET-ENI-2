@@ -1,0 +1,12 @@
+/*.sideGradients{
+    background: rgb(53,58,64);
+    background: linear-gradient(180deg, rgba(194,224,250,0.3) 0%, rgba(255,255,255,0) 10%);
+}
+@media screen
+and (device-width: 360px)
+and (device-height: 640px)
+and (-webkit-device-pixel-ratio: 2) {
+    .desktop{
+        display: none;
+    }
+}
