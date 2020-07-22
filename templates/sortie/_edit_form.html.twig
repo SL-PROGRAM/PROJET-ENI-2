@@ -102,10 +102,11 @@
 
 {{ form_end(form) }}
 
-
-<style>
-    .click-button{
-        width: 50px;
-        height: auto;
+{% block javascripts %}
+<script type="text/javascript">
+    if ('{{ sortie.etat.libelle }}' !== 'Créée'){
+        document.querySelector('#edit_sortie_Enregistrer').remove();
     }
-</style>
+    </script>
+
+{% endblock %}
