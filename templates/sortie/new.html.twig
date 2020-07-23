@@ -66,11 +66,15 @@
 
 
         $(document).ready(function(){
+            //recupération de la liste des options de lieu
             $choiceLieux = document.querySelectorAll('#sortie_lieu_>option');
+
+            //mise en place event au click sur le bouton sortie
             $("#sortie_ville").on("click", function(event) {
                 $listLieu.style.display = ""
                 $addLieu.style.display = ""
                 selectedVille = document.querySelector("#sortie_ville").value;
+                //requete AJAX
                 $.ajax({
                     url: '{{ path('get_lieux_ajax') }}',
                     type:       'POST',
@@ -79,6 +83,7 @@
                     async:      true,
 
                     success: function (data, status) {
+                        //stockage en locale de la liste des informations des lieux
                         dataLieu = data;
                         clearInformationLieu();
                         modificationListLieu(data);
