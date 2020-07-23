@@ -18,18 +18,23 @@ class EditSortieType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('nom', TextType::class)
+            ->add('nom', TextType::class, [
+                'invalid_message' => 'Le nom ne peut pas être vide',
+            ])
             ->add('dateHeureDebut', DateTimeType::class, [
                 'date_widget' => 'single_text',
+                'invalid_message' => 'La date doit etre au minimum à +24h',
             ])
             ->add('duree', IntegerType::class, [
-                'invalid_message' => 'You entered an invalid value %num% must be positive',
+                'invalid_message' => 'La valeur %num% doit etre positive',
             ])
             ->add('dateLimiteInscription', DateType::class, [
                 'widget' => 'single_text',
+                'invalid_message' => 'La date doit etre au minimum à +2h avant la date de debut',
+
             ])
             ->add('nbInscriptionMax', IntegerType::class, [
-                'invalid_message' => 'You entered an invalid value %num% must be positive'
+                'invalid_message' => 'La valeur %num% doit etre positive'
             ])
             ->add('infosSortie', TextareaType::class, [
             ])
