@@ -1,11 +1,1 @@
 
-body {
-    margin: 0;
-    background-image: url("https://source.unsplash.com/1600x900/?travel,fun,surf,champagne");
-    background-position: center center;
-    background-size: cover;
-    background-attachment: fixed;
-}
-.sideGradients {
-    background-color: rgba(255,255,255,0.7);
-}
