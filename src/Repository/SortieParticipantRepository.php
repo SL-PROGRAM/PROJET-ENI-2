@@ -2,8 +2,11 @@
 
 namespace App\Repository;
 
+use App\Entity\Sortie;
 use App\Entity\SortieParticipant;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -21,6 +24,19 @@ class SortieParticipantRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, SortieParticipant::class);
+    }
+    public function getnbInscrit(Sortie $sortie){
+        try {
+            return intval($this->createQueryBuilder('s')
+                ->select("count(s.id)")
+                ->leftJoin('s.sortie', 'sortie')
+                ->where("sortie.id = :sortie")
+                ->setParameter('sortie', $sortie->getId())
+                ->getQuery()
+                ->getSingleScalarResult());
+        } catch (NoResultException $e) {
+        } catch (NonUniqueResultException $e) {
+        }
     }
 
     // /**

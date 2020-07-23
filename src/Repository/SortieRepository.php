@@ -6,6 +6,8 @@ use App\Data\Search;
 use App\Entity\Participant;
 use App\Entity\Sortie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -24,6 +26,7 @@ class SortieRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Sortie::class);
     }
+
 
     /**
      * @param Search $search
