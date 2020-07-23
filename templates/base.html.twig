@@ -6,8 +6,6 @@
         {% block stylesheets %}
             <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
             <link rel="stylesheet" href="{{ asset('asset/main.css') }}">
-
-            <link rel="icon" type="{{ asset('image\favicon.png') }}" />
         {% endblock %}
     </head>
     <body>
@@ -15,8 +13,8 @@
         {% include 'navbar.html.twig' %}
     </header>
     <main>
-        <div class="container-fluid ">
-            <div class="row sideGradients" style="min-height: 90vh; padding-top: 2%">
+        <div class="container-fluid">
+            <div class="row bg-light" style="min-height: 90vh; padding-top: 2%">
                 <div class="col-xl-1"></div>
                 <div class="col-xl-10">{% for label, messages in app.flashes(['success', 'warning','danger']) %}
                         {% for message in messages %}
