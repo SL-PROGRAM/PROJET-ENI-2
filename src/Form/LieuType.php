@@ -22,7 +22,7 @@ class LieuType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('nom', TextType::class,['label' => 'Enregistrer',
+            ->add('nom', TextType::class,['label' => 'Nom',
                 'attr' => [
                     'class' => "form-control"
                 ]

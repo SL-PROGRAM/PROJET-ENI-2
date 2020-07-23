@@ -214,14 +214,24 @@ class SortieController extends AbstractController
      * @return Response
      * @Route("/sortie/inscrire/{id}", name="sortie_inscrire", methods={"GET"})
      */
-    public function inscrire(Request $request, SortieRepository $sr): Response
+    public function inscrire(Request $request, SortieRepository $sr,SortieParticipantRepository $spr): Response
     {
         $sortieParticipant= new SortieParticipant();
-        $sortieParticipant->setSortie($sr->find($request->get('id')));
-        $sortieParticipant->setParticipant($this->getUser());
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($sortieParticipant);
-        $entityManager->flush();
+        $sortie = $sr->find($request->get('id'));
+        $nbInscriptionMax = $sortie->getNbInscriptionMax();
+        $nbInscrit=$spr->getnbInscrit($sortie);
+        $participant = $this->getUser();
+        $sortieParticipant->setSortie($sortie);
+        $sortieParticipant->setParticipant($participant);
+        if($nbInscrit<$nbInscriptionMax) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($sortieParticipant);
+            if ($entityManager != null) {
+                $entityManager->flush();
+            }
+        }else{
+            $this->addFlash('danger', 'Capacité maximale atteinte');
+        }
         return $this->redirectToRoute('accueil');
     }
 
