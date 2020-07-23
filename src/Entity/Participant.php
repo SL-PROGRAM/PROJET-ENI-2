@@ -76,7 +76,7 @@ class Participant implements UserInterface
      *     match=true,
      *     message="Le format du numéro de téléphone est incorrect"
      * )
-     *  @Assert\Length(max="10", min="15",
+     *  @Assert\Length(max="15", min="10",
      *      minMessage="Un numero de téléphone doit au mininmum contenir 10 caractères  ")
      *      maxMessage="Un numero de téléphone doit au mininmum contenir 15 caractères ")
      * @ORM\Column(type="string", length=15, nullable=true)
@@ -102,7 +102,7 @@ class Participant implements UserInterface
     private $creerSorties;
 
     /**
-     *  @Assert\Length(max="3", min="50",
+     *  @Assert\Length(min="3", max="50",
      *      minMessage="Un numero de téléphone doit au mininmum contenir 3 caractères  ")
      *      maxMessage="Un numero de téléphone doit au mininmum contenir 50 caractères ")
      * @ORM\Column(type="string", length=50, unique=true)
