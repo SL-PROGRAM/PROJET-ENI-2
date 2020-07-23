@@ -21,13 +21,16 @@ class Sortie
 
     /**
      * @Assert\NotBlank(message = "Cette valeur ne peut pas être vide")
+     * @Assert\Length(max="250", min="5",
+     *      minMessage="Le nom de la sortie doit au mininmum contenir 5 caractères ",
+     *      maxMessage="Le nom de la sortie doit au maximum contenir 250 caractères ")
      * @ORM\Column(type="string", length=255)
      */
     private $nom;
 
     /**
      * @Assert\Type(type="\DateTime", message="Date invalide")
-     * @Assert\GreaterThan("+24 hours")
+     * @Assert\GreaterThan("+24 hours", message="La date de sortie doit être au minimum dans 1 jours")
      * @ORM\Column(type="datetime")
      */
     private $dateHeureDebut;
@@ -40,7 +43,7 @@ class Sortie
 
     /**
      * @Assert\Type(type="\DateTime", message="Date invalide")
-     * @Assert\GreaterThan("+2 hours")
+     * @Assert\GreaterThan("+2 hours", message="La date limite d'inscription doit être au minimum dans 2 heures")
      * @ORM\Column(type="datetime")
      */
     private $dateLimiteInscription;
@@ -52,7 +55,10 @@ class Sortie
     private $nbInscriptionMax;
 
     /**
+     *  @Assert\Length(max="250",
+     *      maxMessage="Le nom de la sortie doit au maximum contenir 250 caractères ")
      * @ORM\Column(type="string", length=255, nullable=true)
+     *
      */
     private $infosSortie;
 

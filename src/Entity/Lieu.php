@@ -21,17 +21,18 @@ class Lieu
 
     /**
      * @Assert\NotBlank(message = "Cette valeur ne peut pas être vide")
-     * @Assert\Regex(
-     *     pattern="/\d/",
-     *     match=false,
-     *     message="Ne peut contenir un nombre"
-     * )
+     *  @Assert\Length(max="250", min="5",
+     *      minMessage="Le nom de la sortie doit au mininmum contenir 5 caractères ")
+     *      maxMessage="Le nom de la sortie doit au maximum contenir 250 caractères ")
      * @ORM\Column(type="string", length=255)
      */
     private $nom;
 
     /**
      * @Assert\NotBlank(message = "Cette valeur ne peut pas être vide")
+     *  @Assert\Length(max="250", min="5",
+     *      minMessage="Le nom de la sortie doit au mininmum contenir 5 caractères ")
+     *      maxMessage="Le nom de la sortie doit au maximum contenir 250 caractères ")
      * @ORM\Column(type="string", length=255)
      */
     private $rue;

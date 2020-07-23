@@ -46,8 +46,11 @@ class Participant implements UserInterface
      * @Assert\Regex(
      *     pattern="/\d/",
      *     match=false,
-     *     message="Your name cannot contain a number"
+     *     message="Votre nom ne doit pas contenir de nombre"
      * )
+     *  @Assert\Length(max="100", min="3",
+     *      minMessage="Le nom de la sortie doit au mininmum contenir 3 caractères ")
+     *      maxMessage="Le nom de la sortie doit au maximum contenir 100 caractères ")
      * @ORM\Column(type="string", length=100)
      */
     private $nom;
@@ -57,8 +60,11 @@ class Participant implements UserInterface
      * @Assert\Regex(
      *     pattern="/\d/",
      *     match=false,
-     *     message="Your surname cannot contain a number"
+     *     message="Votre prénom ne doit pas contenir de nombre"
      * )
+     *  @Assert\Length(max="50", min="3",
+     *      minMessage="Le nom de la sortie doit au mininmum contenir 3 caractères ")
+     *      maxMessage="Le nom de la sortie doit au maximum contenir 50 caractères ")
      * @ORM\Column(type="string", length=50)
      *
      */
@@ -70,6 +76,9 @@ class Participant implements UserInterface
      *     match=true,
      *     message="Le format du numéro de téléphone est incorrect"
      * )
+     *  @Assert\Length(max="10", min="10",
+     *      minMessage="Un numero de téléphone doit au mininmum contenir 10 caractères  ")
+     *      maxMessage="Un numero de téléphone doit au mininmum contenir 15 caractères ")
      * @ORM\Column(type="string", length=15, nullable=true)
      */
     private $telephone;

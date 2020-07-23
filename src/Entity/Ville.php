@@ -26,13 +26,17 @@ class Ville
      *     match=false,
      *     message="Ne peut contenir un nombre"
      * )
+     * @Assert\Length(max="250", min="5",
+     *      minMessage="Le nom de la sortie doit au mininmum contenir 5 caractères ",
+     *      maxMessage="Le nom de la sortie doit au maximum contenir 250 caractères ")
      * @ORM\Column(type="string", length=255)
      */
     private $nomVille;
 
     /**
      * @Assert\Type(type="string", message="Valeur invalide")
-     * @Assert\Regex("/^(([0-8][0-9])|(9[0-5])|(2[ab]))[0-9]{3}$/")
+     * @Assert\Regex("/^(([0-8][0-9])|(9[0-5])|(2[ab]))[0-9]{3}$/",
+     *     message="L'information ne correspond pas a un code postal valide en France")
      * @ORM\Column(type="string")
      */
     private $codePostal;

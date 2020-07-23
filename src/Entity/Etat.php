@@ -25,7 +25,9 @@ class Etat
      *     pattern="/\d/",
      *     match=false,
      *     message="Ne peut contenir un nombre"
-     * )
+     * ) @Assert\Length(max="20", min="2",
+     *      minMessage="Le nom de la sortie doit au mininmum contenir 2 caractères ")
+     *      maxMessage="Le nom de la sortie doit au maximum contenir 20 caractères ")
      * @ORM\Column(type="string", length=20)
      */
     private $libelle;

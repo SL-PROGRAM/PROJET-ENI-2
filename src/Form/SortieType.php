@@ -32,15 +32,11 @@ class SortieType extends AbstractType
             ->add('dateHeureDebut', DateTimeType::class, [
                 'date_widget' => 'single_text',
             ])
-            ->add('duree', IntegerType::class, [
-                'invalid_message' => 'You entered an invalid value %num% must be positive',
-            ])
+            ->add('duree', IntegerType::class            )
             ->add('dateLimiteInscription', DateType::class, [
                 'widget' => 'single_text',
             ])
-            ->add('nbInscriptionMax', IntegerType::class, [
-                'invalid_message' => 'You entered an invalid value %num% must be positive'
-            ])
+            ->add('nbInscriptionMax', IntegerType::class)
             ->add('infosSortie', TextareaType::class, [
             ])
             ->add('ville')
