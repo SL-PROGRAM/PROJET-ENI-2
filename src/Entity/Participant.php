@@ -76,7 +76,7 @@ class Participant implements UserInterface
      *     match=true,
      *     message="Le format du numéro de téléphone est incorrect"
      * )
-     *  @Assert\Length(max="10", min="10",
+     *  @Assert\Length(max="10", min="15",
      *      minMessage="Un numero de téléphone doit au mininmum contenir 10 caractères  ")
      *      maxMessage="Un numero de téléphone doit au mininmum contenir 15 caractères ")
      * @ORM\Column(type="string", length=15, nullable=true)
@@ -90,6 +90,7 @@ class Participant implements UserInterface
     private $sortieParticipants;
 
     /**
+     * @Assert\NotNull(message="Merci de renseigner le Campus")
      * @ORM\ManyToOne(targetEntity=Campus::class, inversedBy="Participants")
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
@@ -101,6 +102,9 @@ class Participant implements UserInterface
     private $creerSorties;
 
     /**
+     *  @Assert\Length(max="3", min="50",
+     *      minMessage="Un numero de téléphone doit au mininmum contenir 3 caractères  ")
+     *      maxMessage="Un numero de téléphone doit au mininmum contenir 50 caractères ")
      * @ORM\Column(type="string", length=50, unique=true)
      */
     private $pseudo;
@@ -116,6 +120,7 @@ class Participant implements UserInterface
     private $actif;
 
     /**
+     *
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $imageUrl;
@@ -297,6 +302,7 @@ class Participant implements UserInterface
     {
         return $this->campus;
     }
+
 
     public function setCampus(?Campus $campus): self
     {

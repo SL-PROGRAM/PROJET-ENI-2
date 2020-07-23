@@ -92,6 +92,7 @@ class Sortie
     private $campus;
 
     /**
+     * @Assert\NotNull(message="Merci de selectionner une ville")
      * @ORM\ManyToOne(targetEntity=Ville::class, inversedBy="sorties")
      */
     private $ville;
